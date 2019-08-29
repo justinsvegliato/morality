@@ -1,0 +1,16 @@
+{
+  "name": "morality-js",
+  "version": "0.0.1",
+  "description": "A library for moral autonomous systems",
+  "main": "main.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/justinsvegliato/moral-autonomous-systems.git"
+  },
+  "author": "Justin Svegliato",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/justinsvegliato/moral-autonomous-systems/issues"
+  },
+  "homepage": "https://github.com/justinsvegliato/moral-autonomous-systems#readme"
+}
