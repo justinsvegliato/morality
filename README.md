@@ -1,1 +1,1 @@
-# moral-autonomous-systems
+# morality-js
