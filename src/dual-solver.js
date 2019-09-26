@@ -31,7 +31,7 @@ function getVariables(mdp) {
         let value = successorState == mdp.startState ? -1 : 1;
 
         if (state == successorState) {
-          value *= mdp.discountFactor * (mdp.transitionFunction(state, action, successorState) - 1);
+          value *= mdp.discountFactor * mdp.transitionFunction(state, action, successorState) - 1;
         } else {
           value *= mdp.discountFactor * mdp.transitionFunction(state, action, successorState);
         }
@@ -60,9 +60,44 @@ function getProgram(mdp) {
   };
 }
 
+function getPolicy(mdp, result) {
+  const policy = {};
+
+  for (const state of mdp.states) {
+    let optimalOccupancyMeasure = Number.NEGATIVE_INFINITY;
+    let optimalAction = null;
+
+    for (const action of mdp.actions) {
+      const occupancyMeasure = result['state' + state + action];
+
+      if (occupancyMeasure > optimalOccupancyMeasure) {
+        optimalOccupancyMeasure = occupancyMeasure;
+        optimalAction = action;
+      }
+    }
+
+    policy[state] = optimalAction;
+  }
+
+  return policy;
+}
+
+function normalize(mdp, result) {
+  for (const state of mdp.states) {
+    for (const action of mdp.actions) {
+      if (isNaN(result['state' + state + action])) {
+        result['state' + state + action] = 0;
+      }
+    }
+  }
+  return result;
+}
+
 function solve(mdp) {
   const program = getProgram(mdp);
-  return solver.Solve(program);
+  const result = solver.Solve(program);
+  const normalizedResult = normalize(mdp, result);
+  return getPolicy(mdp, normalizedResult);
 }
 
 module.exports = {

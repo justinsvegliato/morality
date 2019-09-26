@@ -57,7 +57,7 @@ function getTestMdp(size) {
 
   const startState = 0;
 
-  const discountFactor = 0.9;
+  const discountFactor = 0.99;
 
   return new Mdp(states, actions, transitionFunction, rewardFunction, startState, discountFactor);
 }

@@ -23,11 +23,10 @@ function getVariables(mdp) {
     for (const newState of mdp.states) {
       for (const action of mdp.actions) {
         if (state == newState) {
-          variables['state' + state]['state' + newState + action] = 1 - mdp.transitionFunction(newState, action, state);
+          variables['state' + state]['state' + newState + action] = 1 - mdp.discountFactor * mdp.transitionFunction(newState, action, state);
         } else {
-          variables['state' + state]['state' + newState + action] = -mdp.transitionFunction(newState, action, state);
+          variables['state' + state]['state' + newState + action] = mdp.discountFactor * -mdp.transitionFunction(newState, action, state);
         }
-        variables['state' + state]['state' + newState + action] *= mdp.discountFactor;
       }
     }
   }
@@ -44,9 +43,51 @@ function getProgram(mdp) {
   };
 }
 
+function getPolicy(mdp, result) {
+  const policy = {};
+
+  for (const state of mdp.states) {
+    let optimalActionValue = Number.NEGATIVE_INFINITY;
+    let optimalAction = null;
+
+    for (const action of mdp.actions) {
+      let expectedFutureReward = 0;
+      for (const successorState of mdp.states) {
+        const transitionProbability = mdp.transitionFunction(state, action, successorState);
+        const value = result['state' + successorState];
+        expectedFutureReward += transitionProbability * value;
+      }
+      expectedFutureReward *= mdp.discountFactor;
+
+      const immediateReward = mdp.rewardFunction(state, action);
+      const actionValue = immediateReward + expectedFutureReward;
+
+      if (actionValue > optimalActionValue) {
+        optimalActionValue = actionValue;
+        optimalAction = action;
+      }
+    }
+
+    policy[state] = optimalAction;
+  }
+
+  return policy;
+}
+
+function normalize(mdp, result) {
+  for (const successorState of mdp.states) {
+    if (isNaN(result['state' + successorState])) {
+      result['state' + successorState] = 0;
+    }
+  }
+  return result;
+}
+
 function solve(mdp) {
   const program = getProgram(mdp);
-  return solver.Solve(program);
+  const result = solver.Solve(program);
+  const normalizedResult = normalize(mdp, result);
+  return getPolicy(mdp, normalizedResult);
 }
 
 module.exports = {
