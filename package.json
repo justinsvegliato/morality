@@ -2,15 +2,22 @@
   "name": "morality-js",
   "version": "0.0.1",
   "description": "A library for moral autonomous systems",
-  "main": "main.js",
+  "main": "src/morality.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/justinsvegliato/moral-autonomous-systems.git"
+    "url": "git+https://github.com/justinsvegliato/morality-js.git"
   },
   "author": "Justin Svegliato",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/justinsvegliato/moral-autonomous-systems/issues"
+    "url": "https://github.com/justinsvegliato/morality-js/issues"
   },
-  "homepage": "https://github.com/justinsvegliato/moral-autonomous-systems#readme"
+  "homepage": "https://github.com/justinsvegliato/morality-js#readme",
+  "dependencies": {
+    "javascript-lp-solver": "^0.4.5"
+  },
+  "devDependencies": {
+    "eslint": "^6.4.0",
+    "eslint-config-google": "^0.14.0"
+  }
 }
