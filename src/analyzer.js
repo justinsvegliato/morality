@@ -2,7 +2,7 @@
 
 const Mdp = require('./mdp.js');
 
-function getTestMdp(size) {
+function getLineMdp(size) {
   const states = Array.from(Array(size).keys());
 
   const actions = ['LEFT', 'STAY', 'RIGHT'];
@@ -134,7 +134,7 @@ function printMdp(mdp) {
 }
 
 module.exports = {
-  getTestMdp,
+  getLineMdp,
   printStates,
   printActions,
   printTransitionFunction,
