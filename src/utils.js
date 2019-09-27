@@ -1,79 +1,20 @@
 'use strict';
 
 const Mdp = require('./mdp.js');
+const fs = require('fs');
 
-function getTestMdp() {
-  const states = [0, 1, 2, 3];
+function getGrid(filename) {
+  const file = fs.readFileSync(filename).toString();
+  const lines = file.split('\n');
 
-  const actions = ['GO', 'JUMP', 'STAY'];
+  const grid = [];
 
-  const transitionFunction = function(state, action, successorState) {
-    if (state == 0) {
-      if (action == 'GO') {
-        const probabilities = [0, 1, 0, 0];
-        return probabilities[successorState];
-      }
-      if (action == 'JUMP') {
-        const probabilities = [0, 0, 1, 0];
-        return probabilities[successorState];
-      }
-      if (action == 'STAY') {
-        const probabilities = [1, 0, 0, 0];
-        return probabilities[successorState];
-      }
-    }
+  for (const line of lines) {
+    const row = line.split('');
+    grid.push(row);
+  }
 
-    if (state == 1) {
-      if (action == 'GO') {
-        const probabilities = [0, 0, 0, 1];
-        return probabilities[successorState];
-      }
-      if (action == 'JUMP' || action == 'STAY') {
-        const probabilities = [0, 1, 0, 0];
-        return probabilities[successorState];
-      }
-    }
-
-    if (state == 2) {
-      if (action == 'GO' || action == 'STAY') {
-        const probabilities = [0, 0, 1, 0];
-        return probabilities[successorState];
-      }
-      if (action == 'JUMP') {
-        const probabilities = [0, 0, 0, 1];
-        return probabilities[successorState];
-      }
-    }
-
-    if (state == 3) {
-      if (action == 'GO' || action == 'JUMP' || action == 'STAY') {
-        const probabilities = [0, 0, 0, 1];
-        return probabilities[successorState];
-      }
-    }
-  };
-
-  const rewardFunction = function(state, action) {
-    if (state == 3 && action == 'STAY') {
-      return 100;
-    }
-
-    if (state == 0 && action == 'GO') {
-      return -5;
-    }
-
-    if (state == 0 && action == 'JUMP') {
-      return -2;
-    }
-
-    return -10;
-  };
-
-  const startState = 0;
-
-  const discountFactor = 0.99;
-
-  return new Mdp(states, actions, transitionFunction, rewardFunction, startState, discountFactor);
+  return grid;
 }
 
 function getLineMdp(size) {
@@ -208,7 +149,7 @@ function printMdp(mdp) {
 }
 
 module.exports = {
-  getTestMdp,
+  getGrid,
   getLineMdp,
   printStates,
   printActions,

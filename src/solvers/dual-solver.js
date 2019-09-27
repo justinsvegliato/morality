@@ -17,13 +17,6 @@ function getConstraints(mdp) {
     }
   }
 
-  // TODO Figure out how to improve this
-  // for (const state of ethicalContext.forbiddenStates) {
-  //   for (const action of mdp.actions) {
-  //     constraints['forbidState' + state + action] = {'max': 0};
-  //   }
-  // }
-
   return constraints;
 }
 
@@ -52,13 +45,6 @@ function getVariables(mdp, ethicalContext) {
           variables['state' + state + action]['minState' + newState + newAction] = state == newState && action == newAction ? 1 : 0;
         }
       }
-
-      // TODO Figure out how to improve this
-      // for (const forbiddenStates of ethicalContext.forbiddenStates) {
-      //   for (const newAction of mdp.actions) {
-      //     variables['state' + state + action]['forbidState' + forbiddenStates + newAction] = state == forbiddenStates && action == newAction ? 1 : 0;
-      //   }
-      // }
     }
   }
 
