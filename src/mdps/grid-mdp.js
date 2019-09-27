@@ -21,6 +21,14 @@ class GridMdp {
     const successorRow = Math.floor(successorState / this._grid.width);
     const successorColumn = successorState - successorRow * this._grid.width;
 
+    const cell = this._grid.map[row][column];
+    if (cell == 'W') {
+      if (row == successorRow && column == successorColumn) {
+        return 1;
+      }
+      return 0;
+    }
+
     if (action == 'STAY') {
       if (row == successorRow && column == successorColumn) {
         return 1;
