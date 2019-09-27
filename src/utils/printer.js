@@ -1,11 +1,5 @@
 'use strict';
 
-const fs = require('fs');
-
-function getGrid(filename) {
-  return JSON.parse(fs.readFileSync(filename));
-}
-
 function printStates(mdp) {
   console.log('States');
 
@@ -78,7 +72,6 @@ function printMdp(mdp) {
 }
 
 module.exports = {
-  getGrid,
   printStates,
   printActions,
   printTransitionFunction,

@@ -2,9 +2,9 @@
 
 const GridMdp = require('./mdps/grid-mdp.js');
 const morality = require('./morality.js');
-const utils = require('./utils.js');
+const helper = require('./utils/helper.js');
 
-const grid = utils.getGrid('grids/simple-4x5-grid.json');
+const grid = helper.getJson('grids/simple-4x5-grid.json');
 const mdp = new GridMdp(grid);
 
 const discountFactor = 0.99;
