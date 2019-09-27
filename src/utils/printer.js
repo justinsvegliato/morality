@@ -3,7 +3,7 @@
 function printStates(mdp) {
   console.log('States');
 
-  for (const state of mdp.states) {
+  for (const state of mdp.states()) {
     console.log(`  State: ${state}`);
   }
 }
@@ -11,7 +11,7 @@ function printStates(mdp) {
 function printActions(mdp) {
   console.log('Actions');
 
-  for (const action of mdp.actions) {
+  for (const action of mdp.actions()) {
     console.log(`  Action: ${action}`);
   }
 }
@@ -21,13 +21,13 @@ function printTransitionFunction(mdp) {
 
   let isValid = true;
 
-  for (const state of mdp.states) {
-    for (const action of mdp.actions) {
+  for (const state of mdp.states()) {
+    for (const action of mdp.actions()) {
       console.log(`  Transition: (${state}, ${action})`);
 
       let totalProbability = 0;
 
-      for (const successorState of mdp.states) {
+      for (const successorState of mdp.states()) {
         const probability = mdp.transitionFunction(state, action, successorState);
         totalProbability += probability;
         console.log(`    Successor State: ${successorState} -> ${probability}`);
@@ -44,10 +44,10 @@ function printTransitionFunction(mdp) {
 function printRewardFunction(mdp) {
   console.log('Reward Function');
 
-  for (const state of mdp.states) {
+  for (const state of mdp.states()) {
     console.log(`  State: ${state}`);
 
-    for (const action of mdp.actions) {
+    for (const action of mdp.actions()) {
       const reward = mdp.rewardFunction(state, action);
       console.log(`    Action: ${action} -> ${reward}`);
     }
@@ -55,11 +55,7 @@ function printRewardFunction(mdp) {
 }
 
 function printStartState(mdp) {
-  console.log(`Start State: ${mdp.startState}`);
-}
-
-function printDiscountFactor(mdp) {
-  console.log(`Discount Factor: ${mdp.discountFactor}`);
+  console.log(`Start State: ${mdp.startState()}`);
 }
 
 function printMdp(mdp) {
@@ -68,7 +64,6 @@ function printMdp(mdp) {
   printTransitionFunction(mdp);
   printRewardFunction(mdp);
   printStartState(mdp);
-  printDiscountFactor(mdp);
 }
 
 module.exports = {
@@ -77,6 +72,5 @@ module.exports = {
   printTransitionFunction,
   printRewardFunction,
   printStartState,
-  printDiscountFactor,
   printMdp,
 };
