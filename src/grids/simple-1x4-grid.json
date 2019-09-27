@@ -1,0 +1,11 @@
+{
+  "width": 5,
+  "height": 1,
+  "position": {
+    "row": 0,
+    "column": 0
+  },
+  "map": [
+    ["O", "O", "O", "O", "G"]
+  ]
+}

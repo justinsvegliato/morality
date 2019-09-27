@@ -14,7 +14,7 @@ function getConstraints(mdp) {
   return constraints;
 }
 
-function getVariables(mdp) {
+function getVariables(mdp, discountFactor) {
   const variables = {};
 
   for (const state of mdp.states) {
@@ -25,9 +25,9 @@ function getVariables(mdp) {
         let value = successorState == mdp.startState ? -1 : 1;
 
         if (state == successorState) {
-          value *= mdp.discountFactor * mdp.transitionFunction(state, action, successorState) - 1;
+          value *= discountFactor * mdp.transitionFunction(state, action, successorState) - 1;
         } else {
-          value *= mdp.discountFactor * mdp.transitionFunction(state, action, successorState);
+          value *= discountFactor * mdp.transitionFunction(state, action, successorState);
         }
 
         variables['state' + state + action]['maxSuccessorState' + successorState] = value;
@@ -39,24 +39,26 @@ function getVariables(mdp) {
   return variables;
 }
 
-function getProgram(mdp) {
+function getProgram(mdp, discountFactor) {
   return {
     'optimize': 'value',
     'opType': 'max',
     'constraints': getConstraints(mdp),
-    'variables': getVariables(mdp),
+    'variables': getVariables(mdp, discountFactor),
   };
 }
 
 function getPolicy(mdp, result) {
   const policy = {};
 
+  const occupancyMeasures = normalize(mdp, result);
+
   for (const state of mdp.states) {
     let optimalOccupancyMeasure = Number.NEGATIVE_INFINITY;
     let optimalAction = null;
 
     for (const action of mdp.actions) {
-      const occupancyMeasure = result['state' + state + action];
+      const occupancyMeasure = occupancyMeasures['state' + state + action];
 
       if (occupancyMeasure > optimalOccupancyMeasure) {
         optimalOccupancyMeasure = occupancyMeasure;
@@ -81,16 +83,12 @@ function normalize(mdp, result) {
   return result;
 }
 
-function solve(mdp) {
-  const program = getProgram(mdp);
+function solve(mdp, discountFactor) {
+  const program = getProgram(mdp, discountFactor);
   const result = solver.Solve(program);
-  const normalizedResult = normalize(mdp, result);
-  return getPolicy(mdp, normalizedResult);
+  return getPolicy(mdp, result);
 }
 
 module.exports = {
-  getConstraints,
-  getVariables,
-  getProgram,
   solve,
 };

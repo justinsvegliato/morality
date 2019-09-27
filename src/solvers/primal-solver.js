@@ -14,7 +14,7 @@ function getConstraints(mdp) {
   return constraints;
 }
 
-function getVariables(mdp) {
+function getVariables(mdp, discountFactor) {
   const variables = {};
 
   for (const state of mdp.states) {
@@ -23,9 +23,9 @@ function getVariables(mdp) {
     for (const newState of mdp.states) {
       for (const action of mdp.actions) {
         if (state == newState) {
-          variables['state' + state]['state' + newState + action] = 1 - mdp.discountFactor * mdp.transitionFunction(newState, action, state);
+          variables['state' + state]['state' + newState + action] = 1 - discountFactor * mdp.transitionFunction(newState, action, state);
         } else {
-          variables['state' + state]['state' + newState + action] = mdp.discountFactor * -mdp.transitionFunction(newState, action, state);
+          variables['state' + state]['state' + newState + action] = discountFactor * -mdp.transitionFunction(newState, action, state);
         }
       }
     }
@@ -34,17 +34,19 @@ function getVariables(mdp) {
   return variables;
 }
 
-function getProgram(mdp) {
+function getProgram(mdp, discountFactor) {
   return {
     'optimize': 'value',
     'opType': 'min',
     'constraints': getConstraints(mdp),
-    'variables': getVariables(mdp),
+    'variables': getVariables(mdp, discountFactor),
   };
 }
 
-function getPolicy(mdp, result) {
+function getPolicy(mdp, result, discountFactor) {
   const policy = {};
+
+  const values = normalize(mdp, result);
 
   for (const state of mdp.states) {
     let optimalActionValue = Number.NEGATIVE_INFINITY;
@@ -54,10 +56,10 @@ function getPolicy(mdp, result) {
       let expectedFutureReward = 0;
       for (const successorState of mdp.states) {
         const transitionProbability = mdp.transitionFunction(state, action, successorState);
-        const value = result['state' + successorState];
+        const value = values['state' + successorState];
         expectedFutureReward += transitionProbability * value;
       }
-      expectedFutureReward *= mdp.discountFactor;
+      expectedFutureReward *= discountFactor;
 
       const immediateReward = mdp.rewardFunction(state, action);
       const actionValue = immediateReward + expectedFutureReward;
@@ -83,16 +85,12 @@ function normalize(mdp, result) {
   return result;
 }
 
-function solve(mdp) {
-  const program = getProgram(mdp);
+function solve(mdp, discountFactor) {
+  const program = getProgram(mdp, discountFactor);
   const result = solver.Solve(program);
-  const normalizedResult = normalize(mdp, result);
-  return getPolicy(mdp, normalizedResult);
+  return getPolicy(mdp, result, discountFactor);
 }
 
 module.exports = {
-  getConstraints,
-  getVariables,
-  getProgram,
   solve,
 };

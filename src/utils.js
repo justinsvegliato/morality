@@ -3,17 +3,7 @@
 const fs = require('fs');
 
 function getGrid(filename) {
-  const file = fs.readFileSync(filename).toString();
-  const lines = file.split('\n');
-
-  const grid = [];
-
-  for (const line of lines) {
-    const row = line.split('');
-    grid.push(row);
-  }
-
-  return grid;
+  return JSON.parse(fs.readFileSync(filename));
 }
 
 function printStates(mdp) {

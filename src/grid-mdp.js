@@ -1,19 +1,13 @@
 'use strict';
 
 class GridMdp {
-  constructor(grid, discountFactor) {
+  constructor(grid) {
     this._grid = grid;
-    this._discountFactor = discountFactor;
   }
 
   get states() {
-    let size = 0;
-
-    for (const row of this._grid) {
-      size += row.length;
-    }
-
-    return Array.from(Array(size).keys());
+    const size = this._grid.width * this._grid.height;
+    return Array(size).keys();
   }
 
   get actions() {
@@ -24,14 +18,11 @@ class GridMdp {
     const grid = this._grid;
 
     const transitionFunction = function(state, action, successorState) {
-      const height = grid.length;
-      const width = grid[0].length;
+      const row = Math.floor(state / grid.width);
+      const column = state - row * grid.width;
 
-      const row = parseInt(state / width);
-      const column = parseInt(state - row * width);
-
-      const successorRow = parseInt(successorState / width);
-      const successorColumn = parseInt(successorState - successorRow * width);
+      const successorRow = Math.floor(successorState / grid.width);
+      const successorColumn = successorState - successorRow * grid.width;
 
       if (action == 'STAY') {
         if (row == successorRow && column == successorColumn) {
@@ -51,7 +42,7 @@ class GridMdp {
       }
 
       if (action == 'EAST') {
-        if (row == successorRow && column == successorColumn && column == width - 1) {
+        if (row == successorRow && column == successorColumn && column == grid.width - 1) {
           return 1;
         }
         if (row == successorRow && column == successorColumn - 1) {
@@ -61,7 +52,7 @@ class GridMdp {
       }
 
       if (action == 'SOUTH') {
-        if (row == successorRow && column == successorColumn && row == height - 1) {
+        if (row == successorRow && column == successorColumn && row == grid.height - 1) {
           return 1;
         }
         if (row == successorRow - 1 && column == successorColumn) {
@@ -84,39 +75,17 @@ class GridMdp {
     return transitionFunction;
   }
 
-  get rewardFunction() {
-    const grid = this._grid;
+  rewardFunction(state, action) {
+    const row = Math.floor(state / this._grid.width);
+    const column = state - row * this._grid.width;
 
-    const rewardFunction = function(state, action) {
-      const width = grid[0].length;
-      const row = parseInt(state / width);
-      const column = parseInt(state - row * width);
+    const cell = this._grid.map[row][column];
 
-      const cell = grid[row][column];
-
-      if (cell == 'G' && action == 'STAY') {
-        return 100;
-      }
-      return -1;
-    };
-
-    return rewardFunction;
+    return cell == 'G' && action == 'STAY' ? 1 : -1;
   }
 
   get startState() {
-    for (let i = 0; i < this._grid.length; i++) {
-      for (let j = 0; j < this._grid[i].length; j++) {
-        const cell = this._grid[i][j];
-        if (cell == 'S') {
-          return this._grid[i].length * i + j;
-        }
-      }
-    }
-    return -1;
-  }
-
-  get discountFactor() {
-    return this._discountFactor;
+    return this._grid.height * this._grid.position.row + this._grid.position.column;
   }
 }
 
