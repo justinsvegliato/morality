@@ -1,6 +1,5 @@
 'use strict';
 
-const Mdp = require('./mdp.js');
 const fs = require('fs');
 
 function getGrid(filename) {
@@ -15,66 +14,6 @@ function getGrid(filename) {
   }
 
   return grid;
-}
-
-function getLineMdp(size) {
-  const states = Array.from(Array(size).keys());
-
-  const actions = ['LEFT', 'STAY', 'RIGHT'];
-
-  const transitionFunction = function(state, action, successorState) {
-    if (action == 'STAY') {
-      if (state == successorState) {
-        return 1.0;
-      }
-      return 0.0;
-    }
-
-    if (action == 'LEFT') {
-      if (state == 0 && state == successorState) {
-        return 1.0;
-      }
-      if (state - 1 == successorState) {
-        return 0.9;
-      }
-      if (state == successorState) {
-        return 0.1;
-      }
-      return 0.0;
-    }
-
-    if (action == 'RIGHT') {
-      if (state == size - 1 && state == successorState) {
-        return 1.0;
-      }
-      if (state + 1 == successorState) {
-        return 0.9;
-      }
-      if (state == successorState) {
-        return 0.1;
-      }
-      return 0.0;
-    }
-  };
-
-  const rewardFunction = function(state, action) {
-    if (action == 'STAY') {
-      if (state == size - 1) {
-        return 1;
-      }
-      return -1;
-    }
-
-    if (action == 'LEFT' || action == 'RIGHT') {
-      return -1;
-    }
-  };
-
-  const startState = 0;
-
-  const discountFactor = 0.99;
-
-  return new Mdp(states, actions, transitionFunction, rewardFunction, startState, discountFactor);
 }
 
 function printStates(mdp) {
@@ -115,7 +54,7 @@ function printTransitionFunction(mdp) {
     }
   }
 
-  console.log(`  Status: ${isValid ? 'Valid' : 'Invalid'}`)
+  console.log(`  Status: ${isValid ? 'Valid' : 'Invalid'}`);
 }
 
 function printRewardFunction(mdp) {
@@ -150,7 +89,6 @@ function printMdp(mdp) {
 
 module.exports = {
   getGrid,
-  getLineMdp,
   printStates,
   printActions,
   printTransitionFunction,
