@@ -1,7 +1,7 @@
 'use strict';
 
-const primalSolver = require('./primal-solver.js');
-const dualSolver = require('./dual-solver.js');
+const primalSolver = require('./solvers/primal-solver.js');
+const dualSolver = require('./solvers/dual-solver.js');
 
 function solve(mdp, ethicalContext, moralPrinciple, usePrimalForm = true) {
   if (usePrimalForm) {

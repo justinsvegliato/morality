@@ -2,7 +2,7 @@
 
 const solver = require('javascript-lp-solver');
 
-function getConstraints(mdp, ethicalContext) {
+function getConstraints(mdp) {
   const constraints = {};
 
   for (const successorState of mdp.states) {
@@ -18,11 +18,11 @@ function getConstraints(mdp, ethicalContext) {
   }
 
   // TODO Figure out how to improve this
-  for (const state of ethicalContext.forbiddenStates) {
-    for (const action of mdp.actions) {
-      constraints['forbidState' + state + action] = {'max': 0};
-    }
-  }
+  // for (const state of ethicalContext.forbiddenStates) {
+  //   for (const action of mdp.actions) {
+  //     constraints['forbidState' + state + action] = {'max': 0};
+  //   }
+  // }
 
   return constraints;
 }
@@ -54,11 +54,11 @@ function getVariables(mdp, ethicalContext) {
       }
 
       // TODO Figure out how to improve this
-      for (const forbiddenStates of ethicalContext.forbiddenStates) {
-        for (const newAction of mdp.actions) {
-          variables['state' + state + action]['forbidState' + forbiddenStates + newAction] = state == forbiddenStates && action == newAction ? 1 : 0;
-        }
-      }
+      // for (const forbiddenStates of ethicalContext.forbiddenStates) {
+      //   for (const newAction of mdp.actions) {
+      //     variables['state' + state + action]['forbidState' + forbiddenStates + newAction] = state == forbiddenStates && action == newAction ? 1 : 0;
+      //   }
+      // }
     }
   }
 
@@ -109,7 +109,6 @@ function normalize(mdp, result) {
 
 function solve(mdp, ethicalContext) {
   const program = getProgram(mdp, ethicalContext);
-  console.log(program);
   const result = solver.Solve(program);
   const normalizedResult = normalize(mdp, result);
   return getPolicy(mdp, normalizedResult);

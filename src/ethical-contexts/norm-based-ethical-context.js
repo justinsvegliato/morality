@@ -20,7 +20,5 @@ class NormBasedEthicalContext {
   }
 }
 
-module.exports = {
-  NormBasedEthicalContext,
-};
+module.exports = NormBasedEthicalContext;
 
