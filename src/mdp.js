@@ -10,28 +10,24 @@ class Mdp {
     this._discountFactor = discountFactor;
   }
 
-  get states() {
+  states() {
     return this._states;
   }
 
-  get actions() {
+  actions() {
     return this._actions;
   }
 
-  get transitionFunction() {
-    return this._transitionFunction;
+  transitionFunction(state, action, successorState) {
+    return this._transitionFunction(state, action, successorState);
   }
 
-  get rewardFunction() {
-    return this._rewardFunction;
+  rewardFunction(state, action) {
+    return this._rewardFunction(state, action);
   }
 
-  get startState() {
+  startState() {
     return this._startState;
-  }
-
-  get discountFactor() {
-    return this._discountFactor;
   }
 }
 

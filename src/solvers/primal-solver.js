@@ -5,8 +5,8 @@ const solver = require('javascript-lp-solver');
 function getConstraints(mdp) {
   const constraints = {};
 
-  for (const state of mdp.states) {
-    for (const action of mdp.actions) {
+  for (const state of mdp.states()) {
+    for (const action of mdp.actions()) {
       constraints['state' + state + action] = {'min': mdp.rewardFunction(state, action)};
     }
   }
@@ -17,11 +17,11 @@ function getConstraints(mdp) {
 function getVariables(mdp, discountFactor) {
   const variables = {};
 
-  for (const state of mdp.states) {
+  for (const state of mdp.states()) {
     variables['state' + state] = {'value': 1};
 
-    for (const newState of mdp.states) {
-      for (const action of mdp.actions) {
+    for (const newState of mdp.states()) {
+      for (const action of mdp.actions()) {
         if (state == newState) {
           variables['state' + state]['state' + newState + action] = 1 - discountFactor * mdp.transitionFunction(newState, action, state);
         } else {
@@ -48,13 +48,13 @@ function getPolicy(mdp, result, discountFactor) {
 
   const values = normalize(mdp, result);
 
-  for (const state of mdp.states) {
+  for (const state of mdp.states()) {
     let optimalActionValue = Number.NEGATIVE_INFINITY;
     let optimalAction = null;
 
-    for (const action of mdp.actions) {
+    for (const action of mdp.actions()) {
       let expectedFutureReward = 0;
-      for (const successorState of mdp.states) {
+      for (const successorState of mdp.states()) {
         const transitionProbability = mdp.transitionFunction(state, action, successorState);
         const value = values['state' + successorState];
         expectedFutureReward += transitionProbability * value;
@@ -77,7 +77,7 @@ function getPolicy(mdp, result, discountFactor) {
 }
 
 function normalize(mdp, result) {
-  for (const successorState of mdp.states) {
+  for (const successorState of mdp.states()) {
     if (isNaN(result['state' + successorState])) {
       result['state' + successorState] = 0;
     }

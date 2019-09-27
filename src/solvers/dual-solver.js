@@ -5,8 +5,8 @@ const solver = require('javascript-lp-solver');
 function getConstraints(mdp) {
   const constraints = {};
 
-  for (const successorState of mdp.states) {
-    const limit = successorState == mdp.startState ? 1 : 0;
+  for (const successorState of mdp.states()) {
+    const limit = successorState == mdp.startState() ? 1 : 0;
     constraints['maxSuccessorState' + successorState] = {'max': limit};
     constraints['minSuccessorState' + successorState] = {'min': limit};
   }
@@ -17,12 +17,12 @@ function getConstraints(mdp) {
 function getVariables(mdp, discountFactor) {
   const variables = {};
 
-  for (const state of mdp.states) {
-    for (const action of mdp.actions) {
+  for (const state of mdp.states()) {
+    for (const action of mdp.actions()) {
       variables['state' + state + action] = {'value': mdp.rewardFunction(state, action)};
 
-      for (const successorState of mdp.states) {
-        let value = successorState == mdp.startState ? -1 : 1;
+      for (const successorState of mdp.states()) {
+        let value = successorState == mdp.startState() ? -1 : 1;
 
         if (state == successorState) {
           value *= discountFactor * mdp.transitionFunction(state, action, successorState) - 1;
@@ -53,11 +53,11 @@ function getPolicy(mdp, result) {
 
   const occupancyMeasures = normalize(mdp, result);
 
-  for (const state of mdp.states) {
+  for (const state of mdp.states()) {
     let optimalOccupancyMeasure = Number.NEGATIVE_INFINITY;
     let optimalAction = null;
 
-    for (const action of mdp.actions) {
+    for (const action of mdp.actions()) {
       const occupancyMeasure = occupancyMeasures['state' + state + action];
 
       if (occupancyMeasure > optimalOccupancyMeasure) {
@@ -73,8 +73,8 @@ function getPolicy(mdp, result) {
 }
 
 function normalize(mdp, result) {
-  for (const state of mdp.states) {
-    for (const action of mdp.actions) {
+  for (const state of mdp.states()) {
+    for (const action of mdp.actions()) {
       if (isNaN(result['state' + state + action])) {
         result['state' + state + action] = 0;
       }
