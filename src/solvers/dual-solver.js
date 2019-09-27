@@ -11,16 +11,10 @@ function getConstraints(mdp) {
     constraints['minSuccessorState' + successorState] = {'min': limit};
   }
 
-  for (const state of mdp.states) {
-    for (const action of mdp.actions) {
-      constraints['minState' + state + action] = {'min': 0};
-    }
-  }
-
   return constraints;
 }
 
-function getVariables(mdp, ethicalContext) {
+function getVariables(mdp) {
   const variables = {};
 
   for (const state of mdp.states) {
@@ -39,24 +33,18 @@ function getVariables(mdp, ethicalContext) {
         variables['state' + state + action]['maxSuccessorState' + successorState] = value;
         variables['state' + state + action]['minSuccessorState' + successorState] = value;
       }
-
-      for (const newState of mdp.states) {
-        for (const newAction of mdp.actions) {
-          variables['state' + state + action]['minState' + newState + newAction] = state == newState && action == newAction ? 1 : 0;
-        }
-      }
     }
   }
 
   return variables;
 }
 
-function getProgram(mdp, ethicalContext) {
+function getProgram(mdp) {
   return {
     'optimize': 'value',
     'opType': 'max',
-    'constraints': getConstraints(mdp, ethicalContext),
-    'variables': getVariables(mdp, ethicalContext),
+    'constraints': getConstraints(mdp),
+    'variables': getVariables(mdp),
   };
 }
 
@@ -93,8 +81,8 @@ function normalize(mdp, result) {
   return result;
 }
 
-function solve(mdp, ethicalContext) {
-  const program = getProgram(mdp, ethicalContext);
+function solve(mdp) {
+  const program = getProgram(mdp);
   const result = solver.Solve(program);
   const normalizedResult = normalize(mdp, result);
   return getPolicy(mdp, normalizedResult);
