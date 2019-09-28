@@ -40,7 +40,10 @@ class GridMdp {
       if (row == successorRow && column == successorColumn && row == 0) {
         return 1;
       }
-      if (row == successorRow + 1 && column == successorColumn) {
+      if (row == successorRow && column == successorColumn && this._grid.map[row - 1][column] == 'W') {
+        return 1;
+      }
+      if (row == successorRow + 1 && column == successorColumn && this._grid.map[successorRow][successorColumn] != 'W') {
         return 1;
       }
       return 0;
@@ -50,7 +53,10 @@ class GridMdp {
       if (row == successorRow && column == successorColumn && column == this._grid.width - 1) {
         return 1;
       }
-      if (row == successorRow && column == successorColumn - 1) {
+      if (row == successorRow && column == successorColumn && this._grid.map[row][column + 1] == 'W') {
+        return 1;
+      }
+      if (row == successorRow && column == successorColumn - 1 && this._grid.map[successorRow][successorColumn] != 'W') {
         return 1;
       }
       return 0;
@@ -60,7 +66,10 @@ class GridMdp {
       if (row == successorRow && column == successorColumn && row == this._grid.height - 1) {
         return 1;
       }
-      if (row == successorRow - 1 && column == successorColumn) {
+      if (row == successorRow && column == successorColumn && this._grid.map[row + 1][column] == 'W') {
+        return 1;
+      }
+      if (row == successorRow - 1 && column == successorColumn && this._grid.map[successorRow][successorColumn] != 'W') {
         return 1;
       }
       return 0;
@@ -70,7 +79,10 @@ class GridMdp {
       if (row == successorRow && column == successorColumn && column == 0) {
         return 1;
       }
-      if (row == successorRow && column == successorColumn + 1) {
+      if (row == successorRow && column == successorColumn && this._grid.map[row][column - 1] == 'W') {
+        return 1;
+      }
+      if (row == successorRow && column == successorColumn + 1 && this._grid.map[successorRow][successorColumn] != 'W') {
         return 1;
       }
       return 0;
