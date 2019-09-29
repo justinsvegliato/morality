@@ -66,11 +66,36 @@ function printMdp(mdp) {
   printStartState(mdp);
 }
 
+function printPolicy(grid, policy) {
+  const symbols = {
+    'STAY': '\u2205',
+    'NORTH': '\u2191',
+    'EAST': '\u2192',
+    'SOUTH': '\u2193',
+    'WEST': '\u2190'
+  };
+
+  for (let row = 0; row < grid.height; row++) {
+    let representation = '';
+    for (let column = 0; column < grid.width; column++) {
+      const state = grid.width * row + column;
+      if (grid.map[row][column] == 'W') {
+        representation += '\u25A0';
+      } else {
+        representation += symbols[policy[state]];
+      }
+      representation += ' ';
+    }
+    console.log(`${representation}`);
+  }
+}
+
 module.exports = {
   printStates,
   printActions,
   printTransitionFunction,
   printRewardFunction,
   printStartState,
-  printMdp
+  printMdp,
+  printPolicy
 };
