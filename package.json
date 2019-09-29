@@ -1,18 +1,18 @@
 {
-  "name": "ethics",
+  "name": "morality",
   "version": "0.0.1",
-  "description": "A library for building artificial intelligence with morality",
-  "main": "src/ethics.js",
+  "description": "Moral is a library for building autonomous agents that reason ethically",
+  "main": "src/morality.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/justinsvegliato/ethics.git"
+    "url": "git+https://github.com/justinsvegliato/morality.git"
   },
   "author": "Justin Svegliato",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/justinsvegliato/ethics/issues"
+    "url": "https://github.com/justinsvegliato/morality/issues"
   },
-  "homepage": "https://github.com/justinsvegliato/ethics#readme",
+  "homepage": "https://github.com/justinsvegliato/morality#readme",
   "dependencies": {
     "javascript-lp-solver": "^0.4.5"
   },

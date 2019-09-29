@@ -1,6 +1,6 @@
 'use strict';
 
-class ForbiddenStateMorality {
+class ForbiddenStateEthics {
   constructor(forbiddenStates) {
     this._forbiddenStates = forbiddenStates;
   }
@@ -29,5 +29,5 @@ class ForbiddenStateMorality {
   }
 }
 
-module.exports = ForbiddenStateMorality;
+module.exports = ForbiddenStateEthics;
 

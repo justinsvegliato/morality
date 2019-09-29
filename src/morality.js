@@ -2,8 +2,8 @@
 
 const solver = require('./solvers/dual-solver.js');
 
-function solve(agent, morality) {
-  return solver.solve(agent, morality);
+function solve(agent, ethics) {
+  return solver.solve(agent, ethics);
 }
 
 module.exports = {

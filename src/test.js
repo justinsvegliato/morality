@@ -1,8 +1,8 @@
 'use strict';
 
-const ethics = require('./ethics.js');
+const morality = require('./morality.js');
 const GridMdp = require('./mdps/grid-mdp.js');
-const ForbiddenStateMorality = require('./morality/forbidden-state-morality.js');
+const ForbiddenStateEthics = require('./ethics/forbidden-state-ethics.js');
 const helper = require('./utils/helper.js');
 const printer = require('./utils/printer.js');
 
@@ -14,17 +14,17 @@ function test() {
   console.log();
 
   const agent = new GridMdp(grid);
-  const morality = new ForbiddenStateMorality([1, 2, 3, 4, 5, 15, 16, 17, 18, 19]);
+  const ethics = new ForbiddenStateEthics([1, 2, 3, 4, 5, 15, 16, 17, 18, 19]);
 
   console.log('Amoral Policy');
-  const amoralPolicy = ethics.solve(agent);
+  const amoralPolicy = morality.solve(agent);
   printer.printPolicy(amoralPolicy, grid);
 
   console.log();
 
   console.log('Moral Policy');
-  const moralPolicy = ethics.solve(agent, morality);
-  printer.printPolicy(moralPolicy, grid, morality);
+  const moralPolicy = morality.solve(agent, ethics);
+  printer.printPolicy(moralPolicy, grid, ethics);
 }
 
 test();
