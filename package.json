@@ -1,7 +1,7 @@
 {
   "name": "ethics",
   "version": "0.0.1",
-  "description": "A Javascript library for ethics in artificial intelligence",
+  "description": "A library for building artificial intelligence with morality",
   "main": "src/ethics.js",
   "repository": {
     "type": "git",
