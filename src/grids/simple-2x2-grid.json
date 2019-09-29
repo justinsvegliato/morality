@@ -5,9 +5,9 @@
     "row": 0,
     "column": 0
   },
+  "slipProbability": 0.1,
   "map": [
     ["O", "O"],
     ["O", "G"]
-  ],
-  "slipProbability": 0.1
+  ]
 }

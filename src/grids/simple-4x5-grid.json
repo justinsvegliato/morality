@@ -5,11 +5,11 @@
     "row": 0,
     "column": 0
   },
+  "slipProbability": 0.1,
   "map": [
     ["O", "W", "W", "O", "G"],
     ["O", "O", "W", "W", "O"],
     ["O", "O", "W", "O", "O"],
     ["W", "O", "O", "O", "W"]
-  ],
-  "slipProbability": 0.1
+  ]
 }
