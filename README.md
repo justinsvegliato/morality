@@ -1,1 +1,1 @@
-# morality-js
+# ethics
