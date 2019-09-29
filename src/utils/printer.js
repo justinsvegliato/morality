@@ -66,7 +66,7 @@ function printMdp(mdp) {
   printStartState(mdp);
 }
 
-function printPolicy(grid, policy) {
+function printPolicy(grid, ethicalContext, policy) {
   const symbols = {
     'STAY': '\u2205',
     'NORTH': '\u2191',
@@ -81,6 +81,10 @@ function printPolicy(grid, policy) {
       const state = grid.width * row + column;
       if (grid.map[row][column] == 'W') {
         representation += '\u25A0';
+      } else if (grid.map[row][column] == 'G') {
+        representation += '\u272A';
+      } else if (ethicalContext.forbiddenStates.includes(state)) {
+        representation += '\u2A09';
       } else {
         representation += symbols[policy[state]];
       }

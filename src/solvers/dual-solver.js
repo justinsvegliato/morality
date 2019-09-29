@@ -2,7 +2,7 @@
 
 const solver = require('javascript-lp-solver');
 
-function getConstraints(mdp) {
+function getConstraints(mdp, ethicalContext) {
   const constraints = {};
 
   for (const successorState of mdp.states()) {
@@ -11,10 +11,17 @@ function getConstraints(mdp) {
     constraints['minSuccessorState' + successorState] = {'min': limit};
   }
 
+  // TODO Figure out how to improve this
+  for (const state of ethicalContext.forbiddenStates) {
+    for (const action of mdp.actions()) {
+      constraints['forbidState' + state + action] = {'max': 0};
+    }
+  }
+
   return constraints;
 }
 
-function getVariables(mdp, discountFactor) {
+function getVariables(mdp, ethicalContext, discountFactor) {
   const variables = {};
 
   for (const state of mdp.states()) {
@@ -33,18 +40,25 @@ function getVariables(mdp, discountFactor) {
         variables['state' + state + action]['maxSuccessorState' + successorState] = value;
         variables['state' + state + action]['minSuccessorState' + successorState] = value;
       }
+
+      // TODO Figure out how to improve this
+      for (const forbiddenStates of ethicalContext.forbiddenStates) {
+        for (const newAction of mdp.actions()) {
+          variables['state' + state + action]['forbidState' + forbiddenStates + newAction] = state == forbiddenStates && action == newAction ? 1 : 0;
+        }
+      }
     }
   }
 
   return variables;
 }
 
-function getProgram(mdp, discountFactor) {
+function getProgram(mdp, ethicalContext, discountFactor) {
   return {
     'optimize': 'value',
     'opType': 'max',
-    'constraints': getConstraints(mdp),
-    'variables': getVariables(mdp, discountFactor),
+    'constraints': getConstraints(mdp, ethicalContext),
+    'variables': getVariables(mdp, ethicalContext, discountFactor)
   };
 }
 
@@ -83,8 +97,8 @@ function normalize(mdp, result) {
   return result;
 }
 
-function solve(mdp, discountFactor) {
-  const program = getProgram(mdp, discountFactor);
+function solve(mdp, ethicalContext, discountFactor) {
+  const program = getProgram(mdp, ethicalContext, discountFactor);
   const result = solver.Solve(program);
   return getPolicy(mdp, result);
 }

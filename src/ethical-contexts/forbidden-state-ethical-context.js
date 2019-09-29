@@ -1,7 +1,7 @@
 'use strict';
 
 class ForbiddenStateEthicalContext {
-  constructor(forbiddenStates, toleranceFunction) {
+  constructor(forbiddenStates) {
     this._forbiddenStates = forbiddenStates;
   }
 
