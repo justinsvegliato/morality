@@ -1,6 +1,6 @@
 'use strict';
 
-const actionMap = {
+const ACTION_MAP = {
   'STAY': {
     'movement': [0, 0],
     'slipDirections': [],
@@ -36,8 +36,8 @@ const actionMap = {
 function getAdjacentCells(map, row, column, action) {
   const adjacentCells = [];
 
-  for (const slipDirection of actionMap[action].slipDirections) {
-    const [rowOffset, columnOffset] = actionMap[slipDirection].movement;
+  for (const slipDirection of ACTION_MAP[action].slipDirections) {
+    const [rowOffset, columnOffset] = ACTION_MAP[slipDirection].movement;
     const adjacentRow = row + rowOffset;
     const adjacentColumn = column + columnOffset;
 
@@ -63,7 +63,7 @@ class GridMdp {
   }
 
   actions() {
-    return Object.keys(actionMap);
+    return Object.keys(ACTION_MAP);
   }
 
   transitionFunction(state, action, successorState) {
@@ -73,8 +73,11 @@ class GridMdp {
     const successorRow = Math.floor(successorState / this._grid.width);
     const successorColumn = successorState - successorRow * this._grid.width;
 
-    if (row == successorRow && column == successorColumn && this._grid.map[row][column] == 'W') {
-      return 1;
+    if (this._grid.map[row][column] == 'W') {
+      if (row == successorRow && column == successorColumn) {
+        return 1;
+      }
+      return 0;
     }
 
     const adjacentCells = getAdjacentCells(this._grid.map, row, column, action);
@@ -87,7 +90,7 @@ class GridMdp {
 
     const adjustment = adjacentCells.length > 0 ? this._grid.slipProbability : 0;
 
-    const isAtBoundary = actionMap[action].isAtBoundary(row, column, this._grid);
+    const isAtBoundary = ACTION_MAP[action].isAtBoundary(row, column, this._grid);
     if (row == successorRow && column == successorColumn && isAtBoundary) {
       return 1 - adjustment;
     }
@@ -96,7 +99,7 @@ class GridMdp {
       return 0;
     }
 
-    const isValidMove = actionMap[action].isValidMove(row, successorRow, column, successorColumn);
+    const isValidMove = ACTION_MAP[action].isValidMove(row, successorRow, column, successorColumn);
     if (isValidMove) {
       return 1 - adjustment;
     }
