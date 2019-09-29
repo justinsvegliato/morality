@@ -1,38 +1,22 @@
 'use strict';
 
-const offsets = {
-  'NORTH': [
-    [1, 0],
-    [0, 1],
-    [0, -1]
-  ],
-  'EAST': [
-    [1, 0],
-    [-1, 0],
-    [0, -1]
-  ],
-  'SOUTH': [
-    [-1, 0],
-    [0, 1],
-    [0, -1]
-  ],
-  'WEST': [
-    [1, 0],
-    [-1, 0],
-    [0, 1]
-  ]
+const slips = {
+  'NORTH': [[0, 1], [0, -1]],
+  'EAST': [[1, 0], [-1, 0]],
+  'SOUTH': [[0, 1], [0, -1]],
+  'WEST': [[1, 0], [-1, 0]]
 };
 
-function getNeighboringCells(grid, row, column, action) {
+function getAdjacentCells(map, row, column, action) {
   const adjacentCells = [];
 
-  for (const offset of offsets[action]) {
-    const [rowOffset, columnOffset] = offset;
-    const adjacentRow = row + rowOffset;
-    const adjacentColumn = column + columnOffset;
+  for (const slip of slips[action]) {
+    const [rowSlip, columnSlip] = slip;
+    const adjacentRow = row + rowSlip;
+    const adjacentColumn = column + columnSlip;
 
-    if (adjacentRow in grid.map && adjacentColumn in grid.map[adjacentRow]) {
-      const adjacentCell = grid.map[adjacentRow][adjacentColumn];
+    if (adjacentRow in map && adjacentColumn in map[adjacentRow]) {
+      const adjacentCell = map[adjacentRow][adjacentColumn];
       if (adjacentCell != 'W') {
         adjacentCells.push([adjacentRow, adjacentColumn]);
       }
@@ -70,22 +54,19 @@ class GridMdp {
       return 0;
     }
 
+    const adjacentCells = getAdjacentCells(this._grid.map, row, column, action);
+
+    for (const adjacentCell of adjacentCells) {
+      const [adjacentRow, adjacentColumn] = adjacentCell;
+      if (adjacentRow == successorRow && adjacentColumn == successorColumn) {
+        return this._grid.slipProbability / adjacentCells.length;
+      }
+    }
+
+    const probability = adjacentCells.length > 0 ? 1 - this._grid.slipProbability : 1;
+
     if (action == 'NORTH') {
-      const adjacentCells = getNeighboringCells(this._grid, row, column, action);
-
-      for (const adjacentCell of adjacentCells) {
-        const [adjacentRow, adjacentColumn] = adjacentCell;
-        if (adjacentRow == successorRow && adjacentColumn == successorColumn) {
-          return this._grid.slipProbability / adjacentCells.length;
-        }
-      }
-
-      const probability = adjacentCells.length > 0 ? 1 - this._grid.slipProbability : 1;
-
-      if (row == successorRow && column == successorColumn && row == 0) {
-        return probability;
-      }
-      if (row == successorRow && column == successorColumn && this._grid.map[row - 1][column] == 'W') {
+      if (row == successorRow && column == successorColumn && (row == 0 || this._grid.map[row - 1][column] == 'W')) {
         return probability;
       }
       if (row == successorRow + 1 && column == successorColumn && this._grid.map[successorRow][successorColumn] != 'W') {
@@ -95,21 +76,7 @@ class GridMdp {
     }
 
     if (action == 'EAST') {
-      const adjacentCells = getNeighboringCells(this._grid, row, column, action);
-
-      for (const adjacentCell of adjacentCells) {
-        const [adjacentRow, adjacentColumn] = adjacentCell;
-        if (adjacentRow == successorRow && adjacentColumn == successorColumn) {
-          return this._grid.slipProbability / adjacentCells.length;
-        }
-      }
-
-      const probability = adjacentCells.length > 0 ? 1 - this._grid.slipProbability : 1;
-
-      if (row == successorRow && column == successorColumn && column == this._grid.width - 1) {
-        return probability;
-      }
-      if (row == successorRow && column == successorColumn && this._grid.map[row][column + 1] == 'W') {
+      if (row == successorRow && column == successorColumn && (column == this._grid.width - 1 || this._grid.map[row][column + 1] == 'W')) {
         return probability;
       }
       if (row == successorRow && column == successorColumn - 1 && this._grid.map[successorRow][successorColumn] != 'W') {
@@ -119,21 +86,7 @@ class GridMdp {
     }
 
     if (action == 'SOUTH') {
-      const adjacentCells = getNeighboringCells(this._grid, row, column, action);
-
-      for (const adjacentCell of adjacentCells) {
-        const [adjacentRow, adjacentColumn] = adjacentCell;
-        if (adjacentRow == successorRow && adjacentColumn == successorColumn) {
-          return this._grid.slipProbability / adjacentCells.length;
-        }
-      }
-
-      const probability = adjacentCells.length > 0 ? 1 - this._grid.slipProbability : 1;
-
-      if (row == successorRow && column == successorColumn && row == this._grid.height - 1) {
-        return probability;
-      }
-      if (row == successorRow && column == successorColumn && this._grid.map[row + 1][column] == 'W') {
+      if (row == successorRow && column == successorColumn && (row == this._grid.height - 1 || this._grid.map[row + 1][column] == 'W')) {
         return probability;
       }
       if (row == successorRow - 1 && column == successorColumn && this._grid.map[successorRow][successorColumn] != 'W') {
@@ -143,21 +96,7 @@ class GridMdp {
     }
 
     if (action == 'WEST') {
-      const adjacentCells = getNeighboringCells(this._grid, row, column, action);
-
-      for (const adjacentCell of adjacentCells) {
-        const [adjacentRow, adjacentColumn] = adjacentCell;
-        if (adjacentRow == successorRow && adjacentColumn == successorColumn) {
-          return this._grid.slipProbability / adjacentCells.length;
-        }
-      }
-
-      const probability = adjacentCells.length > 0 ? 1 - this._grid.slipProbability : 1;
-
-      if (row == successorRow && column == successorColumn && column == 0) {
-        return probability;
-      }
-      if (row == successorRow && column == successorColumn && this._grid.map[row][column - 1] == 'W') {
+      if (row == successorRow && column == successorColumn && (column == 0 || this._grid.map[row][column - 1] == 'W')) {
         return probability;
       }
       if (row == successorRow && column == successorColumn + 1 && this._grid.map[successorRow][successorColumn] != 'W') {
