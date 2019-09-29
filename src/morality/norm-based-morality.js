@@ -1,6 +1,6 @@
 'use strict';
 
-class NormBasedEthicalContext {
+class NormBasedMorality {
   constructor(norms, penaltyFunction, toleranceFunction) {
     this._norms = norms;
     this._penaltyFunction = penaltyFunction;
@@ -20,5 +20,5 @@ class NormBasedEthicalContext {
   }
 }
 
-module.exports = NormBasedEthicalContext;
+module.exports = NormBasedMorality;
 
