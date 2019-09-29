@@ -1,51 +1,45 @@
 'use strict';
 
-const actionInformation = {
+const actionMap = {
+  'STAY': {
+    'movement': [0, 0],
+    'slipDirections': [],
+    'isAtBoundary': (row, column, grid) => false,
+    'isValidMove': (row, successorRow, column, successorColumn) => row == successorRow && column == successorColumn
+  },
   'NORTH': {
-    'slips': [[0, 1], [0, -1]],
-    'boundaryCondition': function(row, successorRow, column, successorColumn, grid) {
-      return row == successorRow && column == successorColumn && (row == 0 || grid.map[row - 1][column] == 'W');
-    },
-    'movementCondition': function(row, successorRow, column, successorColumn, grid) {
-      return row == successorRow + 1 && column == successorColumn && grid.map[successorRow][successorColumn] != 'W';
-    }
+    'movement': [-1, 0],
+    'slipDirections': ['EAST', 'WEST'],
+    'isAtBoundary': (row, column, grid) => row == 0 || grid.map[row - 1][column] == 'W',
+    'isValidMove': (row, successorRow, column, successorColumn) => row == successorRow + 1 && column == successorColumn
   },
   'EAST': {
-    'slips': [[1, 0], [-1, 0]],
-    'boundaryCondition': function(row, successorRow, column, successorColumn, grid) {
-      return row == successorRow && column == successorColumn && (column == grid.width - 1 || grid.map[row][column + 1] == 'W');
-    },
-    'movementCondition': function(row, successorRow, column, successorColumn, grid) {
-      return row == successorRow && column == successorColumn - 1 && grid.map[successorRow][successorColumn] != 'W';
-    }
+    'movement': [0, 1],
+    'slipDirections': ['NORTH', 'SOUTH'],
+    'isAtBoundary': (row, column, grid) => column == grid.width - 1 || grid.map[row][column + 1] == 'W',
+    'isValidMove': (row, successorRow, column, successorColumn) => row == successorRow && column == successorColumn - 1
   },
   'SOUTH': {
-    'slips': [[0, 1], [0, -1]],
-    'boundaryCondition': function(row, successorRow, column, successorColumn, grid) {
-      return row == successorRow && column == successorColumn && (row == grid.height - 1 || grid.map[row + 1][column] == 'W');
-    },
-    'movementCondition': function(row, successorRow, column, successorColumn, grid) {
-      return row == successorRow - 1 && column == successorColumn && grid.map[successorRow][successorColumn] != 'W';
-    }
+    'movement': [1, 0],
+    'slipDirections': ['EAST', 'WEST'],
+    'isAtBoundary': (row, column, grid) => row == grid.height - 1 || grid.map[row + 1][column] == 'W',
+    'isValidMove': (row, successorRow, column, successorColumn) => row == successorRow - 1 && column == successorColumn
   },
   'WEST': {
-    'slips': [[1, 0], [-1, 0]],
-    'boundaryCondition': function(row, successorRow, column, successorColumn, grid) {
-      return row == successorRow && column == successorColumn && (column == 0 || grid.map[row][column - 1] == 'W');
-    },
-    'movementCondition': function(row, successorRow, column, successorColumn, grid) {
-      return row == successorRow && column == successorColumn + 1 && grid.map[successorRow][successorColumn] != 'W';
-    }
+    'movement': [0, -1],
+    'slipDirections': ['NORTH', 'SOUTH'],
+    'isAtBoundary': (row, column, grid) => column == 0 || grid.map[row][column - 1] == 'W',
+    'isValidMove': (row, successorRow, column, successorColumn) => row == successorRow && column == successorColumn + 1
   }
 };
 
 function getAdjacentCells(map, row, column, action) {
   const adjacentCells = [];
 
-  for (const slip of actionInformation[action].slips) {
-    const [rowSlip, columnSlip] = slip;
-    const adjacentRow = row + rowSlip;
-    const adjacentColumn = column + columnSlip;
+  for (const slipDirection of actionMap[action].slipDirections) {
+    const [rowOffset, columnOffset] = actionMap[slipDirection].movement;
+    const adjacentRow = row + rowOffset;
+    const adjacentColumn = column + columnOffset;
 
     if (adjacentRow in map && adjacentColumn in map[adjacentRow]) {
       const adjacentCell = map[adjacentRow][adjacentColumn];
@@ -69,7 +63,7 @@ class GridMdp {
   }
 
   actions() {
-    return ['STAY', 'NORTH', 'EAST', 'SOUTH', 'WEST'];
+    return Object.keys(actionMap);
   }
 
   transitionFunction(state, action, successorState) {
@@ -79,11 +73,8 @@ class GridMdp {
     const successorRow = Math.floor(successorState / this._grid.width);
     const successorColumn = successorState - successorRow * this._grid.width;
 
-    if (action == 'STAY') {
-      if (row == successorRow && column == successorColumn) {
-        return 1;
-      }
-      return 0;
+    if (row == successorRow && column == successorColumn && this._grid.map[row][column] == 'W') {
+      return 1;
     }
 
     const adjacentCells = getAdjacentCells(this._grid.map, row, column, action);
@@ -94,10 +85,19 @@ class GridMdp {
       }
     }
 
-    const boundaryCondition = actionInformation[action].boundaryCondition(row, successorRow, column, successorColumn, this._grid);
-    const movementCondition = actionInformation[action].movementCondition(row, successorRow, column, successorColumn, this._grid);
-    if (boundaryCondition || movementCondition) {
-      const adjustment = adjacentCells.length > 0 ? this._grid.slipProbability : 0;
+    const adjustment = adjacentCells.length > 0 ? this._grid.slipProbability : 0;
+
+    const isAtBoundary = actionMap[action].isAtBoundary(row, column, this._grid);
+    if (row == successorRow && column == successorColumn && isAtBoundary) {
+      return 1 - adjustment;
+    }
+
+    if (this._grid.map[successorRow][successorColumn] == 'W') {
+      return 0;
+    }
+
+    const isValidMove = actionMap[action].isValidMove(row, successorRow, column, successorColumn);
+    if (isValidMove) {
       return 1 - adjustment;
     }
 
