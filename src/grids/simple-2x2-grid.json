@@ -8,5 +8,6 @@
   "map": [
     ["O", "O"],
     ["O", "G"]
-  ]
+  ],
+  "slipProbability": 0.1
 }
