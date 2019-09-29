@@ -1,28 +1,30 @@
 'use strict';
 
-const morality = require('./morality.js');
+const ethics = require('./ethics.js');
 const GridMdp = require('./mdps/grid-mdp.js');
-const ForbiddenStateEthicalContext = require('./ethical-contexts/forbidden-state-ethical-context.js');
+const ForbiddenStateMorality = require('./morality/forbidden-state-morality.js');
 const helper = require('./utils/helper.js');
 const printer = require('./utils/printer.js');
 
 function test() {
-  const grid = helper.getJson('grids/8x10-grid.json');
-  const mdp = new GridMdp(grid);
-
-  const ethicalContext = new ForbiddenStateEthicalContext([]);
-
-  const discountFactor = 0.99;
-
-  console.log('Primal Policy');
-  const primalPolicy = morality.solve(mdp, ethicalContext, discountFactor, true);
-  printer.printPolicy(grid, ethicalContext, primalPolicy);
+  console.log('Grid');
+  const grid = helper.getJson('grids/7x7-grid.json');
+  printer.printGrid(grid);
 
   console.log();
 
-  console.log('Dual Policy');
-  const dualPolicy = morality.solve(mdp, ethicalContext, discountFactor, false);
-  printer.printPolicy(grid, ethicalContext, dualPolicy);
+  const agent = new GridMdp(grid);
+  const morality = new ForbiddenStateMorality([1, 2, 3, 4, 5, 15, 16, 17, 18, 19]);
+
+  console.log('Amoral Policy');
+  const amoralPolicy = ethics.solve(agent);
+  printer.printPolicy(amoralPolicy, grid);
+
+  console.log();
+
+  console.log('Moral Policy');
+  const moralPolicy = ethics.solve(agent, morality);
+  printer.printPolicy(moralPolicy, grid, morality);
 }
 
 test();
