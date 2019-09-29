@@ -1,16 +1,48 @@
 'use strict';
 
-const slips = {
-  'NORTH': [[0, 1], [0, -1]],
-  'EAST': [[1, 0], [-1, 0]],
-  'SOUTH': [[0, 1], [0, -1]],
-  'WEST': [[1, 0], [-1, 0]]
+const actionInformation = {
+  'NORTH': {
+    'slips': [[0, 1], [0, -1]],
+    'boundaryCondition': function(row, successorRow, column, successorColumn, grid) {
+      return row == successorRow && column == successorColumn && (row == 0 || grid.map[row - 1][column] == 'W');
+    },
+    'movementCondition': function(row, successorRow, column, successorColumn, grid) {
+      return row == successorRow + 1 && column == successorColumn && grid.map[successorRow][successorColumn] != 'W';
+    }
+  },
+  'EAST': {
+    'slips': [[1, 0], [-1, 0]],
+    'boundaryCondition': function(row, successorRow, column, successorColumn, grid) {
+      return row == successorRow && column == successorColumn && (column == grid.width - 1 || grid.map[row][column + 1] == 'W');
+    },
+    'movementCondition': function(row, successorRow, column, successorColumn, grid) {
+      return row == successorRow && column == successorColumn - 1 && grid.map[successorRow][successorColumn] != 'W';
+    }
+  },
+  'SOUTH': {
+    'slips': [[0, 1], [0, -1]],
+    'boundaryCondition': function(row, successorRow, column, successorColumn, grid) {
+      return row == successorRow && column == successorColumn && (row == grid.height - 1 || grid.map[row + 1][column] == 'W');
+    },
+    'movementCondition': function(row, successorRow, column, successorColumn, grid) {
+      return row == successorRow - 1 && column == successorColumn && grid.map[successorRow][successorColumn] != 'W';
+    }
+  },
+  'WEST': {
+    'slips': [[1, 0], [-1, 0]],
+    'boundaryCondition': function(row, successorRow, column, successorColumn, grid) {
+      return row == successorRow && column == successorColumn && (column == 0 || grid.map[row][column - 1] == 'W');
+    },
+    'movementCondition': function(row, successorRow, column, successorColumn, grid) {
+      return row == successorRow && column == successorColumn + 1 && grid.map[successorRow][successorColumn] != 'W';
+    }
+  }
 };
 
 function getAdjacentCells(map, row, column, action) {
   const adjacentCells = [];
 
-  for (const slip of slips[action]) {
+  for (const slip of actionInformation[action].slips) {
     const [rowSlip, columnSlip] = slip;
     const adjacentRow = row + rowSlip;
     const adjacentColumn = column + columnSlip;
@@ -55,7 +87,6 @@ class GridMdp {
     }
 
     const adjacentCells = getAdjacentCells(this._grid.map, row, column, action);
-
     for (const adjacentCell of adjacentCells) {
       const [adjacentRow, adjacentColumn] = adjacentCell;
       if (adjacentRow == successorRow && adjacentColumn == successorColumn) {
@@ -63,47 +94,14 @@ class GridMdp {
       }
     }
 
-    const probability = adjacentCells.length > 0 ? 1 - this._grid.slipProbability : 1;
-
-    if (action == 'NORTH') {
-      if (row == successorRow && column == successorColumn && (row == 0 || this._grid.map[row - 1][column] == 'W')) {
-        return probability;
-      }
-      if (row == successorRow + 1 && column == successorColumn && this._grid.map[successorRow][successorColumn] != 'W') {
-        return probability;
-      }
-      return 0;
+    const boundaryCondition = actionInformation[action].boundaryCondition(row, successorRow, column, successorColumn, this._grid);
+    const movementCondition = actionInformation[action].movementCondition(row, successorRow, column, successorColumn, this._grid);
+    if (boundaryCondition || movementCondition) {
+      const adjustment = adjacentCells.length > 0 ? this._grid.slipProbability : 0;
+      return 1 - adjustment;
     }
 
-    if (action == 'EAST') {
-      if (row == successorRow && column == successorColumn && (column == this._grid.width - 1 || this._grid.map[row][column + 1] == 'W')) {
-        return probability;
-      }
-      if (row == successorRow && column == successorColumn - 1 && this._grid.map[successorRow][successorColumn] != 'W') {
-        return probability;
-      }
-      return 0;
-    }
-
-    if (action == 'SOUTH') {
-      if (row == successorRow && column == successorColumn && (row == this._grid.height - 1 || this._grid.map[row + 1][column] == 'W')) {
-        return probability;
-      }
-      if (row == successorRow - 1 && column == successorColumn && this._grid.map[successorRow][successorColumn] != 'W') {
-        return probability;
-      }
-      return 0;
-    }
-
-    if (action == 'WEST') {
-      if (row == successorRow && column == successorColumn && (column == 0 || this._grid.map[row][column - 1] == 'W')) {
-        return probability;
-      }
-      if (row == successorRow && column == successorColumn + 1 && this._grid.map[successorRow][successorColumn] != 'W') {
-        return probability;
-      }
-      return 0;
-    }
+    return 0;
   }
 
   rewardFunction(state, action) {
