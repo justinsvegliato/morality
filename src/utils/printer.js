@@ -66,7 +66,26 @@ function printMdp(mdp) {
   printStartState(mdp);
 }
 
-function printPolicy(grid, ethicalContext, policy) {
+function printGrid(grid) {
+  for (let row = 0; row < grid.height; row++) {
+    let text = '';
+    for (let column = 0; column < grid.width; column++) {
+      if (grid.map[row][column] == 'W') {
+        text += '\u25A0';
+      } else if (grid.map[row][column] == 'G') {
+        text += '\u272A';
+      } else if (row == grid.position.row && column == grid.position.column) {
+        text += '\u229B';
+      } else {
+        text += '\u25A1';
+      }
+      text += '  ';
+    }
+    console.log(`${text}`);
+  }
+}
+
+function printPolicy(policy, grid, morality) {
   const symbols = {
     'STAY': '\u2205',
     'NORTH': '\u2191',
@@ -76,21 +95,21 @@ function printPolicy(grid, ethicalContext, policy) {
   };
 
   for (let row = 0; row < grid.height; row++) {
-    let representation = '';
+    let text = '';
     for (let column = 0; column < grid.width; column++) {
       const state = grid.width * row + column;
       if (grid.map[row][column] == 'W') {
-        representation += '\u25A0';
+        text += '\u25A0';
       } else if (grid.map[row][column] == 'G') {
-        representation += '\u272A';
-      } else if (ethicalContext.forbiddenStates.includes(state)) {
-        representation += '\u2A09';
+        text += '\u272A';
+      } else if (morality && morality.forbiddenStates.includes(state)) {
+        text += '\u2A0D';
       } else {
-        representation += symbols[policy[state]];
+        text += symbols[policy[state]];
       }
-      representation += ' ';
+      text += '  ';
     }
-    console.log(`${representation}`);
+    console.log(`${text}`);
   }
 }
 
@@ -101,5 +120,6 @@ module.exports = {
   printRewardFunction,
   printStartState,
   printMdp,
+  printGrid,
   printPolicy
 };
