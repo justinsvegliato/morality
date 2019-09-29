@@ -90,5 +90,5 @@ function solve(mdp, discountFactor) {
 }
 
 module.exports = {
-  solve,
+  solve
 };

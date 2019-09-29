@@ -7,5 +7,5 @@ function getJson(filename) {
 }
 
 module.exports = {
-  getJson,
+  getJson
 };

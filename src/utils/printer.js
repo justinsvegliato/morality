@@ -72,5 +72,5 @@ module.exports = {
   printTransitionFunction,
   printRewardFunction,
   printStartState,
-  printMdp,
+  printMdp
 };

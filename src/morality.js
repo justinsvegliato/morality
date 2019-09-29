@@ -11,5 +11,5 @@ function solve(mdp, discountFactor, usePrimalForm = true) {
 }
 
 module.exports = {
-  solve,
+  solve
 };
