@@ -2,26 +2,20 @@
 
 const solver = require('javascript-lp-solver');
 
-function getConstraints(mdp, ethicalContext) {
+const DISCOUNT_FACTOR = 0.99;
+
+function getConstraints(mdp) {
   const constraints = {};
 
   for (const successorState of mdp.states()) {
-    const limit = successorState == mdp.startState() ? 1 : 0;
-    constraints['maxSuccessorState' + successorState] = {'max': limit};
-    constraints['minSuccessorState' + successorState] = {'min': limit};
-  }
-
-  // TODO Figure out how to improve this
-  for (const state of ethicalContext.forbiddenStates) {
-    for (const action of mdp.actions()) {
-      constraints['forbidState' + state + action] = {'max': 0};
-    }
+    constraints['maxSuccessorState' + successorState] = {'max': 1};
+    constraints['minSuccessorState' + successorState] = {'min': 0};
   }
 
   return constraints;
 }
 
-function getVariables(mdp, ethicalContext, discountFactor) {
+function getVariables(mdp) {
   const variables = {};
 
   for (const state of mdp.states()) {
@@ -29,23 +23,16 @@ function getVariables(mdp, ethicalContext, discountFactor) {
       variables['state' + state + action] = {'value': mdp.rewardFunction(state, action)};
 
       for (const successorState of mdp.states()) {
-        let value = successorState == mdp.startState() ? -1 : 1;
+        let value = -1;
 
         if (state == successorState) {
-          value *= discountFactor * mdp.transitionFunction(state, action, successorState) - 1;
+          value *= DISCOUNT_FACTOR * mdp.transitionFunction(state, action, successorState) - 1;
         } else {
-          value *= discountFactor * mdp.transitionFunction(state, action, successorState);
+          value *= DISCOUNT_FACTOR * mdp.transitionFunction(state, action, successorState);
         }
 
         variables['state' + state + action]['maxSuccessorState' + successorState] = value;
         variables['state' + state + action]['minSuccessorState' + successorState] = value;
-      }
-
-      // TODO Figure out how to improve this
-      for (const forbiddenStates of ethicalContext.forbiddenStates) {
-        for (const newAction of mdp.actions()) {
-          variables['state' + state + action]['forbidState' + forbiddenStates + newAction] = state == forbiddenStates && action == newAction ? 1 : 0;
-        }
       }
     }
   }
@@ -53,13 +40,19 @@ function getVariables(mdp, ethicalContext, discountFactor) {
   return variables;
 }
 
-function getProgram(mdp, ethicalContext, discountFactor) {
-  return {
+function getProgram(mdp, transformer) {
+  const program = {
     'optimize': 'value',
     'opType': 'max',
-    'constraints': getConstraints(mdp, ethicalContext),
-    'variables': getVariables(mdp, ethicalContext, discountFactor)
+    'constraints': getConstraints(mdp),
+    'variables': getVariables(mdp)
   };
+
+  if (transformer) {
+    transformer.transform(mdp, program);
+  }
+
+  return program;
 }
 
 function getPolicy(mdp, result) {
@@ -97,8 +90,8 @@ function normalize(mdp, result) {
   return result;
 }
 
-function solve(mdp, ethicalContext, discountFactor) {
-  const program = getProgram(mdp, ethicalContext, discountFactor);
+function solve(mdp, transformer) {
+  const program = getProgram(mdp, transformer);
   const result = solver.Solve(program);
   return getPolicy(mdp, result);
 }
