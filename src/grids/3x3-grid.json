@@ -1,0 +1,14 @@
+{
+  "width": 3,
+  "height": 3,
+  "position": {
+    "row": 0,
+    "column": 0
+  },
+  "slipProbability": 0.1,
+  "map": [
+    ["O", "W", "O"],
+    ["O", "O", "O"],
+    ["O", "O", "G"]
+  ]
+}
