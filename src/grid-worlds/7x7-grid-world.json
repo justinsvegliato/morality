@@ -6,7 +6,7 @@
     "column": 0
   },
   "slipProbability": 0.1,
-  "map": [
+  "grid": [
     ["O", "O", "O", "O", "O", "O", "G"],
     ["O", "W", "W", "W", "W", "W", "O"],
     ["O", "O", "O", "O", "O", "O", "O"],

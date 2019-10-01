@@ -66,15 +66,15 @@ function printMdp(mdp) {
   printStartState(mdp);
 }
 
-function printGrid(grid) {
-  for (let row = 0; row < grid.height; row++) {
+function printGridWorld(gridWorld) {
+  for (let row = 0; row < gridWorld.height; row++) {
     let text = '';
-    for (let column = 0; column < grid.width; column++) {
-      if (grid.map[row][column] == 'W') {
+    for (let column = 0; column < gridWorld.width; column++) {
+      if (gridWorld.grid[row][column] == 'W') {
         text += '\u25A0';
-      } else if (grid.map[row][column] == 'G') {
+      } else if (gridWorld.grid[row][column] == 'G') {
         text += '\u272A';
-      } else if (row == grid.position.row && column == grid.position.column) {
+      } else if (row == gridWorld.position.row && column == gridWorld.position.column) {
         text += '\u229B';
       } else {
         text += '\u25A1';
@@ -85,7 +85,7 @@ function printGrid(grid) {
   }
 }
 
-function printPolicy(policy, grid, morality) {
+function printPolicy(policy, gridWorld, morality) {
   const symbols = {
     'STAY': '\u2205',
     'NORTH': '\u2191',
@@ -94,13 +94,13 @@ function printPolicy(policy, grid, morality) {
     'WEST': '\u2190'
   };
 
-  for (let row = 0; row < grid.height; row++) {
+  for (let row = 0; row < gridWorld.height; row++) {
     let text = '';
-    for (let column = 0; column < grid.width; column++) {
-      const state = grid.width * row + column;
-      if (grid.map[row][column] == 'W') {
+    for (let column = 0; column < gridWorld.width; column++) {
+      const state = gridWorld.width * row + column;
+      if (gridWorld.grid[row][column] == 'W') {
         text += '\u25A0';
-      } else if (grid.map[row][column] == 'G') {
+      } else if (gridWorld.grid[row][column] == 'G') {
         text += '\u272A';
       } else if (morality && morality.forbiddenStates.includes(state)) {
         text += '\u2A0D';
@@ -120,6 +120,6 @@ module.exports = {
   printRewardFunction,
   printStartState,
   printMdp,
-  printGrid,
+  printGridWorld,
   printPolicy
 };

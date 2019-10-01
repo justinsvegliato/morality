@@ -1,12 +1,13 @@
 {
-  "width": 5,
-  "height": 1,
+  "width": 2,
+  "height": 2,
   "position": {
     "row": 0,
     "column": 0
   },
   "slipProbability": 0.1,
-  "map": [
-    ["O", "O", "O", "O", "G"]
+  "grid": [
+    ["O", "O"],
+    ["O", "G"]
   ]
 }
