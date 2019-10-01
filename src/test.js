@@ -18,13 +18,21 @@ function test() {
 
   console.log('Amoral Policy');
   const amoralPolicy = morality.solve(agent);
-  printer.printPolicy(amoralPolicy, gridWorld);
+  if (amoralPolicy) {
+    printer.printPolicy(amoralPolicy, gridWorld);
+  } else {
+    console.log('Failed to calculate the amoral policy');
+  }
 
   console.log();
 
   console.log('Moral Policy');
   const moralPolicy = morality.solve(agent, ethics);
-  printer.printPolicy(moralPolicy, gridWorld, ethics);
+  if (moralPolicy) {
+    printer.printPolicy(moralPolicy, gridWorld, ethics);
+  } else {
+    console.log('Failed to calculate the moral policy');
+  }
 }
 
 test();

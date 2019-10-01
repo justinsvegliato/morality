@@ -93,6 +93,11 @@ function normalize(mdp, result) {
 function solve(mdp, transformer) {
   const program = getProgram(mdp, transformer);
   const result = solver.Solve(program);
+
+  if (!result.feasible) {
+    return false;
+  }
+
   return getPolicy(mdp, result);
 }
 
