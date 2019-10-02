@@ -1,8 +1,8 @@
 'use strict';
 
-const morality = require('./morality.js');
-const GridWorldMdp = require('./mdps/grid-world-mdp.js');
-const ForbiddenStateEthics = require('./ethics/forbidden-state-ethics.js');
+const morality = require('morality');
+const GridWorldAgent = require('./agents/grid-world-agent');
+const ForbiddenStateEthics = require('./ethics/forbidden-state-ethics');
 const helper = require('./utils/helper.js');
 const printer = require('./utils/printer.js');
 
@@ -13,7 +13,7 @@ function test() {
 
   console.log();
 
-  const agent = new GridWorldMdp(gridWorld);
+  const agent = new GridWorldAgent(gridWorld);
   const ethics = new ForbiddenStateEthics([26]);
 
   console.log('Amoral Policy');

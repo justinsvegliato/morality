@@ -9,17 +9,17 @@ class ForbiddenStateEthics {
     return this._forbiddenStates;
   }
 
-  transform(mdp, program) {
+  transform(agent, program) {
     for (const state of this._forbiddenStates) {
-      for (const action of mdp.actions()) {
+      for (const action of agent.actions()) {
         program.constraints['forbiddenStateEthics-' + state + action] = {'max': 0};
       }
     }
 
-    for (const state of mdp.states()) {
-      for (const action of mdp.actions()) {
+    for (const state of agent.states()) {
+      for (const action of agent.actions()) {
         for (const forbiddenStates of this._forbiddenStates) {
-          for (const newAction of mdp.actions()) {
+          for (const newAction of agent.actions()) {
             const isActive = state == forbiddenStates && action == newAction ? 1 : 0;
             program.variables['state' + state + action]['forbiddenStateEthics-' + forbiddenStates + newAction] = isActive;
           }

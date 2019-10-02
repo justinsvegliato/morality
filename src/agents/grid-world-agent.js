@@ -52,7 +52,7 @@ function getAdjacentCells(grid, row, column, action) {
   return adjacentCells;
 }
 
-class GridWorldMdp {
+class GridWorldAgent {
   constructor(gridWorld) {
     this._gridWorld = gridWorld;
   }
@@ -121,4 +121,4 @@ class GridWorldMdp {
   }
 }
 
-module.exports = GridWorldMdp;
+module.exports = GridWorldAgent;
