@@ -1,7 +1,7 @@
 {
   "name": "morality",
   "version": "0.0.1",
-  "description": "Morality is a library for building autonomous agents that reason ethically.",
+  "description": "A library for building autonomous agents that reason ethically",
   "main": "src/morality.js",
   "repository": {
     "type": "git",
