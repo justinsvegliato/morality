@@ -2,7 +2,7 @@
 
 const solver = require('javascript-lp-solver');
 
-const DISCOUNT_FACTOR = 0.99;
+const DISCOUNT_FACTOR = 0.95;
 
 function getConstraints(mdp) {
   const constraints = {};

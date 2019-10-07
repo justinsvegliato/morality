@@ -2,14 +2,15 @@
 
 const solver = require('javascript-lp-solver');
 
-const DISCOUNT_FACTOR = 0.99;
+const DISCOUNT_FACTOR = 0.95;
 
 function getConstraints(mdp) {
   const constraints = {};
 
   for (const successorState of mdp.states()) {
-    constraints['maxSuccessorState' + successorState] = {'max': 1};
-    constraints['minSuccessorState' + successorState] = {'min': 0};
+    const limit = successorState == mdp.startState() ? 1 : 0;
+    constraints['maxSuccessorState' + successorState] = {'max': limit};
+    constraints['minSuccessorState' + successorState] = {'min': limit};
   }
 
   return constraints;
@@ -23,7 +24,7 @@ function getVariables(mdp) {
       variables['state' + state + action] = {'value': mdp.rewardFunction(state, action)};
 
       for (const successorState of mdp.states()) {
-        let value = -1;
+        let value = successorState == mdp.startState() ? -1 : 1;
 
         if (state == successorState) {
           value *= DISCOUNT_FACTOR * mdp.transitionFunction(state, action, successorState) - 1;
