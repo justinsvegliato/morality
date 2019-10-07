@@ -54,8 +54,8 @@ function printRewardFunction(mdp) {
   }
 }
 
-function printStartState(mdp) {
-  console.log(`Start State: ${mdp.startState()}`);
+function printStartStates(mdp) {
+  console.log(`Start States: ${mdp.startStates()}`);
 }
 
 function printMdp(mdp) {
@@ -63,7 +63,7 @@ function printMdp(mdp) {
   printActions(mdp);
   printTransitionFunction(mdp);
   printRewardFunction(mdp);
-  printStartState(mdp);
+  printStartStates(mdp);
 }
 
 function printGridWorld(gridWorld) {
@@ -74,7 +74,7 @@ function printGridWorld(gridWorld) {
         text += '\u25A0';
       } else if (gridWorld.grid[row][column] == 'G') {
         text += '\u272A';
-      } else if (row == gridWorld.position.row && column == gridWorld.position.column) {
+      } else if (gridWorld.grid[row][column] == 'S') {
         text += '\u229B';
       } else {
         text += '\u25A1';
@@ -85,7 +85,7 @@ function printGridWorld(gridWorld) {
   }
 }
 
-function printPolicy(policy, gridWorld, morality) {
+function printPolicy(policy, gridWorld, ethics) {
   const symbols = {
     'STAY': '\u2205',
     'NORTH': '\u2191',
@@ -102,23 +102,42 @@ function printPolicy(policy, gridWorld, morality) {
         text += '\u25A0';
       } else if (gridWorld.grid[row][column] == 'G') {
         text += '\u272A';
-      } else if (morality && morality.forbiddenStates.includes(state)) {
-        text += '\u2A0D';
-      } else {
+      } 
+      // else if (morality && morality.forbiddenStates.includes(state)) {
+      //   text += '\u2A0D';
+      // } 
+      else {
         text += symbols[policy[state]];
       }
       text += '  ';
     }
     console.log(`${text}`);
   }
+
+  if (ethics) {
+    console.log('Ethics');
+
+    for (let row = 0; row < gridWorld.height; row++) {
+      for (let column = 0; column < gridWorld.width; column++) {
+        const state = gridWorld.width * row + column;
+        if (ethics) {
+          const violations = ethics.violationFunction(state);
+          if (violations.length) {
+            console.log(`(${row}, ${column}): [${violations}]`);
+          }
+        }
+      }
+    }
+  }
 }
+
 
 module.exports = {
   printStates,
   printActions,
   printTransitionFunction,
   printRewardFunction,
-  printStartState,
+  printStartStates,
   printMdp,
   printGridWorld,
   printPolicy

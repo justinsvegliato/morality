@@ -8,7 +8,7 @@ function getConstraints(mdp) {
   const constraints = {};
 
   for (const successorState of mdp.states()) {
-    const limit = mdp.startState().includes(successorState) ? 1 / mdp.startState().length : 0;
+    const limit = mdp.startStates().includes(successorState) ? 1 / mdp.startStates().length : 0;
     constraints['maxSuccessorState' + successorState] = {'max': limit};
     constraints['minSuccessorState' + successorState] = {'min': limit};
   }
