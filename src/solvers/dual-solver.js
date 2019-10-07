@@ -8,7 +8,7 @@ function getConstraints(mdp) {
   const constraints = {};
 
   for (const successorState of mdp.states()) {
-    const limit = successorState == mdp.startState() ? 1 : 0;
+    const limit = mdp.startState().includes(successorState) ? 1 / mdp.startState().length : 0;
     constraints['maxSuccessorState' + successorState] = {'max': limit};
     constraints['minSuccessorState' + successorState] = {'min': limit};
   }
@@ -24,7 +24,7 @@ function getVariables(mdp) {
       variables['state' + state + action] = {'value': mdp.rewardFunction(state, action)};
 
       for (const successorState of mdp.states()) {
-        let value = successorState == mdp.startState() ? -1 : 1;
+        let value = -1;
 
         if (state == successorState) {
           value *= DISCOUNT_FACTOR * mdp.transitionFunction(state, action, successorState) - 1;

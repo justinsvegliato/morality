@@ -1,10 +1,6 @@
 {
   "width": 2,
   "height": 2,
-  "position": {
-    "row": 0,
-    "column": 0
-  },
   "slipProbability": 0.1,
   "grid": [
     ["O", "O"],
