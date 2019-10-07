@@ -117,7 +117,17 @@ class GridWorldAgent {
   }
 
   startState() {
-    return this._gridWorld.width * this._gridWorld.position.row + this._gridWorld.position.column;
+    const startStates = [];
+
+    for (let row = 0; row < this._gridWorld.height; row++) {
+      for (let column = 0; column < this._gridWorld.width; column++) {
+        if (this._gridWorld.grid[row][column] == 'S') {
+          startStates.push(this._gridWorld.width * row + column);
+        }
+      }
+    }
+
+    return startStates;
   }
 }
 
