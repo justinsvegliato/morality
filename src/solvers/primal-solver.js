@@ -7,9 +7,9 @@ const DISCOUNT_FACTOR = 0.99;
 function getConstraints(mdp) {
   const constraints = {};
 
-  for (const state of mdp.states()) {
-    for (const action of mdp.actions()) {
-      constraints['state' + state + action] = {'min': mdp.rewardFunction(state, action)};
+  for (const constraintState of mdp.states()) {
+    for (const constraintAction of mdp.actions()) {
+      constraints[`state${constraintState}${constraintAction}`] = {'min': mdp.rewardFunction(constraintState, constraintAction)};
     }
   }
 
@@ -19,15 +19,15 @@ function getConstraints(mdp) {
 function getVariables(mdp) {
   const variables = {};
 
-  for (const state of mdp.states()) {
-    variables['state' + state] = {'value': 1};
+  for (const variableState of mdp.states()) {
+    variables[`state${variableState}`] = {'value': 1};
 
-    for (const newState of mdp.states()) {
-      for (const action of mdp.actions()) {
-        if (state == newState) {
-          variables['state' + state]['state' + newState + action] = 1 - DISCOUNT_FACTOR * mdp.transitionFunction(newState, action, state);
+    for (const constraintState of mdp.states()) {
+      for (const constraintAction of mdp.actions()) {
+        if (variableState == constraintState) {
+          variables[`state${variableState}`][`state${constraintState}${constraintAction}`] = 1 - DISCOUNT_FACTOR * mdp.transitionFunction(constraintState, constraintAction, variableState);
         } else {
-          variables['state' + state]['state' + newState + action] = DISCOUNT_FACTOR * -mdp.transitionFunction(newState, action, state);
+          variables[`state${variableState}`][`state${constraintState}${constraintAction}`] = DISCOUNT_FACTOR * -mdp.transitionFunction(constraintState, constraintAction, variableState);
         }
       }
     }
@@ -61,15 +61,16 @@ function getPolicy(mdp, result) {
     let optimalAction = null;
 
     for (const action of mdp.actions()) {
+      const immediateReward = mdp.rewardFunction(state, action);
+
       let expectedFutureReward = 0;
       for (const successorState of mdp.states()) {
         const transitionProbability = mdp.transitionFunction(state, action, successorState);
-        const value = values['state' + successorState];
+        const value = values[`state${successorState}`];
         expectedFutureReward += transitionProbability * value;
       }
       expectedFutureReward *= DISCOUNT_FACTOR;
 
-      const immediateReward = mdp.rewardFunction(state, action);
       const actionValue = immediateReward + expectedFutureReward;
 
       if (actionValue > optimalActionValue) {
@@ -85,9 +86,9 @@ function getPolicy(mdp, result) {
 }
 
 function normalize(mdp, result) {
-  for (const successorState of mdp.states()) {
-    if (isNaN(result['state' + successorState])) {
-      result['state' + successorState] = 0;
+  for (const variableState of mdp.states()) {
+    if (isNaN(result[`state${variableState}`])) {
+      result[`state${variableState}`] = 0;
     }
   }
   return result;

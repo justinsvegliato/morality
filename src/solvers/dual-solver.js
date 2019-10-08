@@ -7,10 +7,10 @@ const DISCOUNT_FACTOR = 0.99;
 function getConstraints(mdp) {
   const constraints = {};
 
-  for (const successorState of mdp.states()) {
-    const limit = mdp.startStates().includes(successorState) ? 1 / mdp.startStates().length : 0;
-    constraints['maxSuccessorState' + successorState] = {'max': limit};
-    constraints['minSuccessorState' + successorState] = {'min': limit};
+  for (const constraintSuccessorState of mdp.states()) {
+    const limit = mdp.startStates().includes(constraintSuccessorState) ? 1 / mdp.startStates().length : 0;
+    constraints[`maxSuccessorState${constraintSuccessorState}`] = {'max': limit};
+    constraints[`minSuccessorState${constraintSuccessorState}`] = {'min': limit};
   }
 
   return constraints;
@@ -19,21 +19,20 @@ function getConstraints(mdp) {
 function getVariables(mdp) {
   const variables = {};
 
-  for (const state of mdp.states()) {
-    for (const action of mdp.actions()) {
-      variables['state' + state + action] = {'value': mdp.rewardFunction(state, action)};
+  for (const variableState of mdp.states()) {
+    for (const variableAction of mdp.actions()) {
+      variables[`state${variableState}${variableAction}`] = {'value': mdp.rewardFunction(variableState, variableAction)};
 
-      for (const successorState of mdp.states()) {
+      for (const constraintSuccessorState of mdp.states()) {
         let value = -1;
-
-        if (state == successorState) {
-          value *= DISCOUNT_FACTOR * mdp.transitionFunction(state, action, successorState) - 1;
+        if (variableState == constraintSuccessorState) {
+          value *= DISCOUNT_FACTOR * mdp.transitionFunction(variableState, variableAction, constraintSuccessorState) - 1;
         } else {
-          value *= DISCOUNT_FACTOR * mdp.transitionFunction(state, action, successorState);
+          value *= DISCOUNT_FACTOR * mdp.transitionFunction(variableState, variableAction, constraintSuccessorState);
         }
 
-        variables['state' + state + action]['maxSuccessorState' + successorState] = value;
-        variables['state' + state + action]['minSuccessorState' + successorState] = value;
+        variables[`state${variableState}${variableAction}`][`maxSuccessorState${constraintSuccessorState}`] = value;
+        variables[`state${variableState}${variableAction}`][`minSuccessorState${constraintSuccessorState}`] = value;
       }
     }
   }
@@ -61,30 +60,29 @@ function getPolicy(mdp, result) {
 
   const occupancyMeasures = normalize(mdp, result);
 
-  for (const state of mdp.states()) {
+  for (const variableState of mdp.states()) {
     let optimalOccupancyMeasure = Number.NEGATIVE_INFINITY;
     let optimalAction = null;
 
-    for (const action of mdp.actions()) {
-      const occupancyMeasure = occupancyMeasures['state' + state + action];
-
+    for (const variableAction of mdp.actions()) {
+      const occupancyMeasure = occupancyMeasures[`state${variableState}${variableAction}`];
       if (occupancyMeasure > optimalOccupancyMeasure) {
         optimalOccupancyMeasure = occupancyMeasure;
-        optimalAction = action;
+        optimalAction = variableAction;
       }
     }
 
-    policy[state] = optimalAction;
+    policy[variableState] = optimalAction;
   }
 
   return policy;
 }
 
 function normalize(mdp, result) {
-  for (const state of mdp.states()) {
-    for (const action of mdp.actions()) {
-      if (isNaN(result['state' + state + action])) {
-        result['state' + state + action] = 0;
+  for (const variableState of mdp.states()) {
+    for (const variableAction of mdp.actions()) {
+      if (isNaN(result[`state${variableState}${variableAction}`])) {
+        result[`state${variableState}${variableAction}`] = 0;
       }
     }
   }

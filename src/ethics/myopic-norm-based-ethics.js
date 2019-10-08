@@ -43,6 +43,7 @@ class NormBasedEthics {
               coefficient += agent.transitionFunction(variableState, variableAction, successorState) * this._penaltyFunction(norm, variableState, variableAction);
             }
           }
+
           program.variables['state' + variableState + variableAction]['normBasedEthics' + constraintState] = coefficient;
         }
       }
