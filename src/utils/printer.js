@@ -73,7 +73,7 @@ function printDomain(gridWorld, ethics) {
       const state = gridWorld.width * row + column;
       if (ethics && ethics.forbiddenStates && ethics.forbiddenStates.includes(state)) {
         text += '\u2A0D';
-      } else if (ethics && ethics.violationFunction && ethics.violationFunction(state).length > 0) {
+      } else if (ethics && ethics.norms && ethics.violationFunction(state).length > 0) {
         text += '\u03B7';
       } else if (gridWorld.grid[row][column] == 'W') {
         text += '\u25A0';
