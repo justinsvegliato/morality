@@ -1,9 +1,8 @@
 {
   "width": 5,
   "height": 4,
-  "slipProbability": 0.1,
   "grid": [
-    ["O", "W", "W", "O", "G"],
+    ["S", "W", "W", "O", "G"],
     ["O", "O", "W", "W", "O"],
     ["O", "O", "W", "O", "O"],
     ["W", "O", "O", "O", "W"]

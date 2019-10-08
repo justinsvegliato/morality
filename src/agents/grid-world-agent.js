@@ -1,6 +1,8 @@
 'use strict';
 
-const ACTION_MAP = {
+const SLIP_PROBABILITY = 0.1;
+
+const ACTION_DETAILS = {
   'STAY': {
     'movement': [0, 0],
     'slipDirections': [],
@@ -10,25 +12,25 @@ const ACTION_MAP = {
   'NORTH': {
     'movement': [-1, 0],
     'slipDirections': ['EAST', 'WEST'],
-    'isAtBoundary': (row, column, grid) => row == 0 || grid.grid[row - 1][column] == 'W',
+    'isAtBoundary': (row, column, gridWorld) => row == 0 || gridWorld.grid[row - 1][column] == 'W',
     'isValidMove': (row, successorRow, column, successorColumn) => row == successorRow + 1 && column == successorColumn
   },
   'EAST': {
     'movement': [0, 1],
     'slipDirections': ['NORTH', 'SOUTH'],
-    'isAtBoundary': (row, column, grid) => column == grid.width - 1 || grid.grid[row][column + 1] == 'W',
+    'isAtBoundary': (row, column, gridWorld) => column == gridWorld.width - 1 || gridWorld.grid[row][column + 1] == 'W',
     'isValidMove': (row, successorRow, column, successorColumn) => row == successorRow && column == successorColumn - 1
   },
   'SOUTH': {
     'movement': [1, 0],
     'slipDirections': ['EAST', 'WEST'],
-    'isAtBoundary': (row, column, grid) => row == grid.height - 1 || grid.grid[row + 1][column] == 'W',
+    'isAtBoundary': (row, column, gridWorld) => row == gridWorld.height - 1 || gridWorld.grid[row + 1][column] == 'W',
     'isValidMove': (row, successorRow, column, successorColumn) => row == successorRow - 1 && column == successorColumn
   },
   'WEST': {
     'movement': [0, -1],
     'slipDirections': ['NORTH', 'SOUTH'],
-    'isAtBoundary': (row, column, grid) => column == 0 || grid.grid[row][column - 1] == 'W',
+    'isAtBoundary': (row, column, gridWorld) => column == 0 || gridWorld.grid[row][column - 1] == 'W',
     'isValidMove': (row, successorRow, column, successorColumn) => row == successorRow && column == successorColumn + 1
   }
 };
@@ -36,8 +38,9 @@ const ACTION_MAP = {
 function getAdjacentCells(grid, row, column, action) {
   const adjacentCells = [];
 
-  for (const slipDirection of ACTION_MAP[action].slipDirections) {
-    const [rowOffset, columnOffset] = ACTION_MAP[slipDirection].movement;
+  for (const slipDirection of ACTION_DETAILS[action].slipDirections) {
+    const [rowOffset, columnOffset] = ACTION_DETAILS[slipDirection].movement;
+
     const adjacentRow = row + rowOffset;
     const adjacentColumn = column + columnOffset;
 
@@ -63,7 +66,7 @@ class GridWorldAgent {
   }
 
   actions() {
-    return Object.keys(ACTION_MAP);
+    return Object.keys(ACTION_DETAILS);
   }
 
   transitionFunction(state, action, successorState) {
@@ -84,13 +87,13 @@ class GridWorldAgent {
     for (const adjacentCell of adjacentCells) {
       const [adjacentRow, adjacentColumn] = adjacentCell;
       if (adjacentRow == successorRow && adjacentColumn == successorColumn) {
-        return this._gridWorld.slipProbability / adjacentCells.length;
+        return SLIP_PROBABILITY / adjacentCells.length;
       }
     }
 
-    const adjustment = adjacentCells.length > 0 ? this._gridWorld.slipProbability : 0;
+    const adjustment = adjacentCells.length > 0 ? SLIP_PROBABILITY : 0;
 
-    const isAtBoundary = ACTION_MAP[action].isAtBoundary(row, column, this._gridWorld);
+    const isAtBoundary = ACTION_DETAILS[action].isAtBoundary(row, column, this._gridWorld);
     if (row == successorRow && column == successorColumn && isAtBoundary) {
       return 1 - adjustment;
     }
@@ -99,7 +102,7 @@ class GridWorldAgent {
       return 0;
     }
 
-    const isValidMove = ACTION_MAP[action].isValidMove(row, successorRow, column, successorColumn);
+    const isValidMove = ACTION_DETAILS[action].isValidMove(row, successorRow, column, successorColumn);
     if (isValidMove) {
       return 1 - adjustment;
     }
@@ -110,7 +113,6 @@ class GridWorldAgent {
   rewardFunction(state, action) {
     const row = Math.floor(state / this._gridWorld.width);
     const column = state - row * this._gridWorld.width;
-
     const cell = this._gridWorld.grid[row][column];
 
     if (cell == 'G' && action == 'STAY') {
