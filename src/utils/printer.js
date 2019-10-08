@@ -66,11 +66,16 @@ function printMdp(mdp) {
   printStartStates(mdp);
 }
 
-function printGridWorld(gridWorld) {
+function printDomain(gridWorld, ethics) {
   for (let row = 0; row < gridWorld.height; row++) {
     let text = '';
     for (let column = 0; column < gridWorld.width; column++) {
-      if (gridWorld.grid[row][column] == 'W') {
+      const state = gridWorld.width * row + column;
+      if (ethics && ethics.forbiddenStates && ethics.forbiddenStates.includes(state)) {
+        text += '\u2A0D';
+      } else if (ethics && ethics.violationFunction && ethics.violationFunction(state).length > 0) {
+        text += '\u03B7';
+      } else if (gridWorld.grid[row][column] == 'W') {
         text += '\u25A0';
       } else if (gridWorld.grid[row][column] == 'G') {
         text += '\u272A';
@@ -85,7 +90,7 @@ function printGridWorld(gridWorld) {
   }
 }
 
-function printPolicy(policy, gridWorld, ethics) {
+function printPolicy(policy, gridWorld) {
   const symbols = {
     'STAY': '\u2205',
     'NORTH': '\u2191',
@@ -100,37 +105,14 @@ function printPolicy(policy, gridWorld, ethics) {
       const state = gridWorld.width * row + column;
       if (gridWorld.grid[row][column] == 'W') {
         text += '\u25A0';
-      } else if (gridWorld.grid[row][column] == 'G') {
-        text += '\u272A';
-      } 
-      // else if (morality && morality.forbiddenStates.includes(state)) {
-      //   text += '\u2A0D';
-      // } 
-      else {
+      } else {
         text += symbols[policy[state]];
       }
       text += '  ';
     }
     console.log(`${text}`);
   }
-
-  if (ethics) {
-    console.log('Ethics');
-
-    for (let row = 0; row < gridWorld.height; row++) {
-      for (let column = 0; column < gridWorld.width; column++) {
-        const state = gridWorld.width * row + column;
-        if (ethics) {
-          const violations = ethics.violationFunction(state);
-          if (violations.length) {
-            console.log(`(${row}, ${column}): [${violations}]`);
-          }
-        }
-      }
-    }
-  }
 }
-
 
 module.exports = {
   printStates,
@@ -139,6 +121,6 @@ module.exports = {
   printRewardFunction,
   printStartStates,
   printMdp,
-  printGridWorld,
+  printDomain,
   printPolicy
 };
