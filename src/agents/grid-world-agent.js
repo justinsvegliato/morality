@@ -113,7 +113,15 @@ class GridWorldAgent {
 
     const cell = this._gridWorld.grid[row][column];
 
-    return cell == 'G' && action == 'STAY' ? 1 : -1;
+    if (cell == 'G' && action == 'STAY') {
+      return 1;
+    }
+
+    if (action == 'STAY') {
+      return 0;
+    }
+
+    return -1;
   }
 
   startStates() {
