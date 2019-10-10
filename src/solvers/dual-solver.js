@@ -24,6 +24,7 @@ function getVariables(mdp) {
 
       for (const constraintSuccessorState of mdp.states()) {
         let value = -1;
+
         if (variableState == constraintSuccessorState) {
           value *= DISCOUNT_FACTOR * mdp.transitionFunction(variableState, variableAction, constraintSuccessorState) - 1;
         } else {
