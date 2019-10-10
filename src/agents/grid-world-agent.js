@@ -119,10 +119,6 @@ class GridWorldAgent {
       return 1;
     }
 
-    if (action == 'STAY') {
-      return 0;
-    }
-
     return -1;
   }
 
