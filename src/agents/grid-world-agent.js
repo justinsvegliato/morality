@@ -131,7 +131,7 @@ class GridWorldAgent {
 
     for (let row = 0; row < this._gridWorld.height; row++) {
       for (let column = 0; column < this._gridWorld.width; column++) {
-        if (this._gridWorld.grid[row][column] == 'S') {
+        if (this._gridWorld.grid[row][column] != 'W') {
           startStates.push(this._gridWorld.width * row + column);
         }
       }
