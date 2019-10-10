@@ -2,7 +2,7 @@
 
 const morality = require('../morality.js');
 const GridWorldAgent = require('../agents/grid-world-agent.js');
-const NonmyopicNormBasedEthics = require('../ethics/nonmyopic-norm-based-ethics.js');
+const NormBasedEthics = require('../ethics/norm-based-ethics.js');
 const helper = require('../utils/helper.js');
 const printer = require('../utils/printer.js');
 
@@ -21,12 +21,12 @@ const penaltyFunction = (norm, state, action) => {
     return 1;
   }
   if (norm == 'Do Not Lie') {
-    return 5;
+    return 10;
   }
   return 0;
 };
-const tolerance = 2;
-const ethics = new NonmyopicNormBasedEthics(norms, violationFunction, penaltyFunction, tolerance);
+const tolerance = 0.1;
+const ethics = new NormBasedEthics(norms, violationFunction, penaltyFunction, tolerance);
 
 console.log('Domain');
 printer.printDomain(gridWorld, ethics);

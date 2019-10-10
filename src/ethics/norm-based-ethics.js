@@ -1,6 +1,6 @@
 'use strict';
 
-class NonmyopicNormBasedEthics {
+class NormBasedEthics {
   constructor(norms, violationFunction, penaltyFunction, tolerance) {
     this._norms = norms;
     this._violationFunction = violationFunction;
@@ -25,7 +25,7 @@ class NonmyopicNormBasedEthics {
   }
 
   transform(agent, program) {
-    program.constraints['nonmyopicNormBasedEthics'] = {'max': this._tolerance};
+    program.constraints['normBasedEthics'] = {'max': this._tolerance};
 
     for (const state of agent.states()) {
       for (const action of agent.actions()) {
@@ -36,10 +36,10 @@ class NonmyopicNormBasedEthics {
           }
         }
 
-        program.variables[`state${state}${action}`]['nonmyopicNormBasedEthics'] = coefficient;
+        program.variables[`state${state}${action}`]['normBasedEthics'] = coefficient;
       }
     }
   }
 }
 
-module.exports = NonmyopicNormBasedEthics;
+module.exports = NormBasedEthics;
