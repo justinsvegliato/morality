@@ -27,16 +27,16 @@ class NonmyopicNormBasedEthics {
   transform(agent, program) {
     program.constraints['nonmyopicNormBasedEthics'] = {'max': this._tolerance};
 
-    for (const variableState of agent.states()) {
-      for (const variableAction of agent.actions()) {
+    for (const state of agent.states()) {
+      for (const action of agent.actions()) {
         let coefficient = 0;
         for (const successorState of agent.states()) {
           for (const norm of this._violationFunction(successorState)) {
-            coefficient += agent.transitionFunction(variableState, variableAction, successorState) * this._penaltyFunction(norm, variableState, variableAction);
+            coefficient += agent.transitionFunction(state, action, successorState) * this._penaltyFunction(norm, state, action);
           }
         }
 
-        program.variables[`state${variableState}${variableAction}`]['nonmyopicNormBasedEthics'] = coefficient;
+        program.variables[`state${state}${action}`]['nonmyopicNormBasedEthics'] = coefficient;
       }
     }
   }
