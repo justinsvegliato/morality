@@ -23,15 +23,15 @@ function getVariables(mdp) {
       variables[`state${variableState}${variableAction}`] = {'value': mdp.rewardFunction(variableState, variableAction)};
 
       for (const constraintSuccessorState of mdp.states()) {
-        let value = -1;
+        let coefficient = -1;
 
         if (variableState == constraintSuccessorState) {
-          value *= DISCOUNT_FACTOR * mdp.transitionFunction(variableState, variableAction, constraintSuccessorState) - 1;
+          coefficient *= DISCOUNT_FACTOR * mdp.transitionFunction(variableState, variableAction, constraintSuccessorState) - 1;
         } else {
-          value *= DISCOUNT_FACTOR * mdp.transitionFunction(variableState, variableAction, constraintSuccessorState);
+          coefficient *= DISCOUNT_FACTOR * mdp.transitionFunction(variableState, variableAction, constraintSuccessorState);
         }
 
-        variables[`state${variableState}${variableAction}`][`successorState${constraintSuccessorState}`] = value;
+        variables[`state${variableState}${variableAction}`][`successorState${constraintSuccessorState}`] = coefficient;
       }
     }
   }
@@ -54,8 +54,9 @@ function getProgram(mdp, transformer) {
   return program;
 }
 
-function getPolicy(mdp, result) {
+function getSolution(mdp, result) {
   const policy = {};
+  const values = {};
 
   const occupancyMeasures = normalize(mdp, result);
 
@@ -63,18 +64,26 @@ function getPolicy(mdp, result) {
     let optimalOccupancyMeasure = Number.NEGATIVE_INFINITY;
     let optimalAction = null;
 
+    let optimalValue = 0;
+
     for (const variableAction of mdp.actions()) {
       const occupancyMeasure = occupancyMeasures[`state${variableState}${variableAction}`];
       if (occupancyMeasure > optimalOccupancyMeasure) {
         optimalOccupancyMeasure = occupancyMeasure;
         optimalAction = variableAction;
       }
+
+      optimalValue += mdp.rewardFunction(variableState, variableAction) * occupancyMeasures[`state${variableState}${variableAction}`];
     }
 
     policy[variableState] = optimalAction;
+    values[variableState] = optimalValue;
   }
 
-  return policy;
+  return {
+    policy,
+    values
+  };
 }
 
 function normalize(mdp, result) {
@@ -96,7 +105,7 @@ function solve(mdp, transformer) {
     return false;
   }
 
-  return getPolicy(mdp, result);
+  return getSolution(mdp, result);
 }
 
 module.exports = {
