@@ -14,13 +14,13 @@ console.log('Domain');
 printer.printDomain(gridWorld, ethics);
 
 console.log('Amoral Policy');
-const amoralPolicy = morality.solve(agent);
-if (amoralPolicy) {
-  printer.printPolicy(amoralPolicy, gridWorld);
+const amoralSolution = morality.solve(agent);
+if (amoralSolution) {
+  printer.printPolicy(amoralSolution.policy, gridWorld);
 }
 
 console.log('Moral Policy');
-const moralPolicy = morality.solve(agent, ethics);
-if (moralPolicy) {
-  printer.printPolicy(moralPolicy, gridWorld, ethics);
+const moralSolution = morality.solve(agent, ethics);
+if (moralSolution) {
+  printer.printPolicy(moralSolution.policy, gridWorld, ethics);
 }
