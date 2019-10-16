@@ -99,10 +99,13 @@ function solve(mdp, transformer) {
     return false;
   }
 
+  const objective = result.result;
+
   const values = getValues(mdp, result);
   const policy = getPolicy(mdp, values);
 
   return {
+    objective,
     policy,
     values
   };
