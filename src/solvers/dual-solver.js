@@ -3,6 +3,7 @@
 const solver = require('javascript-lp-solver');
 
 const DISCOUNT_FACTOR = 0.99;
+const EPSILON = 0.001;
 
 function getConstraints(mdp) {
   const constraints = {};
@@ -54,47 +55,81 @@ function getProgram(mdp, transformer) {
   return program;
 }
 
-function getSolution(mdp, result) {
-  const policy = {};
-  const values = {};
+function getOccupancyMeasures(mdp, result) {
+  const occupancyMeasures = {};
 
-  const occupancyMeasures = normalize(mdp, result);
+  for (const variableState of mdp.states()) {
+    occupancyMeasures[variableState] = {};
+    for (const variableAction of mdp.actions()) {
+      occupancyMeasures[variableState][variableAction] = isNaN(result[`state${variableState}${variableAction}`]) ? 0 : result[`state${variableState}${variableAction}`];
+    }
+  }
+
+  return occupancyMeasures;
+}
+
+function getPolicy(mdp, occupancyMeasures) {
+  const policy = {};
 
   for (const variableState of mdp.states()) {
     let optimalOccupancyMeasure = Number.NEGATIVE_INFINITY;
     let optimalAction = null;
 
-    let optimalValue = 0;
-
     for (const variableAction of mdp.actions()) {
-      const occupancyMeasure = occupancyMeasures[`state${variableState}${variableAction}`];
+      const occupancyMeasure = occupancyMeasures[variableState][variableAction];
       if (occupancyMeasure > optimalOccupancyMeasure) {
         optimalOccupancyMeasure = occupancyMeasure;
         optimalAction = variableAction;
       }
-
-      optimalValue += mdp.rewardFunction(variableState, variableAction) * occupancyMeasures[`state${variableState}${variableAction}`];
     }
 
     policy[variableState] = optimalAction;
-    values[variableState] = optimalValue;
   }
 
-  return {
-    policy,
-    values
-  };
+  return policy;
 }
 
-function normalize(mdp, result) {
-  for (const variableState of mdp.states()) {
-    for (const variableAction of mdp.actions()) {
-      if (isNaN(result[`state${variableState}${variableAction}`])) {
-        result[`state${variableState}${variableAction}`] = 0;
+function getValues(mdp, policy) {
+  const memoizedTransitionFunction = {};
+  const memoizedRewardFunction = {};
+
+  for (const state of mdp.states()) {
+    memoizedTransitionFunction[state] = {};
+    for (const successorState of mdp.states()) {
+      memoizedTransitionFunction[state][successorState] = mdp.transitionFunction(state, policy[state], successorState);
+    }
+
+    memoizedRewardFunction[state] = mdp.rewardFunction(state, policy[state]);
+  }
+
+  const values = {};
+  for (const state of mdp.states()) {
+    values[state] = 0;
+  }
+
+  while (true) {
+    let delta = 0;
+
+    for (const state of mdp.states()) {
+      const immediateReward = memoizedRewardFunction[state];
+
+      let expectedFutureReward = 0;
+      for (const successorState of mdp.states()) {
+        const transitionProbability = memoizedTransitionFunction[state][successorState];
+        expectedFutureReward += transitionProbability * values[successorState];
       }
+
+      const newValue = immediateReward + DISCOUNT_FACTOR * expectedFutureReward;
+
+      delta = Math.max(delta, Math.abs(newValue - values[state]));
+
+      values[state] = newValue;
+    }
+
+    if (delta <= EPSILON) {
+      return values;
     }
   }
-  return result;
 }
 
 function solve(mdp, transformer) {
@@ -105,7 +140,16 @@ function solve(mdp, transformer) {
     return false;
   }
 
-  return getSolution(mdp, result);
+  const objective = result.result;
+  const occupancyMeasures = getOccupancyMeasures(mdp, result);
+  const policy = getPolicy(mdp, occupancyMeasures);
+  const values = getValues(mdp, policy);
+
+  return {
+    objective,
+    policy,
+    values
+  };
 }
 
 module.exports = {
