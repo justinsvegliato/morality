@@ -100,7 +100,6 @@ function solve(mdp, transformer) {
   }
 
   const objective = result.result;
-
   const values = getValues(mdp, result);
   const policy = getPolicy(mdp, values);
 

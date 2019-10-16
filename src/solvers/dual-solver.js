@@ -141,7 +141,6 @@ function solve(mdp, transformer) {
   }
 
   const objective = result.result;
-
   const occupancyMeasures = getOccupancyMeasures(mdp, result);
   const policy = getPolicy(mdp, occupancyMeasures);
   const values = getValues(mdp, policy);
