@@ -51,10 +51,18 @@ function getProgram(mdp, transformer) {
   return program;
 }
 
-function getPolicy(mdp, result) {
-  const policy = {};
+function getValues(mdp, result) {
+  const values = {};
 
-  const values = normalize(mdp, result);
+  for (const variableState of mdp.states()) {
+    values[variableState] = isNaN(result[`state${variableState}`]) ? 0 : result[`state${variableState}`];
+  }
+
+  return values;
+}
+
+function getPolicy(mdp, values) {
+  const policy = {};
 
   for (const state of mdp.states()) {
     let optimalActionValue = Number.NEGATIVE_INFINITY;
@@ -66,12 +74,10 @@ function getPolicy(mdp, result) {
       let expectedFutureReward = 0;
       for (const successorState of mdp.states()) {
         const transitionProbability = mdp.transitionFunction(state, action, successorState);
-        const value = values[`state${successorState}`];
-        expectedFutureReward += transitionProbability * value;
+        expectedFutureReward += transitionProbability * values[successorState];
       }
-      expectedFutureReward *= DISCOUNT_FACTOR;
 
-      const actionValue = immediateReward + expectedFutureReward;
+      const actionValue = immediateReward + DISCOUNT_FACTOR * expectedFutureReward;
 
       if (actionValue > optimalActionValue) {
         optimalActionValue = actionValue;
@@ -85,15 +91,6 @@ function getPolicy(mdp, result) {
   return policy;
 }
 
-function normalize(mdp, result) {
-  for (const variableState of mdp.states()) {
-    if (isNaN(result[`state${variableState}`])) {
-      result[`state${variableState}`] = 0;
-    }
-  }
-  return result;
-}
-
 function solve(mdp, transformer) {
   const program = getProgram(mdp, transformer);
   const result = solver.Solve(program);
@@ -102,7 +99,13 @@ function solve(mdp, transformer) {
     return false;
   }
 
-  return getPolicy(mdp, result);
+  const values = getValues(mdp, result);
+  const policy = getPolicy(mdp, values);
+
+  return {
+    policy,
+    values
+  };
 }
 
 module.exports = {
