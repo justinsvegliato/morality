@@ -10,41 +10,31 @@ class MoralExemplarEthics {
   }
 
   transform(agent, program) {
-    // For every state
     for (const state of agent.states()) {
-      // Add constraints to state action space
-      for (const action of agent.actions()) { // May in general depend on state... TODO
+      for (const action of agent.actions()) { // TODO May in general depend on state
         program.constraints[`moralExemplarEthics${state}${action}`] = {'max': 0};
       }
 
-      const morallyPermittedActions = {};
+      const morallyPermittedActions = [];
 
-      // Look for a corresponding moral example state
-      for (const trajectory of this._exemplarTrajectories) {
-        let trajectoryIndex = 0;
-        for (const exemplarState of trajectory[0]) {
-          // Add to permitted actions for this state
+      // Look for any moral examples that correspond to this state
+      for (const exemplarTrajectory of this._exemplarTrajectories) {
+        for (const [exemplarStateIndex, exemplarState] of exemplarTrajectory[0].entries()) {
+          // Add to the morally permitted actions for this state if there is a matching moral example
           if (exemplarState == state) {
-            const exemplarAction = trajectory[1][trajectoryIndex];
-            morallyPermittedActions[`MoralExemplarEthics${state}${exemplarAction}`] = true;
+            const exemplarAction = exemplarTrajectory[1][exemplarStateIndex];
+            morallyPermittedActions.push(exemplarAction);
           }
-          trajectoryIndex = trajectoryIndex + 1;
         }
       }
 
-      // If we have any moral examples
+      // Add constraints if there are any moral examples for this state
       if (Object.keys(morallyPermittedActions).length > 0) {
-        // Add non-zero coefficients to states where other actions were preferred by exemplars
-        for (const action of agent.actions()) { // May in general depend on state... TODO
-          if (morallyPermittedActions[`MoralExemplarEthics${state}${action}`] != true) {
-            program.variables[`state${state}${action}`][`moralExemplarEthics${state}${action}`] = 1.0;
-          } else { // TODO: Is this necessary?
-            program.variables[`state${state}${action}`][`moralExemplarEthics${state}${action}`] = 0.0;
+        // Add a positive coefficient to actions that were not preferred by any moral exemplars
+        for (const action of agent.actions()) { // TODO May in general depend on state
+          if (!morallyPermittedActions.includes(action)) {
+            program.variables[`state${state}${action}`][`moralExemplarEthics${state}${action}`] = 1;
           }
-        }
-      } else { // Set zero coefficients for all states with no moral examples
-        for (const action of agent.actions()) { // May in general depend on state... TODO
-          program.variables[`state${state}${action}`][`moralExemplarEthics${state}${action}`] = 0.0;
         }
       }
     }
@@ -52,4 +42,3 @@ class MoralExemplarEthics {
 }
 
 module.exports = MoralExemplarEthics;
-
