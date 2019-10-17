@@ -13,7 +13,7 @@ const agent = new GridWorldAgent(gridWorld);
 // Each pair of lists is a trajectory [s_1, s_2, ..., s_n], [a_1, a_2, ..., a_n]
 // where the exemplar took action a_i when it was in state s_i
 
-const ethics = new MoralExemplarEthics([[[1],['NORTH']], [[2],['NORTH']]]);
+const ethics = new MoralExemplarEthics([[[1], ['NORTH']], [[2], ['NORTH']]]);
 
 console.log('Domain');
 printer.printDomain(gridWorld, ethics);
