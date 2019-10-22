@@ -3,10 +3,20 @@
 const morality = require('../morality.js');
 const GridWorldAgent = require('../agents/grid-world-agent.js');
 const MoralExemplarEthics = require('../ethics/moral-exemplar-ethics.js');
-const helper = require('../utils/helper.js');
 const printer = require('../utils/printer.js');
 
-const gridWorld = helper.getJson('grid-world.json');
+const gridWorld = {
+  'width': 12,
+  'height': 6,
+  'grid': [
+    ['O', 'O', 'W', 'W', 'O', 'O', 'O', 'W', 'O', 'O', 'O', 'O'],
+    ['O', 'O', 'W', 'W', 'O', 'W', 'O', 'W', 'O', 'W', 'O', 'O'],
+    ['O', 'O', 'W', 'W', 'O', 'W', 'O', 'O', 'O', 'W', 'O', 'O'],
+    ['O', 'O', 'O', 'O', 'O', 'W', 'W', 'W', 'W', 'W', 'O', 'O'],
+    ['O', 'O', 'W', 'W', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O'],
+    ['O', 'O', 'O', 'O', 'O', 'W', 'W', 'W', 'W', 'W', 'G', 'O']
+  ]
+};
 const agent = new GridWorldAgent(gridWorld);
 
 const ethics = new MoralExemplarEthics([
@@ -15,7 +25,7 @@ const ethics = new MoralExemplarEthics([
 ]);
 
 console.log('Domain');
-printer.printDomain(gridWorld, ethics);
+printer.printDomain(agent, ethics);
 
 console.log('Amoral Policy');
 const amoralSolution = morality.solve(agent);
