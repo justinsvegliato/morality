@@ -22,7 +22,7 @@ const agent = new GridWorldAgent(gridWorld);
 const ethics = new ForbiddenStateEthics([55]);
 
 console.log('Domain');
-printer.printDomain(agent, ethics);
+printer.printDomain(gridWorld, ethics);
 
 console.log('Amoral Policy');
 const amoralSolution = morality.solve(agent);

@@ -20,8 +20,8 @@ const gridWorld = {
 const agent = new GridWorldAgent(gridWorld);
 
 const ethics = new MoralExemplarEthics([
-  [[1], ['NORTH']],
-  [[2], ['NORTH']]
+  [[0], ['WEST']],
+  [[1], ['NORTH']]
 ]);
 
 console.log('Domain');
