@@ -19,7 +19,7 @@
   "bugs": {
     "url": "https://github.com/justinsvegliato/morality/issues"
   },
-  "homepage": "https://github.com/justinsvegliato/morality#readme",
+  "homepage": "https://moralityjs.com/",
   "dependencies": {
     "javascript-lp-solver": "^0.4.5"
   },
