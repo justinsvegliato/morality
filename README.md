@@ -5,7 +5,7 @@
 ## Install
 
 ```console
-$ npm install morality
+$ npm install --save morality
 ```
 
 ## Usage
