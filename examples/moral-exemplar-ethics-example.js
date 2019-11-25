@@ -1,6 +1,6 @@
 'use strict';
 
-const morality = require('../morality.js/index.js.js');
+const morality = require('../morality.js');
 const GridWorldAgent = require('../agents/grid-world-agent.js');
 const MoralExemplarEthics = require('../ethics/moral-exemplar-ethics.js');
 const printer = require('../utils/printer.js');

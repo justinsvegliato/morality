@@ -153,5 +153,5 @@ function solve(mdp, transformer) {
 }
 
 module.exports = {
-  solve
+  solve: solve
 };
