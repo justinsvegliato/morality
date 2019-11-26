@@ -1,6 +1,6 @@
 {
   "name": "morality",
-  "version": "0.0.5",
+  "version": "0.0.7",
   "description": "A library for building autonomous agents that reason ethically",
   "main": "morality.js",
   "repository": {
