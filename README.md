@@ -1,14 +1,8 @@
-# morality
+# `morality`
 
-> Morality is a library for building autonomous agents that reason ethically.
+Morality is a library for building autonomous agents that reason ethically.
 
-## Install
-
-```console
-$ npm install --save morality
-```
-
-## Usage
+## Example
 
 ```js
 import morality from 'morality';
