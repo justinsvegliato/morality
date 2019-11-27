@@ -67,19 +67,19 @@ function printMdp(mdp) {
 }
 
 function printDomain(gridWorld, ethics) {
-  for (let row = 0; row < gridWorld.height; row++) {
+  for (let row = 0; row < gridWorld.length; row++) {
     let text = '';
-    for (let column = 0; column < gridWorld.width; column++) {
-      const state = gridWorld.width * row + column;
+    for (let column = 0; column < gridWorld[row].length; column++) {
+      const state = gridWorld[row].length * row + column;
       if (ethics && ethics.forbiddenStates && ethics.forbiddenStates.includes(state)) {
         text += '\u2A0D';
-      } else if (ethics && ethics.norms && ethics.violationFunction(state).length > 0) {
+      } else if (ethics && ethics.violationFunction && ethics.violationFunction(state).length > 0) {
         text += '\u03B7';
-      } else if (gridWorld.grid[row][column] == 'W') {
+      } else if (gridWorld[row][column] == 'W') {
         text += '\u25A0';
-      } else if (gridWorld.grid[row][column] == 'G') {
+      } else if (gridWorld[row][column] == 'G') {
         text += '\u272A';
-      } else if (gridWorld.grid[row][column] == 'S') {
+      } else if (gridWorld[row][column] == 'S') {
         text += '\u229B';
       } else {
         text += '\u25A1';
@@ -99,11 +99,11 @@ function printPolicy(policy, gridWorld) {
     'WEST': '\u2190'
   };
 
-  for (let row = 0; row < gridWorld.height; row++) {
+  for (let row = 0; row < gridWorld.length; row++) {
     let text = '';
-    for (let column = 0; column < gridWorld.width; column++) {
-      const state = gridWorld.width * row + column;
-      if (gridWorld.grid[row][column] == 'W') {
+    for (let column = 0; column < gridWorld[row].length; column++) {
+      const state = gridWorld[row].length * row + column;
+      if (gridWorld[row][column] == 'W') {
         text += '\u25A0';
       } else {
         text += symbols[policy[state]];
