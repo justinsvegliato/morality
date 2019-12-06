@@ -64,7 +64,7 @@ class GridWorldAgent {
 
   states() {
     const size = this._width * this._height;
-    return Array(size).keys();
+    return [...Array(size).keys()];
   }
 
   actions() {
