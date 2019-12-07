@@ -67,9 +67,9 @@ function printMdp(mdp) {
 }
 
 function printGridWorldDomain(gridWorld, ethics) {
-  for (const row = 0; row < gridWorld.length; row++) {
+  for (let row = 0; row < gridWorld.length; row++) {
     let text = '';
-    for (const column = 0; column < gridWorld[row].length; column++) {
+    for (let column = 0; column < gridWorld[row].length; column++) {
       const state = gridWorld[row].length * row + column;
       if (ethics && ethics.forbiddenStates && ethics.forbiddenStates.includes(state)) {
         text += '\u2A0D';
@@ -99,7 +99,7 @@ function printGridWorldPolicy(gridWorld, policy) {
     'WEST': '\u2190'
   };
 
-  for (const row = 0; row < gridWorld.length; row++) {
+  for (let row = 0; row < gridWorld.length; row++) {
     let text = '';
     for (let column = 0; column < gridWorld[row].length; column++) {
       const state = gridWorld[row].length * row + column;
