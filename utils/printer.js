@@ -3,17 +3,17 @@
 function printStates(mdp) {
   console.log('States');
 
-  for (const state of mdp.states()) {
-    console.log(`  State: ${state}`);
-  }
+  mdp.states().forEach(function(state, index) {
+    console.log(`  State ${index}: ${state}`);
+  });
 }
 
 function printActions(mdp) {
   console.log('Actions');
 
-  for (const action of mdp.actions()) {
-    console.log(`  Action: ${action}`);
-  }
+  mdp.actions().forEach(function(action, index) {
+    console.log(`  Action ${index}: ${action}`);
+  });
 }
 
 function printTransitionFunction(mdp) {
@@ -66,10 +66,10 @@ function printMdp(mdp) {
   printStartStates(mdp);
 }
 
-function printDomain(gridWorld, ethics) {
-  for (let row = 0; row < gridWorld.length; row++) {
+function printGridWorldDomain(gridWorld, ethics) {
+  for (const row = 0; row < gridWorld.length; row++) {
     let text = '';
-    for (let column = 0; column < gridWorld[row].length; column++) {
+    for (const column = 0; column < gridWorld[row].length; column++) {
       const state = gridWorld[row].length * row + column;
       if (ethics && ethics.forbiddenStates && ethics.forbiddenStates.includes(state)) {
         text += '\u2A0D';
@@ -90,7 +90,7 @@ function printDomain(gridWorld, ethics) {
   }
 }
 
-function printPolicy(policy, gridWorld) {
+function printGridWorldPolicy(gridWorld, policy) {
   const symbols = {
     'STAY': '\u2205',
     'NORTH': '\u2191',
@@ -99,7 +99,7 @@ function printPolicy(policy, gridWorld) {
     'WEST': '\u2190'
   };
 
-  for (let row = 0; row < gridWorld.length; row++) {
+  for (const row = 0; row < gridWorld.length; row++) {
     let text = '';
     for (let column = 0; column < gridWorld[row].length; column++) {
       const state = gridWorld[row].length * row + column;
@@ -121,6 +121,6 @@ module.exports = {
   printRewardFunction,
   printStartStates,
   printMdp,
-  printDomain,
-  printPolicy
+  printGridWorldDomain,
+  printGridWorldPolicy
 };

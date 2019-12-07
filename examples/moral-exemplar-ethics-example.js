@@ -21,16 +21,16 @@ const ethics = new MoralExemplarEthics([
 ]);
 
 console.log('Domain');
-printer.printDomain(gridWorld, ethics);
+printer.printGridWorldDomain(gridWorld, ethics);
 
 console.log('Amoral Policy');
 const amoralSolution = morality.solve(agent);
 if (amoralSolution) {
-  printer.printPolicy(amoralSolution.policy, gridWorld);
+  printer.printGridWorldPolicy(gridWorld, amoralSolution.policy);
 }
 
 console.log('Moral Policy');
 const moralSolution = morality.solve(agent, ethics);
 if (moralSolution) {
-  printer.printPolicy(moralSolution.policy, gridWorld, ethics);
+  printer.printGridWorldPolicy(gridWorld, moralSolution.policy);
 }
