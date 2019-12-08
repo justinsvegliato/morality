@@ -1,9 +1,9 @@
 'use strict';
 
-const morality = require('../morality.js');
-const GridWorldAgent = require('../agents/grid-world-agent.js');
-const MoralExemplarEthics = require('../ethics/moral-exemplar-ethics.js');
-const printer = require('../utils/printer.js');
+const morality = require('../../morality.js');
+const GridWorldAgent = require('../../agents/grid-world-agent.js');
+const MoralExemplarEthics = require('../../ethics/moral-exemplar-ethics.js');
+const printer = require('../../utils/printer.js');
 
 const gridWorld = [
   ['O', 'O', 'W', 'W', 'O', 'O', 'O', 'W', 'O', 'O', 'O', 'O'],

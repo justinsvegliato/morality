@@ -1,12 +1,7 @@
 'use strict';
 
 const SPEEDS = ['NONE', 'LOW', 'NORMAL', 'HIGH'];
-const COSTS = {
-  'NONE': Infinity,
-  'LOW': 2,
-  'NORMAL': 1,
-  'HIGH': 0.5
-};
+const COSTS = {'NONE': Infinity, 'LOW': 2, 'NORMAL': 1, 'HIGH': 0.5};
 
 class SelfDrivingCarAgent {
   constructor(map) {
@@ -16,9 +11,9 @@ class SelfDrivingCarAgent {
     this._locationStates = [];
     this._roadStates = [];
 
-    for (const location of map.locations) {
-      this._stateRegistry[location] = location;
-      this._locationStates.push(location);
+    for (const name of map.locations) {
+      this._stateRegistry[name] = {name: name};
+      this._locationStates.push(name);
     }
 
     for (const name in map.roads) {
@@ -32,17 +27,14 @@ class SelfDrivingCarAgent {
 
     this._locationActions = ['STAY', ...Object.keys(map.roads).map((name) => 'TURN_ONTO_' + name)];
     this._roadActions = ['CRUISE', 'ACCELERATE_TO_LOW_SPEED', 'ACCELERATE_TO_SPEED_LIMIT', 'ACCELERATE_TO_HIGH_SPEED'];
-
-    this._states = [...this._locationStates, ...this._roadStates];
-    this._actions = [...this._locationActions, ...this._roadActions];
   }
 
   states() {
-    return this._states;
+    return [...this._locationStates, ...this._roadStates];
   }
 
   actions() {
-    return this._actions;
+    return [...this._locationActions, ...this._roadActions];
   }
 
   transitionFunction(state, action, successorState) {
@@ -50,22 +42,24 @@ class SelfDrivingCarAgent {
     const successorStateRecord = this._stateRegistry[successorState];
 
     if (this._locationStates.includes(state)) {
-      if (action == 'STAY' || this._roadActions.includes(action)) {
+      if (this._roadActions.includes(action) || action == 'STAY') {
         if (state == successorState) {
           return 1;
         }
         return 0;
       }
 
-      for (const name of Object.keys(this._map.roads)) {
-        if (action == 'TURN_ONTO_' + name) {
-          if (name == successorStateRecord.name && this._map.roads[name].fromLocation == state && successorStateRecord.speed == 'NONE') {
+      if (action == 'TURN_ONTO_' + successorStateRecord.name) {
+        if (successorStateRecord.fromLocation == stateRecord.name && successorStateRecord.speed == 'NONE') {
+          return 1;
+        }
+      }
+
+      for (const name in this._map.roads) {
+        if (action == 'TURN_ONTO_' + name && name != successorStateRecord.name) {
+          if (state == successorState && this._map.roads[name].fromLocation != stateRecord.name) {
             return 1;
           }
-          if (state == successorState && this._map.roads[name].fromLocation != state) {
-            return 1;
-          }
-          return 0;
         }
       };
     }
@@ -79,38 +73,37 @@ class SelfDrivingCarAgent {
       }
 
       if (action == 'ACCELERATE_TO_LOW_SPEED') {
-        if (stateRecord.speed == 'NONE' && successorStateRecord.name == stateRecord.name && successorStateRecord.speed == 'LOW') {
+        if (stateRecord.speed == 'NONE' && stateRecord.name == successorStateRecord.name && successorStateRecord.speed == 'LOW') {
           return 1;
         }
-        // return 0;
+        if (stateRecord.speed != 'NONE' && state == successorState) {
+          return 1;
+        }
       }
+
       if (action == 'ACCELERATE_TO_SPEED_LIMIT') {
-        if (stateRecord.speed == 'NONE' && successorStateRecord.name == stateRecord.name && successorStateRecord.speed == 'NORMAL') {
+        if (stateRecord.speed == 'NONE' && stateRecord.name == successorStateRecord.name && successorStateRecord.speed == 'NORMAL') {
           return 1;
         }
-        // return 0;
+        if (stateRecord.speed != 'NONE' && state == successorState) {
+          return 1;
+        }
       }
+
       if (action == 'ACCELERATE_TO_HIGH_SPEED') {
-        if (stateRecord.speed == 'NONE' && successorStateRecord.name == stateRecord.name && successorStateRecord.speed == 'HIGH') {
+        if (stateRecord.speed == 'NONE' && stateRecord.name == successorStateRecord.name && successorStateRecord.speed == 'HIGH') {
           return 1;
         }
-        // return 0;
-      }
-      if (action == 'CRUISE') {
-        if (state == successorState) {
+        if (stateRecord.speed != 'NONE' && state == successorState) {
           return 1;
         }
       }
 
       if (action == 'CRUISE') {
-        if (successorState == stateRecord.toLocation) {
+        if (stateRecord.speed == 'NONE' && state == successorState) {
           return 1;
         }
-        return 0;
-      }
-
-      if (this._roadActions.includes(action)) {
-        if (state == successorState) {
+        if (stateRecord.speed != 'NONE' && successorState == stateRecord.toLocation) {
           return 1;
         }
       }
@@ -123,7 +116,7 @@ class SelfDrivingCarAgent {
     const stateRecord = this._stateRegistry[state];
 
     if (state == this._map.goalLocation && action == 'STAY') {
-      return 100;
+      return 1000;
     }
 
     if (this._roadStates.includes(state) && action == 'CRUISE') {
@@ -134,7 +127,7 @@ class SelfDrivingCarAgent {
   }
 
   startStates() {
-    return this._states;
+    return this._map.startLocations;
   }
 }
 

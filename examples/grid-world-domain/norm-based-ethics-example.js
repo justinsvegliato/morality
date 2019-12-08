@@ -1,9 +1,9 @@
 'use strict';
 
-const morality = require('../morality.js');
-const GridWorldAgent = require('../agents/grid-world-agent.js');
-const ForbiddenStateEthics = require('../ethics/forbidden-state-ethics.js');
-const printer = require('../utils/printer.js');
+const morality = require('../../morality.js');
+const GridWorldAgent = require('../../agents/grid-world-agent.js');
+const NormBasedEthics = require('../../ethics/norm-based-ethics.js');
+const printer = require('../../utils/printer.js');
 
 const gridWorld = [
   ['O', 'O', 'W', 'W', 'O', 'O', 'O', 'W', 'O', 'O', 'O', 'O'],
@@ -15,7 +15,24 @@ const gridWorld = [
 ];
 const agent = new GridWorldAgent(gridWorld);
 
-const ethics = new ForbiddenStateEthics([55]);
+const norms = ['Quiet Operation', 'Personal Space'];
+const violationFunction = (state) => {
+  if (state == 55) {
+    return ['Quiet Operation', 'Personal Space'];
+  }
+  return [];
+};
+const penaltyFunction = (norm, state, action) => {
+  if (norm == 'Quiet Operation') {
+    return 1;
+  }
+  if (norm == 'Personal Space') {
+    return 10;
+  }
+  return 0;
+};
+const tolerance = 0.1;
+const ethics = new NormBasedEthics(norms, violationFunction, penaltyFunction, tolerance);
 
 console.log('Domain');
 printer.printGridWorldDomain(gridWorld, ethics);
