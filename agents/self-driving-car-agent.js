@@ -1,10 +1,15 @@
 'use strict';
 
+const ACCELERATE_ACTIONS = {
+  'ACCELERATE_TO_LOW_SPEED': 'LOW',
+  'ACCELERATE_TO_NORMAL_SPEED': 'NORMAL',
+  'ACCELERATE_TO_HIGH_SPEED': 'HIGH'
+};
 const SPEEDS = {
   'NONE': null,
   'LOW': -10,
   'NORMAL': 0,
-  'HIGH': 10
+  'HIGH': 10,
 };
 const SPEED_LIMITS = {
   'CITY': 25,
@@ -54,8 +59,11 @@ class SelfDrivingCarAgent {
       }
     }
 
-    this._locationActions = ['STAY', ...Object.keys(map.roads).map((name) => 'TURN_ONTO_' + name)];
-    this._roadActions = ['CRUISE', 'ACCELERATE_TO_LOW_SPEED', 'ACCELERATE_TO_SPEED_LIMIT', 'ACCELERATE_TO_HIGH_SPEED'];
+    this._turnActions = Object.keys(map.roads).map((name) => `TURN_ONTO_${name}`);
+    this._locationActions = ['STAY', ...this._turnActions];
+
+    this._accelerateActions = Object.keys(ACCELERATE_ACTIONS);
+    this._roadActions = ['CRUISE', ...this._accelerateActions];
   }
 
   states() {
@@ -101,26 +109,8 @@ class SelfDrivingCarAgent {
         return 0;
       }
 
-      if (action == 'ACCELERATE_TO_LOW_SPEED') {
-        if (stateRecord.speed == 'NONE' && stateRecord.name == successorStateRecord.name && stateRecord.condition == successorStateRecord.condition && successorStateRecord.speed == 'LOW') {
-          return 1;
-        }
-        if (stateRecord.speed != 'NONE' && state == successorState) {
-          return 1;
-        }
-      }
-
-      if (action == 'ACCELERATE_TO_SPEED_LIMIT') {
-        if (stateRecord.speed == 'NONE' && stateRecord.name == successorStateRecord.name && stateRecord.condition == successorStateRecord.condition && successorStateRecord.speed == 'NORMAL') {
-          return 1;
-        }
-        if (stateRecord.speed != 'NONE' && state == successorState) {
-          return 1;
-        }
-      }
-
-      if (action == 'ACCELERATE_TO_HIGH_SPEED') {
-        if (stateRecord.speed == 'NONE' && stateRecord.name == successorStateRecord.name && stateRecord.condition == successorStateRecord.condition && successorStateRecord.speed == 'HIGH') {
+      if (this._accelerateActions.includes(action)) {
+        if (stateRecord.speed == 'NONE' && stateRecord.name == successorStateRecord.name && stateRecord.condition == successorStateRecord.condition && successorStateRecord.speed == ACCELERATE_ACTIONS[action]) {
           return 1;
         }
         if (stateRecord.speed != 'NONE' && state == successorState) {
@@ -165,18 +155,8 @@ class SelfDrivingCarAgent {
       return -360 * distance / speed;
     }
 
-    if (this._roadStates.includes(state) && action == 'ACCELERATE_TO_LOW_SPEED' && stateRecord.speed == 'NONE') {
-      const speed = SPEED_LIMITS[stateRecord.type] + SPEEDS['LOW'];
-      return -ACCELERATION_RATE * speed / 10;
-    }
-
-    if (this._roadStates.includes(state) && action == 'ACCELERATE_TO_SPEED_LIMIT' && stateRecord.speed == 'NONE') {
-      const speed = SPEED_LIMITS[stateRecord.type] + SPEEDS['NORMAL'];
-      return -ACCELERATION_RATE * speed / 10;
-    }
-
-    if (this._roadStates.includes(state) && action == 'ACCELERATE_TO_HIGH_SPEED' && stateRecord.speed == 'NONE') {
-      const speed = SPEED_LIMITS[stateRecord.type] + SPEEDS['HIGH'];
+    if (this._roadStates.includes(state) && this._accelerateActions.includes(action) && stateRecord.speed == 'NONE') {
+      const speed = SPEED_LIMITS[stateRecord.type] + SPEEDS[ACCELERATE_ACTIONS[action]];
       return -ACCELERATION_RATE * speed / 10;
     }
 
