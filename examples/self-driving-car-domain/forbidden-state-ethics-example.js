@@ -3,6 +3,7 @@
 const morality = require('../../morality.js');
 const SelfDrivingCarAgent = require('../../agents/self-driving-car-agent.js');
 const ForbiddenStateEthics = require('../../ethics/forbidden-state-ethics.js');
+const printer = require('../../utils/printer.js');
 
 const agent = new SelfDrivingCarAgent({
   locations: ['LIBRARY', 'GROCERY_STORE', 'COFFEE_SHOP', 'HIGH_SCHOOL', 'PIZZA_PLACE', 'HOME', 'TRAIN_STATION', 'UNIVERSITY'],
@@ -30,22 +31,22 @@ const agent = new SelfDrivingCarAgent({
   goalLocation: 'HOME'
 });
 
-const ethics = new ForbiddenStateEthics([
-  'MATOON_STREET_EAST_CITY_HIGH',
-  'MATOON_STREET_WEST_CITY_HIGH',
-  'GRAY_STREET_NORTH_CITY_HIGH',
-  'GRAY_STREET_SOUTH_CITY_HIGH',
-  'MAIN_STREET_EAST_CITY_HIGH',
-  'MAIN_STREET_WEST_CITY_HIGH',
-  'NORTH_PLEASANT_STREET_NORTH_CITY_HIGH',
-  'NORTH_PLEASANT_STREET_SOUTH_CITY_HIGH',
-  'EAST_PLEASANT_STREET_EAST_CITY_HIGH',
-  'EAST_PLEASANT_STREET_WEST_CITY_HIGH',
-  'TRIANGLE_STREET_NORTH_CITY_HIGH',
-  'TRIANGLE_STREET_SOUTH_CITY_HIGH',
-  'COLLEGE_STREET_NORTH_CITY_HIGH',
-  'COLLEGE_STREET_SOUTH_CITY_HIGH'
-]);
+// const ethics = new ForbiddenStateEthics([
+//   'MATOON_STREET_EAST_CITY_HIGH',
+//   'MATOON_STREET_WEST_CITY_HIGH',
+//   'GRAY_STREET_NORTH_CITY_HIGH',
+//   'GRAY_STREET_SOUTH_CITY_HIGH',
+//   'MAIN_STREET_EAST_CITY_HIGH',
+//   'MAIN_STREET_WEST_CITY_HIGH',
+//   'NORTH_PLEASANT_STREET_NORTH_CITY_HIGH',
+//   'NORTH_PLEASANT_STREET_SOUTH_CITY_HIGH',
+//   'EAST_PLEASANT_STREET_EAST_CITY_HIGH',
+//   'EAST_PLEASANT_STREET_WEST_CITY_HIGH',
+//   'TRIANGLE_STREET_NORTH_CITY_HIGH',
+//   'TRIANGLE_STREET_SOUTH_CITY_HIGH',
+//   'COLLEGE_STREET_NORTH_CITY_HIGH',
+//   'COLLEGE_STREET_SOUTH_CITY_HIGH'
+// ]);
 
 console.log('Amoral Policy');
 const amoralSolution = morality.solve(agent);
@@ -53,8 +54,8 @@ if (amoralSolution) {
   console.log(amoralSolution.policy);
 }
 
-console.log('Moral Policy');
-const moralSolution = morality.solve(agent, ethics);
-if (moralSolution) {
-  console.log(moralSolution.policy);
-}
+// console.log('Moral Policy');
+// const moralSolution = morality.solve(agent, ethics);
+// if (moralSolution) {
+//   console.log(moralSolution.policy);
+// }

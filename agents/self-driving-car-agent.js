@@ -1,7 +1,20 @@
 'use strict';
 
-const SPEEDS = ['NONE', 'LOW', 'NORMAL', 'HIGH'];
-const COSTS = {'NONE': Infinity, 'LOW': 2, 'NORMAL': 1, 'HIGH': 0.5};
+const SPEEDS = {
+  'NONE': null,
+  'LOW': -10,
+  'NORMAL': 0,
+  'HIGH': 10
+};
+const SPEED_LIMITS = {
+  'CITY': 25,
+  'COUNTY': 45,
+  'FREEWAY': 65
+};
+const GOAL_REWARD = 1000;
+const DRIVER_ERROR_PENALTY = 3600;
+const MANEUVER_TIME = 5;
+const ACCELERATION_RATE = 2;
 
 class SelfDrivingCarAgent {
   constructor(map) {
@@ -17,7 +30,7 @@ class SelfDrivingCarAgent {
     }
 
     for (const name in map.roads) {
-      for (const speed of SPEEDS) {
+      for (const speed in SPEEDS) {
         const key = `${name}_${map.roads[name].type}_${speed}`;
         const record = Object.assign({}, map.roads[name], {name: name, speed: speed});
         this._stateRegistry[key] = record;
@@ -115,15 +128,43 @@ class SelfDrivingCarAgent {
   rewardFunction(state, action) {
     const stateRecord = this._stateRegistry[state];
 
-    if (state == this._map.goalLocation && action == 'STAY') {
-      return 1000;
+    if (stateRecord.name == this._map.goalLocation && action == 'STAY') {
+      return GOAL_REWARD;
     }
 
-    if (this._roadStates.includes(state) && action == 'CRUISE') {
-      return -COSTS[stateRecord.speed] * stateRecord.length;
+    if (this._locationStates.includes(state) && this._locationActions.includes(action)) {
+      if (action == 'STAY') {
+        return -MANEUVER_TIME;
+      }
+      for (const name in this._map.roads) {
+        if (action == 'TURN_ONTO_' + name && this._map.roads[name].fromLocation == stateRecord.name) {
+          return -MANEUVER_TIME;
+        }
+      }
     }
 
-    return -1;
+    if (this._roadStates.includes(state) && action == 'CRUISE' && stateRecord.speed != 'NONE') {
+      const speed = SPEED_LIMITS[stateRecord.type] + SPEEDS[stateRecord.speed];
+      const distance = stateRecord.length;
+      return -360 * distance / speed;
+    }
+
+    if (this._roadStates.includes(state) && action == 'ACCELERATE_TO_LOW_SPEED' && stateRecord.speed == 'NONE') {
+      const speed = SPEED_LIMITS[stateRecord.type] + SPEEDS['LOW'];
+      return -ACCELERATION_RATE * speed / 10;
+    }
+
+    if (this._roadStates.includes(state) && action == 'ACCELERATE_TO_SPEED_LIMIT' && stateRecord.speed == 'NONE') {
+      const speed = SPEED_LIMITS[stateRecord.type] + SPEEDS['NORMAL'];
+      return -ACCELERATION_RATE * speed / 10;
+    }
+
+    if (this._roadStates.includes(state) && action == 'ACCELERATE_TO_HIGH_SPEED' && stateRecord.speed == 'NONE') {
+      const speed = SPEED_LIMITS[stateRecord.type] + SPEEDS['HIGH'];
+      return -ACCELERATION_RATE * speed / 10;
+    }
+
+    return -DRIVER_ERROR_PENALTY;
   }
 
   startStates() {
