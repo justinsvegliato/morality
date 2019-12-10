@@ -32,6 +32,10 @@ function getVariables(mdp) {
           coefficient *= DISCOUNT_FACTOR * mdp.transitionFunction(variableState, variableAction, constraintSuccessorState);
         }
 
+        if (coefficient === 0 && 1 / coefficient === -Infinity) {
+          coefficient = 0;
+        }
+
         variables[`state${variableState}${variableAction}`][`successorState${constraintSuccessorState}`] = coefficient;
       }
     }
