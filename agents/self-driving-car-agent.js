@@ -11,6 +11,20 @@ const SPEED_LIMITS = {
   'COUNTY': 45,
   'FREEWAY': 65
 };
+const CONDITIONS = {
+  'EMPTY': {
+    'probability': 0.8,
+    'effect': 1
+  },
+  'BUSY': {
+    'probability': 0.15,
+    'effect': 0.8
+  },
+  'CONSTRUCTION': {
+    'probability': 0.05,
+    'effect': 0.9
+  }
+};
 const GOAL_REWARD = 1000;
 const DRIVER_ERROR_PENALTY = 3600;
 const MANEUVER_TIME = 5;
@@ -31,10 +45,12 @@ class SelfDrivingCarAgent {
 
     for (const name in map.roads) {
       for (const speed in SPEEDS) {
-        const key = `${name}_${map.roads[name].type}_${speed}`;
-        const record = Object.assign({}, map.roads[name], {name: name, speed: speed});
-        this._stateRegistry[key] = record;
-        this._roadStates.push(key);
+        for (const condition in CONDITIONS) {
+          const key = `${name}_${map.roads[name].type}_${speed}_${condition}`;
+          const record = Object.assign({}, map.roads[name], {name: name, speed: speed, condition: condition});
+          this._stateRegistry[key] = record;
+          this._roadStates.push(key);
+        }
       }
     }
 
@@ -64,7 +80,7 @@ class SelfDrivingCarAgent {
 
       if (action == 'TURN_ONTO_' + successorStateRecord.name) {
         if (successorStateRecord.fromLocation == stateRecord.name && successorStateRecord.speed == 'NONE') {
-          return 1;
+          return CONDITIONS[successorStateRecord.condition]['probability'];
         }
       }
 
@@ -86,7 +102,7 @@ class SelfDrivingCarAgent {
       }
 
       if (action == 'ACCELERATE_TO_LOW_SPEED') {
-        if (stateRecord.speed == 'NONE' && stateRecord.name == successorStateRecord.name && successorStateRecord.speed == 'LOW') {
+        if (stateRecord.speed == 'NONE' && stateRecord.name == successorStateRecord.name && stateRecord.condition == successorStateRecord.condition && successorStateRecord.speed == 'LOW') {
           return 1;
         }
         if (stateRecord.speed != 'NONE' && state == successorState) {
@@ -95,7 +111,7 @@ class SelfDrivingCarAgent {
       }
 
       if (action == 'ACCELERATE_TO_SPEED_LIMIT') {
-        if (stateRecord.speed == 'NONE' && stateRecord.name == successorStateRecord.name && successorStateRecord.speed == 'NORMAL') {
+        if (stateRecord.speed == 'NONE' && stateRecord.name == successorStateRecord.name && stateRecord.condition == successorStateRecord.condition && successorStateRecord.speed == 'NORMAL') {
           return 1;
         }
         if (stateRecord.speed != 'NONE' && state == successorState) {
@@ -104,7 +120,7 @@ class SelfDrivingCarAgent {
       }
 
       if (action == 'ACCELERATE_TO_HIGH_SPEED') {
-        if (stateRecord.speed == 'NONE' && stateRecord.name == successorStateRecord.name && successorStateRecord.speed == 'HIGH') {
+        if (stateRecord.speed == 'NONE' && stateRecord.name == successorStateRecord.name && stateRecord.condition == successorStateRecord.condition && successorStateRecord.speed == 'HIGH') {
           return 1;
         }
         if (stateRecord.speed != 'NONE' && state == successorState) {
@@ -144,7 +160,7 @@ class SelfDrivingCarAgent {
     }
 
     if (this._roadStates.includes(state) && action == 'CRUISE' && stateRecord.speed != 'NONE') {
-      const speed = SPEED_LIMITS[stateRecord.type] + SPEEDS[stateRecord.speed];
+      const speed = CONDITIONS[stateRecord.condition]['effect'] * SPEED_LIMITS[stateRecord.type] + SPEEDS[stateRecord.speed];
       const distance = stateRecord.length;
       return -360 * distance / speed;
     }
