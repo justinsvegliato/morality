@@ -11,7 +11,7 @@ class MoralExemplarEthics {
 
   transform(agent, program) {
     for (const state of agent.states()) {
-      for (const action of agent.actions()) { // TODO May in general depend on state
+      for (const action of agent.actions()) {
         program.constraints[`moralExemplarEthics${state}${action}`] = {'max': 0};
       }
 
@@ -31,7 +31,7 @@ class MoralExemplarEthics {
       // Add constraints if there are any moral examples for this state
       if (Object.keys(morallyPermittedActions).length > 0) {
         // Add a positive coefficient to actions that were not preferred by any moral exemplars
-        for (const action of agent.actions()) { // TODO May in general depend on state
+        for (const action of agent.actions()) {
           if (!morallyPermittedActions.includes(action)) {
             program.variables[`state${state}${action}`][`moralExemplarEthics${state}${action}`] = 1;
           }
