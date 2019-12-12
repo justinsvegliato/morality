@@ -30,33 +30,33 @@ const agent = new SelfDrivingCarAgent({
   goalLocation: 'HOME'
 });
 
-const norms = ['Hesitant Operation', 'Reckless Operation'];
+const norms = ['HESITANT_OPERATION', 'RECKLESS_OPERATION'];
 const violationFunction = (state) => {
-  const stateRecord = agent._stateRegistry[state];
-  if (stateRecord.speed == 'HIGH') {
-    return ['Reckless Operation'];
+  const information = agent.get(state);
+  if (information.speed == 'HIGH') {
+    return ['RECKLESS_OPERATION'];
   }
-  if (stateRecord.speed == 'NORMAL' && stateRecord.condition == 'BUSY') {
-    return ['Reckless Operation'];
+  if (information.speed == 'NORMAL' && information.condition == 'BUSY') {
+    return ['RECKLESS_OPERATION'];
   }
-  if (stateRecord.speed == 'LOW' && stateRecord.condition == 'EMPTY') {
-    return ['Hesitant Operation'];
+  if (information.speed == 'LOW' && information.condition == 'EMPTY') {
+    return ['HESITANT_OPERATION'];
   }
   return [];
 };
 const penaltyFunction = (norm, state) => {
-  const stateRecord = agent._stateRegistry[state];
-  if (norm == 'Hesitant Operation') {
+  const information = agent.get(state);
+  if (norm == 'HESITANT_OPERATION') {
     return 1;
   }
-  if (norm == 'Reckless Operation') {
-    if (stateRecord.speed == 'HIGH' && stateRecord.condition == 'BUSY') {
+  if (norm == 'RECKLESS_OPERATION') {
+    if (information.speed == 'HIGH' && information.condition == 'BUSY') {
       return 20;
     }
-    if (stateRecord.speed == 'HIGH' && stateRecord.condition == 'EMPTY') {
-      return 10;
+    if (information.speed == 'HIGH' && information.condition == 'EMPTY') {
+      return 7;
     }
-    if (stateRecord.speed == 'NORMAL' && stateRecord.condition == 'BUSY') {
+    if (information.speed == 'NORMAL' && information.condition == 'BUSY') {
       return 10;
     }
   }
