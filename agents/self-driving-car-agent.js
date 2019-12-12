@@ -17,18 +17,8 @@ const SPEED_LIMITS = {
   'FREEWAY': 65
 };
 const CONDITIONS = {
-  'EMPTY': {
-    'probability': 0.8,
-    'effect': 1
-  },
-  'BUSY': {
-    'probability': 0.15,
-    'effect': 0.8
-  },
-  'CONSTRUCTION': {
-    'probability': 0.05,
-    'effect': 0.9
-  }
+  'EMPTY': 0.8,
+  'BUSY': 0.2
 };
 const GOAL_REWARD = 1000;
 const DRIVER_ERROR_PENALTY = 3600;
@@ -88,7 +78,7 @@ class SelfDrivingCarAgent {
 
       if (action == 'TURN_ONTO_' + successorStateRecord.name) {
         if (successorStateRecord.fromLocation == stateRecord.name && successorStateRecord.speed == 'NONE') {
-          return CONDITIONS[successorStateRecord.condition]['probability'];
+          return CONDITIONS[successorStateRecord.condition];
         }
       }
 
@@ -150,7 +140,7 @@ class SelfDrivingCarAgent {
     }
 
     if (this._roadStates.includes(state) && action == 'CRUISE' && stateRecord.speed != 'NONE') {
-      const speed = CONDITIONS[stateRecord.condition]['effect'] * SPEED_LIMITS[stateRecord.type] + SPEEDS[stateRecord.speed];
+      const speed = SPEED_LIMITS[stateRecord.type] + SPEEDS[stateRecord.speed];
       const distance = stateRecord.length;
       return -360 * distance / speed;
     }
