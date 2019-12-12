@@ -22,7 +22,7 @@ const violationFunction = (state) => {
   }
   return [];
 };
-const penaltyFunction = (norm, state, action) => {
+const penaltyFunction = (norm, state) => {
   if (norm == 'Quiet Operation') {
     return 1;
   }
