@@ -32,7 +32,7 @@ class NormBasedEthics {
         let coefficient = 0;
         for (const successorState of agent.states()) {
           for (const norm of this._violationFunction(successorState)) {
-            coefficient += agent.transitionFunction(state, action, successorState) * this._penaltyFunction(norm, state, action);
+            coefficient += agent.transitionFunction(state, action, successorState) * this._penaltyFunction(norm, successorState);
           }
         }
 
