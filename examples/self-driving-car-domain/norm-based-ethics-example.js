@@ -30,64 +30,35 @@ const agent = new SelfDrivingCarAgent({
   goalLocation: 'HOME'
 });
 
-const lowSpeedStates = [
-  'MATOON_STREET_EAST_CITY_LOW',
-  'MATOON_STREET_WEST_CITY_LOW',
-  'GRAY_STREET_NORTH_CITY_LOW',
-  'GRAY_STREET_SOUTH_CITY_LOW',
-  'MAIN_STREET_EAST_CITY_LOW',
-  'MAIN_STREET_WEST_CITY_LOW',
-  'ROUTE9_EAST_COUNTY_LOW',
-  'ROUTE9_WEST_COUNTY_LOW',
-  'ROUTE116_NORTH_FREEWAY_LOW',
-  'ROUTE116_SOUTH_FREEWAY_LOW',
-  'NORTH_PLEASANT_STREET_NORTH_CITY_LOW',
-  'NORTH_PLEASANT_STREET_SOUTH_CITY_LOW',
-  'EAST_PLEASANT_STREET_EAST_CITY_LOW',
-  'EAST_PLEASANT_STREET_WEST_CITY_LOW',
-  'TRIANGLE_STREET_NORTH_CITY_LOW',
-  'TRIANGLE_STREET_SOUTH_CITY_LOW',
-  'COLLEGE_STREET_NORTH_CITY_LOW',
-  'COLLEGE_STREET_SOUTH_CITY_LOW'
-];
-
-const highSpeedStates = [
-  'MATOON_STREET_EAST_CITY_HIGH',
-  'MATOON_STREET_WEST_CITY_HIGH',
-  'GRAY_STREET_NORTH_CITY_HIGH',
-  'GRAY_STREET_SOUTH_CITY_HIGH',
-  'MAIN_STREET_EAST_CITY_HIGH',
-  'MAIN_STREET_WEST_CITY_HIGH',
-  'ROUTE9_EAST_COUNTY_HIGH',
-  'ROUTE9_WEST_COUNTY_HIGH',
-  'ROUTE116_NORTH_FREEWAY_HIGH',
-  'ROUTE116_SOUTH_FREEWAY_HIGH',
-  'NORTH_PLEASANT_STREET_NORTH_CITY_HIGH',
-  'NORTH_PLEASANT_STREET_SOUTH_CITY_HIGH',
-  'EAST_PLEASANT_STREET_EAST_CITY_HIGH',
-  'EAST_PLEASANT_STREET_WEST_CITY_HIGH',
-  'TRIANGLE_STREET_NORTH_CITY_HIGH',
-  'TRIANGLE_STREET_SOUTH_CITY_HIGH',
-  'COLLEGE_STREET_NORTH_CITY_HIGH',
-  'COLLEGE_STREET_SOUTH_CITY_HIGH'
-];
-
 const norms = ['Hesitant Operation', 'Reckless Operation'];
 const violationFunction = (state) => {
-  if (lowSpeedStates.includes(state)) {
-    return ['Hesitant Operation'];
-  }
-  if (highSpeedStates.includes(state)) {
+  const stateRecord = agent._stateRegistry[state];
+  if (stateRecord.speed == 'HIGH') {
     return ['Reckless Operation'];
+  }
+  if (stateRecord.speed == 'NORMAL' && stateRecord.condition == 'BUSY') {
+    return ['Reckless Operation'];
+  }
+  if (stateRecord.speed == 'LOW' && stateRecord.condition == 'EMPTY') {
+    return ['Hesitant Operation'];
   }
   return [];
 };
-const penaltyFunction = (norm, state, action) => {
+const penaltyFunction = (norm, state) => {
+  const stateRecord = agent._stateRegistry[state];
   if (norm == 'Hesitant Operation') {
-    return 5;
+    return 1;
   }
   if (norm == 'Reckless Operation') {
-    return 10;
+    if (stateRecord.speed == 'HIGH' && stateRecord.condition == 'BUSY') {
+      return 20;
+    }
+    if (stateRecord.speed == 'HIGH' && stateRecord.condition == 'EMPTY') {
+      return 10;
+    }
+    if (stateRecord.speed == 'NORMAL' && stateRecord.condition == 'BUSY') {
+      return 10;
+    }
   }
   return 0;
 };
