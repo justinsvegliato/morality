@@ -51,18 +51,18 @@ const penaltyFunction = (norm, state) => {
   }
   if (norm == 'RECKLESS_OPERATION') {
     if (information.speed == 'HIGH' && information.condition == 'BUSY') {
-      return 20;
+      return 30;
     }
     if (information.speed == 'HIGH' && information.condition == 'EMPTY') {
-      return 7;
+      return 7.5;
     }
     if (information.speed == 'NORMAL' && information.condition == 'BUSY') {
-      return 10;
+      return 15;
     }
   }
   return 0;
 };
-const tolerance = 5;
+const tolerance = 7;
 const ethics = new NormBasedEthics(norms, violationFunction, penaltyFunction, tolerance);
 
 console.log('Amoral Policy');
