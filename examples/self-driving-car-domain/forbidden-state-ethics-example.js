@@ -31,7 +31,7 @@ const agent = new SelfDrivingCarAgent({
 });
 
 const forbiddenStates = agent.states().filter((state) => {
-  const information = agent.get(state);
+  const information = agent.interpret(state);
   const isSpeeding = information.speed == 'HIGH';
   const isUncareful = information.speed == 'NORMAL' && information.condition == 'BUSY';
   return isSpeeding || isUncareful;

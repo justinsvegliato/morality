@@ -162,7 +162,7 @@ class SelfDrivingCarAgent {
     return this._world.startLocations;
   }
 
-  get(state) {
+  interpret(state) {
     return this._stateRegistry[state];
   }
 }

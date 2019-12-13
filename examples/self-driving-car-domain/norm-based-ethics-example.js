@@ -32,7 +32,7 @@ const agent = new SelfDrivingCarAgent({
 
 const norms = ['HESITANT_OPERATION', 'RECKLESS_OPERATION'];
 const violationFunction = (state) => {
-  const information = agent.get(state);
+  const information = agent.interpret(state);
   if (information.speed == 'HIGH') {
     return ['RECKLESS_OPERATION'];
   }
@@ -45,7 +45,7 @@ const violationFunction = (state) => {
   return [];
 };
 const penaltyFunction = (norm, state) => {
-  const information = agent.get(state);
+  const information = agent.interpret(state);
   if (norm == 'HESITANT_OPERATION') {
     return 1;
   }
