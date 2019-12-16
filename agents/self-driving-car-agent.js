@@ -24,7 +24,6 @@ const CONDITIONS = {
   'BUSY': 0.2
 };
 
-const GOAL_REWARD = 1000;
 const MANEUVER_TIME = 5;
 const ACCELERATION_RATE = 2;
 const DRIVER_ERROR_PENALTY = 3600;
@@ -129,7 +128,7 @@ class SelfDrivingCarAgent {
     const stateRecord = this._stateRegistry[state];
 
     if (this._world.goalLocation == stateRecord.name && action == 'STAY') {
-      return GOAL_REWARD;
+      return 0;
     }
 
     if (this._locationStates.includes(state) && action == 'STAY') {
