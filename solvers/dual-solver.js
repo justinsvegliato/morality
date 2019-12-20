@@ -72,7 +72,7 @@ function getOccupancyMeasures(mdp, result) {
   return occupancyMeasures;
 }
 
-function getPolicy(mdp, occupancyMeasures) {
+function getDeterministicPolicy(mdp, occupancyMeasures) {
   const policy = {};
 
   for (const variableState of mdp.states()) {
@@ -91,6 +91,37 @@ function getPolicy(mdp, occupancyMeasures) {
   }
 
   return policy;
+}
+
+function getStochasticPolicy(mdp, occupancyMeasures) {
+  const policy = {};
+
+  for (const variableState of mdp.states()) {
+    const normalizer = Object.values(occupancyMeasures[variableState]).reduce((sum, value) => sum + value);
+
+    policy[variableState] = {};
+
+    if (normalizer == 0) {
+      continue;
+    }
+
+    for (const variableAction of mdp.actions()) {
+      const occupancyMeasure = occupancyMeasures[variableState][variableAction];
+      if (occupancyMeasure > 0) {
+        policy[variableState][variableAction] = occupancyMeasure / normalizer;
+      }
+    }
+  }
+
+  return policy;
+}
+
+function getPolicy(mdp, occupancyMeasures, isStochastic) {
+  if (isStochastic) {
+    return getStochasticPolicy(mdp, occupancyMeasures);
+  }
+
+  return getDeterministicPolicy(mdp, occupancyMeasures);
 }
 
 function getValues(mdp, policy) {
@@ -136,7 +167,7 @@ function getValues(mdp, policy) {
   }
 }
 
-function solve(mdp, transformer) {
+function solve(mdp, transformer, isStochastic = false) {
   const program = getProgram(mdp, transformer);
   const result = solver.Solve(program);
 
@@ -146,7 +177,7 @@ function solve(mdp, transformer) {
 
   const objective = result.result;
   const occupancyMeasures = getOccupancyMeasures(mdp, result);
-  const policy = getPolicy(mdp, occupancyMeasures);
+  const policy = getPolicy(mdp, occupancyMeasures, isStochastic);
   const values = getValues(mdp, policy);
 
   return {
