@@ -215,7 +215,7 @@ if (forbiddenStateEthicsSolution) {
 const normBasedEthics = new NormBasedEthics(norms, violationFunction, penaltyFunction, tolerance);
 
 console.log('Norm-Based Ethics Moral Policy');
-const normBasedEthicsSolution = morality.solve(agent, normBasedEthics, true);
+const normBasedEthicsSolution = morality.solve(agent, normBasedEthics);
 if (normBasedEthicsSolution) {
   console.log(JSON.stringify(normBasedEthicsSolution.policy));
 }
