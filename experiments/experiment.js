@@ -199,23 +199,23 @@ const penaltyFunction = (norm, state) => {
 const tolerance = 5;
 
 console.log('Amoral Policy');
-const amoralSolution = morality.solve(agent);
+const amoralSolution = morality.solve(agent, null, true);
 if (amoralSolution) {
-  console.log(amoralSolution.policy);
+  console.log(JSON.stringify(amoralSolution.policy));
 }
 
 const forbiddenStateEthics = new ForbiddenStateEthics(forbiddenStates);
 
 console.log('Forbidden State Ethics Moral Policy');
-const forbiddenStateEthicsSolution = morality.solve(agent, forbiddenStateEthics);
+const forbiddenStateEthicsSolution = morality.solve(agent, forbiddenStateEthics, true);
 if (forbiddenStateEthicsSolution) {
-  console.log(forbiddenStateEthicsSolution.policy);
+  console.log(JSON.stringify(forbiddenStateEthicsSolution.policy));
 }
 
 const normBasedEthics = new NormBasedEthics(norms, violationFunction, penaltyFunction, tolerance);
 
 console.log('Norm-Based Ethics Moral Policy');
-const normBasedEthicsSolution = morality.solve(agent, normBasedEthics);
+const normBasedEthicsSolution = morality.solve(agent, normBasedEthics, true);
 if (normBasedEthicsSolution) {
   console.log(JSON.stringify(normBasedEthicsSolution.policy));
 }
