@@ -116,14 +116,6 @@ function getStochasticPolicy(mdp, occupancyMeasures) {
   return policy;
 }
 
-function getPolicy(mdp, occupancyMeasures, isStochastic) {
-  if (isStochastic) {
-    return getStochasticPolicy(mdp, occupancyMeasures);
-  }
-
-  return getDeterministicPolicy(mdp, occupancyMeasures);
-}
-
 function getValues(mdp, policy) {
   const memoizedTransitionFunction = {};
   const memoizedRewardFunction = {};
@@ -177,7 +169,17 @@ function solve(mdp, transformer, isStochastic = false) {
 
   const objective = result.result;
   const occupancyMeasures = getOccupancyMeasures(mdp, result);
-  const policy = getPolicy(mdp, occupancyMeasures, isStochastic);
+
+  if (isStochastic) {
+    const policy = getStochasticPolicy(mdp, occupancyMeasures);
+
+    return {
+      objective,
+      policy
+    };
+  }
+
+  const policy = getDeterministicPolicy(mdp, occupancyMeasures);
   const values = getValues(mdp, policy);
 
   return {
@@ -188,5 +190,5 @@ function solve(mdp, transformer, isStochastic = false) {
 }
 
 module.exports = {
-  solve: solve
+  solve
 };

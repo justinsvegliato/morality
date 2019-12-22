@@ -1,9 +1,9 @@
 'use strict';
 
-const morality = require('../../morality.js');
-const SelfDrivingCarAgent = require('../../agents/self-driving-car-agent.js');
-const ForbiddenStateEthics = require('../../ethics/forbidden-state-ethics.js');
-const NormBasedEthics = require('../../ethics/norm-based-ethics.js');
+const morality = require('../morality.js');
+const SelfDrivingCarAgent = require('../agents/self-driving-car-agent.js');
+const ForbiddenStateEthics = require('../ethics/forbidden-state-ethics.js');
+const NormBasedEthics = require('../ethics/norm-based-ethics.js');
 
 const agent = new SelfDrivingCarAgent({
   'locations': [
