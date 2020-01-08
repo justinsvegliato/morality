@@ -21,7 +21,8 @@
   },
   "homepage": "https://moralityjs.com",
   "dependencies": {
-    "javascript-lp-solver": "^0.4.5"
+    "javascript-lp-solver": "^0.4.5",
+    "table": "^5.4.6"
   },
   "devDependencies": {
     "eslint": "^6.4.0",
