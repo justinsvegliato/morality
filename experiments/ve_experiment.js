@@ -37,12 +37,12 @@ if (IS_VERBOSE) {
   }
 
   if (fewDctSolution) {
-    console.log('Few DCT Moral Policy');
+    console.log('Few VE Moral Policy');
     console.log(JSON.stringify(fewDctSolution.policy));
   }
 
   if (manyDctSolution) {
-    console.log('Many DCT Moral Policy');
+    console.log('Many VE Moral Policy');
     console.log(JSON.stringify(manyDctSolution.policy));
   }
 }
@@ -50,6 +50,6 @@ if (IS_VERBOSE) {
 experimentHandler.print([
   ['Ethics', 'Settings', 'Value (s)', 'Price of Morality (s)'],
   ['None', '---', amoralSolution.objective, 0],
-  ['DCT', 'Few', fewVeSolution.objective, fewVeSolution.objective - amoralSolution.objective],
-  ['DCT', 'Many', manyVeSolution.objective, manyVeSolution.objective - amoralSolution.objective]
+  ['VE', 'Few', fewVeSolution.objective, fewVeSolution.objective - amoralSolution.objective],
+  ['VE', 'Many', manyVeSolution.objective, manyVeSolution.objective - amoralSolution.objective]
 ]);

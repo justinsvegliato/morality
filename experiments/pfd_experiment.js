@@ -65,14 +65,19 @@ if (IS_VERBOSE) {
     console.log(JSON.stringify(amoralSolution.policy));
   }
 
-  if (fewDctSolution) {
-    console.log('Few DCT Moral Policy');
-    console.log(JSON.stringify(fewDctSolution.policy));
+  if (lowPfdSolution) {
+    console.log('Few PFD Moral Policy');
+    console.log(JSON.stringify(lowPfdSolution.policy));
   }
 
-  if (manyDctSolution) {
-    console.log('Many DCT Moral Policy');
-    console.log(JSON.stringify(manyDctSolution.policy));
+  if (mediumPfdSolution) {
+    console.log('Medium PFD Moral Policy');
+    console.log(JSON.stringify(mediumPfdSolution.policy));
+  }
+
+  if (highPfdSolution) {
+    console.log('High PFD Moral Policy');
+    console.log(JSON.stringify(highPfdSolution.policy));
   }
 }
 
