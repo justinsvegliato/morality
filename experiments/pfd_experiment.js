@@ -4,7 +4,7 @@ const city = require('./map.json');
 const morality = require('../morality.js');
 const SelfDrivingCarAgent = require('../agents/self-driving-car-agent.js');
 const PrimaFacieDuties = require('../ethics/prima-facie-duties.js');
-const table = require('table').table;
+const experimentHandler = require('./experiment_handler.js');
 
 const START_LOCATION = process.argv[2].toUpperCase();
 const GOAL_LOCATION = process.argv[3].toUpperCase();
@@ -76,10 +76,10 @@ if (IS_VERBOSE) {
   }
 }
 
-console.log(table([
-  ['PFD', 'Value (s)', 'Price of Morality (s)'],
-  ['None', Math.abs(amoralSolution.objective).toFixed(2), 0],
-  ['Low', Math.abs(lowPfdSolution.objective).toFixed(2), Math.abs(lowPfdSolution.objective - amoralSolution.objective).toFixed(2)],
-  ['Medium', Math.abs(mediumPfdSolution.objective).toFixed(2), Math.abs(mediumPfdSolution.objective - amoralSolution.objective).toFixed(2)],
-  ['High', Math.abs(highPfdSolution.objective).toFixed(2), Math.abs(highPfdSolution.objective - amoralSolution.objective).toFixed(2)]
-]));
+experimentHandler.print([
+  ['Ethics', 'Settings', 'Value (s)', 'Price of Morality (s)'],
+  ['None', '---', amoralSolution.objective, 0],
+  ['PFD', 'Low', lowPfdSolution.objective, lowPfdSolution.objective - amoralSolution.objective],
+  ['PFD', 'Medium', mediumPfdSolution.objective, mediumPfdSolution.objective - amoralSolution.objective],
+  ['PFD', 'High', highPfdSolution.objective, highPfdSolution.objective - amoralSolution.objective]
+]);

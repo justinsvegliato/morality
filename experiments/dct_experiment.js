@@ -4,7 +4,7 @@ const city = require('./map.json');
 const morality = require('../morality.js');
 const SelfDrivingCarAgent = require('../agents/self-driving-car-agent.js');
 const DivineCommandTheory = require('../ethics/divine-command-theory.js');
-const table = require('table').table;
+const experimentHandler = require('./experiment_handler.js');
 
 const START_LOCATION = process.argv[2].toUpperCase();
 const GOAL_LOCATION = process.argv[3].toUpperCase();
@@ -50,9 +50,9 @@ if (IS_VERBOSE) {
   }
 }
 
-console.log(table([
-  ['DCT', 'Value (s)', 'Price of Morality (s)'],
-  ['None', Math.abs(amoralSolution.objective).toFixed(2), 0],
-  ['Few', Math.abs(fewDctSolution.objective).toFixed(2), Math.abs(fewDctSolution.objective - amoralSolution.objective).toFixed(2)],
-  ['Many', Math.abs(manyDctSolution.objective).toFixed(2), Math.abs(manyDctSolution.objective - amoralSolution.objective).toFixed(2)]
-]));
+experimentHandler.print([
+  ['Ethics', 'Settings', 'Value (s)', 'Price of Morality (s)'],
+  ['None', '---', amoralSolution.objective, 0],
+  ['DCT', 'Few', fewDctSolution.objective, fewDctSolution.objective - amoralSolution.objective],
+  ['DCT', 'Many', manyDctSolution.objective, manyDctSolution.objective - amoralSolution.objective]
+]);
