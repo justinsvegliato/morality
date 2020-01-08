@@ -2,7 +2,7 @@
 
 const morality = require('../../morality.js');
 const GridWorldAgent = require('../../agents/grid-world-agent.js');
-const MoralExemplarEthics = require('../../ethics/moral-exemplar-ethics.js');
+const DivineCommandTheory = require('../../ethics/divine-command-theory.js');
 const printer = require('../../utils/printer.js');
 
 const gridWorld = [
@@ -15,10 +15,7 @@ const gridWorld = [
 ];
 const agent = new GridWorldAgent(gridWorld);
 
-const ethics = new MoralExemplarEthics([
-  [[0], ['WEST']],
-  [[1], ['NORTH']]
-]);
+const ethics = new DivineCommandTheory([55]);
 
 console.log('Domain');
 printer.printGridWorldDomain(gridWorld, ethics);

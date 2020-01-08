@@ -1,15 +1,15 @@
 'use strict';
 
-class NormBasedEthics {
-  constructor(norms, violationFunction, penaltyFunction, tolerance) {
-    this._norms = norms;
+class PrimaFacieDuties {
+  constructor(duties, violationFunction, penaltyFunction, tolerance) {
+    this._duties = duties;
     this._violationFunction = violationFunction;
     this._penaltyFunction = penaltyFunction;
     this._tolerance = tolerance;
   }
 
-  get norms() {
-    return this._norms;
+  get duties() {
+    return this._duties;
   }
 
   get violationFunction() {
@@ -25,21 +25,21 @@ class NormBasedEthics {
   }
 
   transform(agent, program) {
-    program.constraints['normBasedEthics'] = {'max': this._tolerance};
+    program.constraints['primaFacieDuties'] = {'max': this._tolerance};
 
     for (const state of agent.states()) {
       for (const action of agent.actions()) {
         let coefficient = 0;
         for (const successorState of agent.states()) {
-          for (const norm of this._violationFunction(successorState)) {
-            coefficient += agent.transitionFunction(state, action, successorState) * this._penaltyFunction(norm, successorState);
+          for (const duty of this._violationFunction(successorState)) {
+            coefficient += agent.transitionFunction(state, action, successorState) * this._penaltyFunction(duty, successorState);
           }
         }
 
-        program.variables[`state${state}${action}`]['normBasedEthics'] = coefficient;
+        program.variables[`state${state}${action}`]['primaFacieDuties'] = coefficient;
       }
     }
   }
 }
 
-module.exports = NormBasedEthics;
+module.exports = PrimaFacieDuties;

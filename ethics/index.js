@@ -1,11 +1,11 @@
 'use strict';
 
-const ForbiddenStateEthics = require('./forbidden-state-ethics.js');
-const NormBasedEthics = require('./norm-based-ethics.js');
-const MoralExemplarEthics = require('./moral-exemplar-ethics.js');
+const DivineCommandTheory = require('./divine-command-theory.js');
+const PrimaFacieDuties = require('./prima-facie-duties.js');
+const VirtueEthics = require('./virtue-ethics.js');
 
 module.exports = {
-  ForbiddenStateEthics,
-  NormBasedEthics,
-  MoralExemplarEthics
+  DivineCommandTheory,
+  PrimaFacieDuties,
+  VirtueEthics
 };

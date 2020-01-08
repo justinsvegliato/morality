@@ -2,7 +2,7 @@
 
 const morality = require('../../morality.js');
 const SelfDrivingCarAgent = require('../../agents/self-driving-car-agent.js');
-const NormBasedEthics = require('../../ethics/norm-based-ethics.js');
+const PrimaFacieDuties = require('../../ethics/prima-facie-duties.js');
 
 const agent = new SelfDrivingCarAgent({
   'locations': [
@@ -156,7 +156,7 @@ const agent = new SelfDrivingCarAgent({
   'goalLocation': 'OFFICE'
 });
 
-const norms = ['HESITANT_OPERATION', 'RECKLESS_OPERATION'];
+const duties = ['HESITANT_OPERATION', 'RECKLESS_OPERATION'];
 const violationFunction = (state) => {
   const information = agent.interpret(state);
   if (information.speed == 'HIGH') {
@@ -170,12 +170,12 @@ const violationFunction = (state) => {
   }
   return [];
 };
-const penaltyFunction = (norm, state) => {
+const penaltyFunction = (duty, state) => {
   const information = agent.interpret(state);
-  if (norm == 'HESITANT_OPERATION') {
+  if (duty == 'HESITANT_OPERATION') {
     return 1;
   }
-  if (norm == 'RECKLESS_OPERATION') {
+  if (duty == 'RECKLESS_OPERATION') {
     if (information.speed == 'HIGH' && information.condition == 'BUSY') {
       return 30;
     }
@@ -189,7 +189,7 @@ const penaltyFunction = (norm, state) => {
   return 0;
 };
 const tolerance = 5;
-const ethics = new NormBasedEthics(norms, violationFunction, penaltyFunction, tolerance);
+const ethics = new PrimaFacieDuties(duties, violationFunction, penaltyFunction, tolerance);
 
 console.log('Amoral Policy');
 const amoralSolution = morality.solve(agent);

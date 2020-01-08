@@ -2,7 +2,7 @@
 
 const morality = require('../../morality.js');
 const SelfDrivingCarAgent = require('../../agents/self-driving-car-agent.js');
-const MoralExemplarEthics = require('../../ethics/moral-exemplar-ethics.js');
+const VirtueEthics = require('../../ethics/virtue-ethics.js');
 
 const agent = new SelfDrivingCarAgent({
   locations: ['LIBRARY', 'GROCERY_STORE', 'COFFEE_SHOP', 'HIGH_SCHOOL', 'PIZZA_PLACE', 'HOME', 'TRAIN_STATION', 'UNIVERSITY'],
@@ -30,7 +30,7 @@ const agent = new SelfDrivingCarAgent({
   goalLocation: 'HOME'
 });
 
-const ethics = new MoralExemplarEthics([
+const ethics = new VirtueEthics([
   [['NORTH_PLEASANT_STREET_SOUTH_CITY_NONE'], ['ACCELERATE_TO_SPEED_LIMIT']],
   [['EAST_PLEASANT_STREET_WEST_CITY_NONE'], ['ACCELERATE_TO_HIGH_SPEED']],
   [['TRIANGLE_STREET_SOUTH_CITY_NONE'], ['ACCELERATE_TO_LOW_SPEED']]

@@ -2,7 +2,7 @@
 
 const morality = require('../../morality.js');
 const GridWorldAgent = require('../../agents/grid-world-agent.js');
-const NormBasedEthics = require('../../ethics/norm-based-ethics.js');
+const VirtueEthics = require('../../ethics/virtue-ethics.js');
 const printer = require('../../utils/printer.js');
 
 const gridWorld = [
@@ -15,24 +15,10 @@ const gridWorld = [
 ];
 const agent = new GridWorldAgent(gridWorld);
 
-const norms = ['Quiet Operation', 'Personal Space'];
-const violationFunction = (state) => {
-  if (state == 55) {
-    return ['Quiet Operation', 'Personal Space'];
-  }
-  return [];
-};
-const penaltyFunction = (norm, state) => {
-  if (norm == 'Quiet Operation') {
-    return 1;
-  }
-  if (norm == 'Personal Space') {
-    return 10;
-  }
-  return 0;
-};
-const tolerance = 0.1;
-const ethics = new NormBasedEthics(norms, violationFunction, penaltyFunction, tolerance);
+const ethics = new VirtueEthics([
+  [[0], ['WEST']],
+  [[1], ['NORTH']]
+]);
 
 console.log('Domain');
 printer.printGridWorldDomain(gridWorld, ethics);

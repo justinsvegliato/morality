@@ -1,28 +1,28 @@
 'use strict';
 
-class MoralExemplarEthics {
-  constructor(exemplarTrajectories) {
-    this._exemplarTrajectories = exemplarTrajectories;
+class VirtueEthics {
+  constructor(moralTrajectories) {
+    this._moralTrajectories = moralTrajectories;
   }
 
-  get exemplarTrajectories() {
-    return this._exemplarTrajectories;
+  get moralTrajectories() {
+    return this._moralTrajectories;
   }
 
   transform(agent, program) {
     for (const state of agent.states()) {
       for (const action of agent.actions()) {
-        program.constraints[`moralExemplarEthics${state}${action}`] = {'max': 0};
+        program.constraints[`virtueEthics${state}${action}`] = {'max': 0};
       }
 
       const morallyPermittedActions = [];
 
       // Look for any moral examples that correspond to this state
-      for (const exemplarTrajectory of this._exemplarTrajectories) {
-        for (const [exemplarStateIndex, exemplarState] of exemplarTrajectory[0].entries()) {
+      for (const moralTrajectory of this._moralTrajectories) {
+        for (const [moralStateIndex, moralState] of moralTrajectory[0].entries()) {
           // Add to the morally permitted actions for this state if there is a matching moral example
-          if (exemplarState == state) {
-            const exemplarAction = exemplarTrajectory[1][exemplarStateIndex];
+          if (moralState == state) {
+            const exemplarAction = moralTrajectory[1][moralStateIndex];
             morallyPermittedActions.push(exemplarAction);
           }
         }
@@ -33,7 +33,7 @@ class MoralExemplarEthics {
         // Add a positive coefficient to actions that were not preferred by any moral exemplars
         for (const action of agent.actions()) {
           if (!morallyPermittedActions.includes(action)) {
-            program.variables[`state${state}${action}`][`moralExemplarEthics${state}${action}`] = 1;
+            program.variables[`state${state}${action}`][`virtueEthics${state}${action}`] = 1;
           }
         }
       }
@@ -41,4 +41,4 @@ class MoralExemplarEthics {
   }
 }
 
-module.exports = MoralExemplarEthics;
+module.exports = VirtueEthics;

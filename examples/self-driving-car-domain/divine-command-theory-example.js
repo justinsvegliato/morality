@@ -2,7 +2,7 @@
 
 const morality = require('../../morality.js');
 const SelfDrivingCarAgent = require('../../agents/self-driving-car-agent.js');
-const ForbiddenStateEthics = require('../../ethics/forbidden-state-ethics.js');
+const DivineCommandTheory = require('../../ethics/divine-command-theory.js');
 
 const agent = new SelfDrivingCarAgent({
   'locations': [
@@ -162,7 +162,7 @@ const forbiddenStates = agent.states().filter((state) => {
   const isUncareful = information.speed == 'NORMAL' && information.condition == 'BUSY';
   return isSpeeding || isUncareful;
 });
-const ethics = new ForbiddenStateEthics(forbiddenStates);
+const ethics = new DivineCommandTheory(forbiddenStates);
 
 console.log('Amoral Policy');
 const amoralSolution = morality.solve(agent);
