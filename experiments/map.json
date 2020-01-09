@@ -1,147 +1,273 @@
 {
   "locations": [
     "HOME",
-    "HIGH_SCHOOL",
+    "SCHOOL",
     "TRAIN_STATION",
-    "COFFEE_SHOP",
+    "CAFE",
     "PIZZA_PLACE",
     "GROCERY_STORE",
     "GAS_STATION",
     "OFFICE",
-    "UNIVERSITY",
+    "COLLEGE",
     "TOWN_HALL",
     "HOSPITAL",
-    "RESTAURANT",
+    "DINER",
     "POST_OFFICE",
     "PARK",
     "DELI"
   ],
   "roads": {
     "MATOON_STREET": {
-      "fromLocation": "HIGH_SCHOOL",
+      "fromLocation": "SCHOOL",
       "toLocation": "HOME",
       "type": "CITY",
-      "length": 1
+      "length": "2.24"
+    },
+    "MATOON_STREET_REVERSED": {
+      "fromLocation": "HOME",
+      "toLocation": "SCHOOL",
+      "type": "CITY",
+      "length": "2.24"
     },
     "GRAY_STREET": {
       "fromLocation": "HOME",
       "toLocation": "TRAIN_STATION",
       "type": "CITY",
-      "length": 3
+      "length": "5.06"
+    },
+    "GRAY_STREET_REVERSED": {
+      "fromLocation": "TRAIN_STATION",
+      "toLocation": "HOME",
+      "type": "CITY",
+      "length": "5.06"
     },
     "ASTOR_DRIVE": {
-      "fromLocation": "HIGH_SCHOOL",
-      "toLocation": "COFFEE_SHOP",
+      "fromLocation": "SCHOOL",
+      "toLocation": "CAFE",
       "type": "CITY",
-      "length": 2
+      "length": "3.59"
+    },
+    "ASTOR_DRIVE_REVERSED": {
+      "fromLocation": "CAFE",
+      "toLocation": "SCHOOL",
+      "type": "CITY",
+      "length": "3.59"
     },
     "MAIN_STREET": {
-      "fromLocation": "COFFEE_SHOP",
+      "fromLocation": "CAFE",
       "toLocation": "PIZZA_PLACE",
       "type": "CITY",
-      "length": 2
+      "length": "3.04"
+    },
+    "MAIN_STREET_REVERSED": {
+      "fromLocation": "PIZZA_PLACE",
+      "toLocation": "CAFE",
+      "type": "CITY",
+      "length": "3.04"
     },
     "PLEASANT_STREET": {
       "fromLocation": "PIZZA_PLACE",
       "toLocation": "GROCERY_STORE",
       "type": "CITY",
-      "length": 2
+      "length": "2.93"
+    },
+    "PLEASANT_STREET_REVERSED": {
+      "fromLocation": "GROCERY_STORE",
+      "toLocation": "PIZZA_PLACE",
+      "type": "CITY",
+      "length": "2.93"
     },
     "MERRICK_ROAD": {
+      "fromLocation": "TRAIN_STATION",
+      "toLocation": "PIZZA_PLACE",
+      "type": "COUNTY",
+      "length": "4.96"
+    },
+    "MERRICK_ROAD_REVERSED": {
       "fromLocation": "PIZZA_PLACE",
       "toLocation": "TRAIN_STATION",
       "type": "COUNTY",
-      "length": 3
+      "length": "4.96"
     },
     "TRIANGLE_STREET": {
-      "fromLocation": "HIGH_SCHOOL",
+      "fromLocation": "SCHOOL",
       "toLocation": "TRAIN_STATION",
       "type": "CITY",
-      "length": 3
+      "length": "5.48"
+    },
+    "TRIANGLE_STREET_REVERSED": {
+      "fromLocation": "TRAIN_STATION",
+      "toLocation": "SCHOOL",
+      "type": "CITY",
+      "length": "5.48"
     },
     "SERVICE_ROAD": {
       "fromLocation": "TRAIN_STATION",
       "toLocation": "GAS_STATION",
       "type": "COUNTY",
-      "length": 2
+      "length": "3.06"
+    },
+    "SERVICE_ROAD_REVERSED": {
+      "fromLocation": "GAS_STATION",
+      "toLocation": "TRAIN_STATION",
+      "type": "COUNTY",
+      "length": "3.06"
     },
     "SUNRISE_HIGHWAY": {
       "fromLocation": "GAS_STATION",
       "toLocation": "OFFICE",
       "type": "FREEWAY",
-      "length": 5
+      "length": "10.18"
     },
-    "ASYLUM_ROAD": {
+    "SUNRISE_HIGHWAY_REVERSED": {
+      "fromLocation": "OFFICE",
+      "toLocation": "GAS_STATION",
+      "type": "FREEWAY",
+      "length": "10.18"
+    },
+    "ASYLUM_STREET": {
+      "fromLocation": "COLLEGE",
+      "toLocation": "GROCERY_STORE",
+      "type": "CITY",
+      "length": "2.72"
+    },
+    "ASYLUM_STREET_REVERSED": {
       "fromLocation": "GROCERY_STORE",
-      "toLocation": "UNIVERSITY",
-      "type": "COUNTY",
-      "length": 1
+      "toLocation": "COLLEGE",
+      "type": "CITY",
+      "length": "2.72"
     },
     "COLLEGE_STREET": {
-      "fromLocation": "UNIVERSITY",
+      "fromLocation": "COLLEGE",
       "toLocation": "GAS_STATION",
       "type": "CITY",
-      "length": 1
+      "length": "2.32"
+    },
+    "COLLEGE_STREET_REVERSED": {
+      "fromLocation": "GAS_STATION",
+      "toLocation": "COLLEGE",
+      "type": "CITY",
+      "length": "2.32"
     },
     "STATE_STREET": {
       "fromLocation": "GROCERY_STORE",
       "toLocation": "TOWN_HALL",
       "type": "CITY",
-      "length": 2
+      "length": "3.16"
+    },
+    "STATE_STREET_REVERSED": {
+      "fromLocation": "TOWN_HALL",
+      "toLocation": "GROCERY_STORE",
+      "type": "CITY",
+      "length": "3.16"
     },
     "OAK_ROAD": {
       "fromLocation": "TOWN_HALL",
       "toLocation": "OFFICE",
       "type": "COUNTY",
-      "length": 3
+      "length": "5.88"
+    },
+    "OAK_ROAD_REVERSED": {
+      "fromLocation": "OFFICE",
+      "toLocation": "TOWN_HALL",
+      "type": "COUNTY",
+      "length": "5.88"
     },
     "CUT_STREET": {
       "fromLocation": "PIZZA_PLACE",
-      "toLocation": "UNIVERSITY",
+      "toLocation": "COLLEGE",
       "type": "CITY",
-      "length": 2
+      "length": "3.89"
+    },
+    "CUT_STREET_REVERSED": {
+      "fromLocation": "COLLEGE",
+      "toLocation": "PIZZA_PLACE",
+      "type": "CITY",
+      "length": "3.89"
     },
     "TAYLOR_STREET": {
+      "fromLocation": "HOSPITAL",
+      "toLocation": "TOWN_HALL",
+      "type": "CITY",
+      "length": "2.33"
+    },
+    "TAYLOR_STREET_REVERSED": {
       "fromLocation": "TOWN_HALL",
       "toLocation": "HOSPITAL",
       "type": "CITY",
-      "length": 1
+      "length": "2.33"
     },
     "LINCOLN_AVENUE": {
-      "fromLocation": "UNIVERSITY",
+      "fromLocation": "COLLEGE",
       "toLocation": "HOSPITAL",
       "type": "CITY",
-      "length": 1
+      "length": "2.39"
+    },
+    "LINCOLN_AVENUE_REVERSED": {
+      "fromLocation": "HOSPITAL",
+      "toLocation": "COLLEGE",
+      "type": "CITY",
+      "length": "2.39"
     },
     "ROUTE_9": {
       "fromLocation": "OFFICE",
-      "toLocation": "RESTAURANT",
+      "toLocation": "DINER",
       "type": "COUNTY",
-      "length": 2
+      "length": "3.62"
+    },
+    "ROUTE_9_REVERSED": {
+      "fromLocation": "DINER",
+      "toLocation": "OFFICE",
+      "type": "COUNTY",
+      "length": "3.62"
     },
     "ROUTE_116": {
       "fromLocation": "GAS_STATION",
       "toLocation": "POST_OFFICE",
       "type": "COUNTY",
-      "length": 3
+      "length": "5.02"
+    },
+    "ROUTE_116_REVERSED": {
+      "fromLocation": "POST_OFFICE",
+      "toLocation": "GAS_STATION",
+      "type": "COUNTY",
+      "length": "5.02"
     },
     "FOREST_STREET": {
       "fromLocation": "POST_OFFICE",
       "toLocation": "PARK",
       "type": "CITY",
-      "length": 2
+      "length": "3.97"
     },
-    "CHESNUT_STREET": {
+    "FOREST_STREET_REVERSED": {
+      "fromLocation": "PARK",
+      "toLocation": "POST_OFFICE",
+      "type": "CITY",
+      "length": "3.97"
+    },
+    "PARK_STREET": {
       "fromLocation": "DELI",
       "toLocation": "POST_OFFICE",
       "type": "CITY",
-      "length": 1
+      "length": "1.20"
+    },
+    "PARK_STREET_REVERSED": {
+      "fromLocation": "POST_OFFICE",
+      "toLocation": "DELI",
+      "type": "CITY",
+      "length": "1.20"
     },
     "AMITY_STREET": {
       "fromLocation": "DELI",
-      "toLocation": "RESTAURANT",
+      "toLocation": "DINER",
       "type": "CITY",
-      "length": 2
+      "length": "4.02"
+    },
+    "AMITY_STREET_REVERSED": {
+      "fromLocation": "DINER",
+      "toLocation": "DELI",
+      "type": "CITY",
+      "length": "4.02"
     }
   }
 }
