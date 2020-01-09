@@ -63,22 +63,26 @@ if (IS_VERBOSE) {
   if (amoralSolution) {
     console.log('Amoral Policy');
     console.log(JSON.stringify(amoralSolution.policy));
+    console.log();
   }
 
   if (lowPfdSolution) {
     console.log('Few PFD Moral Policy');
     console.log(JSON.stringify(lowPfdSolution.policy));
+    console.log();
   }
 
   if (mediumPfdSolution) {
     console.log('Medium PFD Moral Policy');
     console.log(JSON.stringify(mediumPfdSolution.policy));
+    console.log();
   }
 
   if (highPfdSolution) {
     console.log('High PFD Moral Policy');
     console.log(JSON.stringify(highPfdSolution.policy));
   }
+  console.log();
 }
 
 const lowPfdPriceOfMorality = lowPfdSolution.objective - amoralSolution.objective;

@@ -34,16 +34,19 @@ if (IS_VERBOSE) {
   if (amoralSolution) {
     console.log('Amoral Policy');
     console.log(JSON.stringify(amoralSolution.policy));
+    console.log();
   }
 
   if (fewVeSolution) {
     console.log('Few VE Moral Policy');
     console.log(JSON.stringify(fewVeSolution.policy));
+    console.log();
   }
 
   if (manyVeSolution) {
     console.log('Many VE Moral Policy');
     console.log(JSON.stringify(manyVeSolution.policy));
+    console.log();
   }
 }
 

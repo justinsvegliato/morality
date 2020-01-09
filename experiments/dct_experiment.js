@@ -37,16 +37,19 @@ if (IS_VERBOSE) {
   if (amoralSolution) {
     console.log('Amoral Policy');
     console.log(JSON.stringify(amoralSolution.policy));
+    console.log();
   }
 
   if (fewDctSolution) {
     console.log('Few DCT Moral Policy');
     console.log(JSON.stringify(fewDctSolution.policy));
+    console.log();
   }
 
   if (manyDctSolution) {
     console.log('Many DCT Moral Policy');
     console.log(JSON.stringify(manyDctSolution.policy));
+    console.log();
   }
 }
 
