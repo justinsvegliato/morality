@@ -16,7 +16,7 @@ const SPEED_ADJUSTMENTS = {
 const SPEED_LIMITS = {
   'CITY': 25,
   'COUNTY': 45,
-  'FREEWAY': 65
+  'FREEWAY': 75
 };
 
 const CONDITIONS = {
