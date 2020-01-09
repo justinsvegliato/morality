@@ -1,6 +1,6 @@
 'use strict';
 
-const city = require('./map.json');
+const city = require('./maps/map.json');
 const morality = require('../morality.js');
 const SelfDrivingCarAgent = require('../agents/self-driving-car-agent.js');
 const DivineCommandTheory = require('../ethics/divine-command-theory.js');

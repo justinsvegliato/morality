@@ -1,6 +1,6 @@
 'use strict';
 
-const city = require('./map.json');
+const city = require('./maps/map.json');
 const morality = require('../morality.js');
 const SelfDrivingCarAgent = require('../agents/self-driving-car-agent.js');
 const PrimaFacieDuties = require('../ethics/prima-facie-duties.js');
@@ -46,9 +46,9 @@ const penaltyFunction = (duty, state) => {
   }
   return 0;
 };
-const lowTolerance = 2;
-const mediumTolerance = 10;
-const highTolerance = 15;
+const lowTolerance = 3;
+const mediumTolerance = 6;
+const highTolerance = 9;
 
 const lowPfd = new PrimaFacieDuties(duties, violationFunction, penaltyFunction, lowTolerance);
 const mediumPfd = new PrimaFacieDuties(duties, violationFunction, penaltyFunction, mediumTolerance);
