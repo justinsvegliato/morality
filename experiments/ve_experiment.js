@@ -1,6 +1,6 @@
 'use strict';
 
-const city = require('./maps/map.json');
+const map = require('./maps/map.json');
 const morality = require('../morality.js');
 const SelfDrivingCarAgent = require('../agents/self-driving-car-agent.js');
 const VirtueEthics = require('../ethics/virtue-ethics.js');
@@ -10,19 +10,46 @@ const START_LOCATION = process.argv[2].toUpperCase();
 const GOAL_LOCATION = process.argv[3].toUpperCase();
 const IS_VERBOSE = process.argv[4] === 'true';
 
-city['startLocations'] = [START_LOCATION];
-city['goalLocation'] = GOAL_LOCATION;
-const agent = new SelfDrivingCarAgent(city);
+map['startLocations'] = [START_LOCATION];
+map['goalLocation'] = GOAL_LOCATION;
+const agent = new SelfDrivingCarAgent(map);
 
 const fewMoralTrajectories = [
-  [['NORTH_PLEASANT_STREET_SOUTH_CITY_NONE_EMPTY'], ['ACCELERATE_TO_NORMAL_SPEED']]
+  [['GAS_STATION'], ['STAY']],
+  [['GAS_STATION'], ['TURN_ONTO_ROUTE_116']],
+  [['GAS_STATION'], ['TURN_ONTO_SERVICE_ROAD_REVERSED']],
+  [['GAS_STATION'], ['TURN_ONTO_COLLEGE_STREET_REVERSED']],
+  [['OFFICE'], ['STAY']],
+  [['OFFICE'], ['TURN_ONTO_ROUTE_9']],
+  [['OFFICE'], ['TURN_ONTO_OAK_ROAD_REVERSED']]
 ];
 const manyMoralTrajectories = [
-  [['NORTH_PLEASANT_STREET_SOUTH_CITY_NONE_EMPTY'], ['ACCELERATE_TO_NORMAL_SPEED']],
-  [['EAST_PLEASANT_STREET_WEST_CITY_NONE_EMPTY'], ['ACCELERATE_TO_HIGH_SPEED']],
-  [['TRIANGLE_STREET_SOUTH_CITY_NONE_EMPTY'], ['ACCELERATE_TO_LOW_SPEED']]
+  [['GAS_STATION'], ['STAY']],
+  [['GAS_STATION'], ['TURN_ONTO_ROUTE_116']],
+  [['GAS_STATION'], ['TURN_ONTO_SERVICE_ROAD_REVERSED']],
+  [['GAS_STATION'], ['TURN_ONTO_COLLEGE_STREET_REVERSED']],
+  [['OFFICE'], ['STAY']],
+  [['OFFICE'], ['TURN_ONTO_ROUTE_9']],
+  [['OFFICE'], ['TURN_ONTO_OAK_ROAD_REVERSED']],
+  [['HOME'], ['STAY']],
+  [['HOME'], ['TURN_ONTO_GRAY_STREET']],
+  [['TRAIN_STATION'], ['STAY']],
+  [['TRAIN_STATION'], ['TURN_ONTO_GRAY_STREET_REVERSED']],
+  [['TRAIN_STATION'], ['TURN_ONTO_MERRICK_ROAD']],
+  [['TRAIN_STATION'], ['TURN_ONTO_SERVICE_ROAD']],
+  [['CAFE'], ['STAY']],
+  [['CAFE'], ['TURN_ONTO_MAIN_STREET']]
 ];
 
+for (const state of agent.states()) {
+  const information = agent.interpret(state);
+  if (information.length > 0) {
+    fewMoralTrajectories.push([[`${information.name}_${information.type}_NONE_EMPTY`], ['ACCELERATE_TO_NORMAL_SPEED']]);
+    fewMoralTrajectories.push([[`${information.name}_${information.type}_NONE_BUSY`], ['ACCELERATE_TO_LOW_SPEED']]);
+    manyMoralTrajectories.push([[`${information.name}_${information.type}_NONE_EMPTY`], ['ACCELERATE_TO_NORMAL_SPEED']]);
+    manyMoralTrajectories.push([[`${information.name}_${information.type}_NONE_BUSY`], ['ACCELERATE_TO_LOW_SPEED']]);
+  }
+}
 const fewVe = new VirtueEthics(fewMoralTrajectories);
 const manyVe = new VirtueEthics(manyMoralTrajectories);
 
