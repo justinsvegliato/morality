@@ -14,16 +14,16 @@ map['startLocations'] = [START_LOCATION];
 map['goalLocation'] = GOAL_LOCATION;
 const agent = new SelfDrivingCarAgent(map);
 
-const fewMoralTrajectories = [
-  [['GAS_STATION'], ['STAY']],
-  [['GAS_STATION'], ['TURN_ONTO_ROUTE_116']],
-  [['GAS_STATION'], ['TURN_ONTO_SERVICE_ROAD_REVERSED']],
-  [['GAS_STATION'], ['TURN_ONTO_COLLEGE_STREET_REVERSED']],
-  [['OFFICE'], ['STAY']],
-  [['OFFICE'], ['TURN_ONTO_ROUTE_9']],
-  [['OFFICE'], ['TURN_ONTO_OAK_ROAD_REVERSED']]
-];
-const manyMoralTrajectories = [
+const fewMoralTrajectories = [];
+for (const state of agent.states()) {
+  const information = agent.interpret(state);
+  if (information.length > 0) {
+    fewMoralTrajectories.push([[`${information.name}_${information.type}_NONE_EMPTY`], ['ACCELERATE_TO_NORMAL_SPEED']]);
+    fewMoralTrajectories.push([[`${information.name}_${information.type}_NONE_BUSY`], ['ACCELERATE_TO_LOW_SPEED']]);
+  }
+}
+
+const manyMoralTrajectories = fewMoralTrajectories.concat([
   [['GAS_STATION'], ['STAY']],
   [['GAS_STATION'], ['TURN_ONTO_ROUTE_116']],
   [['GAS_STATION'], ['TURN_ONTO_SERVICE_ROAD_REVERSED']],
@@ -39,17 +39,8 @@ const manyMoralTrajectories = [
   [['TRAIN_STATION'], ['TURN_ONTO_SERVICE_ROAD']],
   [['CAFE'], ['STAY']],
   [['CAFE'], ['TURN_ONTO_MAIN_STREET']]
-];
+]);
 
-for (const state of agent.states()) {
-  const information = agent.interpret(state);
-  if (information.length > 0) {
-    fewMoralTrajectories.push([[`${information.name}_${information.type}_NONE_EMPTY`], ['ACCELERATE_TO_NORMAL_SPEED']]);
-    fewMoralTrajectories.push([[`${information.name}_${information.type}_NONE_BUSY`], ['ACCELERATE_TO_LOW_SPEED']]);
-    manyMoralTrajectories.push([[`${information.name}_${information.type}_NONE_EMPTY`], ['ACCELERATE_TO_NORMAL_SPEED']]);
-    manyMoralTrajectories.push([[`${information.name}_${information.type}_NONE_BUSY`], ['ACCELERATE_TO_LOW_SPEED']]);
-  }
-}
 const fewVe = new VirtueEthics(fewMoralTrajectories);
 const manyVe = new VirtueEthics(manyMoralTrajectories);
 
