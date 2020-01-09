@@ -36,20 +36,26 @@ if (IS_VERBOSE) {
     console.log(JSON.stringify(amoralSolution.policy));
   }
 
-  if (fewDctSolution) {
+  if (fewVeSolution) {
     console.log('Few VE Moral Policy');
-    console.log(JSON.stringify(fewDctSolution.policy));
+    console.log(JSON.stringify(fewVeSolution.policy));
   }
 
-  if (manyDctSolution) {
+  if (manyVeSolution) {
     console.log('Many VE Moral Policy');
-    console.log(JSON.stringify(manyDctSolution.policy));
+    console.log(JSON.stringify(manyVeSolution.policy));
   }
 }
 
+const fewVePriceOfMorality = fewVeSolution.objective - amoralSolution.objective;
+const manyVePriceOfMorality = manyVeSolution.objective - amoralSolution.objective;
+
+const fewVeValueLoss = (fewVePriceOfMorality / amoralSolution.objective) * 100;
+const manyVeValueLoss = (manyVePriceOfMorality / amoralSolution.objective) * 100;
+
 experimentHandler.print([
-  ['Ethics', 'Settings', 'Value (s)', 'Price of Morality (s)'],
-  ['None', '---', amoralSolution.objective, 0],
-  ['VE', 'Few', fewVeSolution.objective, fewVeSolution.objective - amoralSolution.objective],
-  ['VE', 'Many', manyVeSolution.objective, manyVeSolution.objective - amoralSolution.objective]
+  ['Ethics', 'Settings', 'Value (s)', 'Price of Morality (s)', 'Value Loss (%)'],
+  ['None', '---', amoralSolution.objective, 0, 0],
+  ['VE', 'Small', fewVeSolution.objective, fewVePriceOfMorality, fewVeValueLoss],
+  ['VE', 'Large', manyVeSolution.objective, manyVePriceOfMorality, manyVeValueLoss]
 ]);

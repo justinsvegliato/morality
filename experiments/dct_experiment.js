@@ -50,9 +50,15 @@ if (IS_VERBOSE) {
   }
 }
 
+const fewDctPriceOfMorality = fewDctSolution.objective - amoralSolution.objective;
+const manyDctPriceOfMorality = manyDctSolution.objective - amoralSolution.objective;
+
+const fewDctValueLoss = (fewDctPriceOfMorality / amoralSolution.objective) * 100;
+const manyDctValueLoss = (manyDctPriceOfMorality / amoralSolution.objective) * 100;
+
 experimentHandler.print([
-  ['Ethics', 'Settings', 'Value (s)', 'Price of Morality (s)'],
-  ['None', '---', amoralSolution.objective, 0],
-  ['DCT', 'Few', fewDctSolution.objective, fewDctSolution.objective - amoralSolution.objective],
-  ['DCT', 'Many', manyDctSolution.objective, manyDctSolution.objective - amoralSolution.objective]
+  ['Ethics', 'Settings', 'Value (s)', 'Price of Morality (s)', 'Value Loss (%)'],
+  ['None', '---', amoralSolution.objective, 0, 0],
+  ['DCT', 'Few', fewDctSolution.objective, fewDctPriceOfMorality, fewDctValueLoss],
+  ['DCT', 'Many', manyDctSolution.objective, manyDctPriceOfMorality, manyDctValueLoss]
 ]);

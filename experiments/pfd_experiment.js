@@ -81,10 +81,18 @@ if (IS_VERBOSE) {
   }
 }
 
+const lowPfdPriceOfMorality = lowPfdSolution.objective - amoralSolution.objective;
+const mediumPfdPriceOfMorality = mediumPfdSolution.objective - amoralSolution.objective;
+const highPfdPriceOfMorality = highPfdSolution.objective - amoralSolution.objective;
+
+const lowPfdValueLoss = (lowPfdPriceOfMorality / amoralSolution.objective) * 100;
+const mediumPfdValueLoss = (mediumPfdPriceOfMorality / amoralSolution.objective) * 100;
+const highPfdValueLoss = (highPfdPriceOfMorality / amoralSolution.objective) * 100;
+
 experimentHandler.print([
-  ['Ethics', 'Settings', 'Value (s)', 'Price of Morality (s)'],
-  ['None', '---', amoralSolution.objective, 0],
-  ['PFD', 'Low', lowPfdSolution.objective, lowPfdSolution.objective - amoralSolution.objective],
-  ['PFD', 'Medium', mediumPfdSolution.objective, mediumPfdSolution.objective - amoralSolution.objective],
-  ['PFD', 'High', highPfdSolution.objective, highPfdSolution.objective - amoralSolution.objective]
+  ['Ethics', 'Settings', 'Value (s)', 'Price of Morality (s)', 'Value Loss (%)'],
+  ['None', '---', amoralSolution.objective, 0, 0],
+  ['PFD', 'Low', lowPfdSolution.objective, lowPfdPriceOfMorality, lowPfdValueLoss],
+  ['PFD', 'Medium', mediumPfdSolution.objective, mediumPfdPriceOfMorality, mediumPfdValueLoss],
+  ['PFD', 'High', highPfdSolution.objective, highPfdPriceOfMorality, highPfdValueLoss]
 ]);
