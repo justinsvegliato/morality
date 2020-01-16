@@ -24,7 +24,8 @@ const CONDITIONS = {
   'BUSY': 0.2
 };
 
-const MANEUVER_TIME = 5;
+const STAYING_TIME = 120;
+const TURNING_TIME = 5;
 const ACCELERATION_RATE = 2;
 const DRIVER_ERROR_PENALTY = 3600;
 
@@ -132,13 +133,13 @@ class SelfDrivingCarAgent {
     }
 
     if (this._locationStates.includes(state) && action == 'STAY') {
-      return -MANEUVER_TIME;
+      return -STAYING_TIME;
     }
 
     if (this._locationStates.includes(state) && this._turnActions.includes(action)) {
       for (const name in this._world.roads) {
         if (action == 'TURN_ONTO_' + name && stateRecord.name == this._world.roads[name].fromLocation) {
-          return -MANEUVER_TIME;
+          return -TURNING_TIME;
         }
       }
     }
@@ -146,7 +147,7 @@ class SelfDrivingCarAgent {
     if (this._roadStates.includes(state) && action == 'CRUISE' && stateRecord.speed != 'NONE') {
       const speed = SPEED_LIMITS[stateRecord.type] + SPEED_ADJUSTMENTS[stateRecord.speed];
       const distance = stateRecord.length;
-      return -360 * distance / speed;
+      return -3600 * distance / speed;
     }
 
     if (this._roadStates.includes(state) && this._accelerateActions.includes(action) && stateRecord.speed == 'NONE') {
