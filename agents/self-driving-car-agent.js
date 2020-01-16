@@ -16,12 +16,12 @@ const SPEED_ADJUSTMENTS = {
 const SPEED_LIMITS = {
   'CITY': 25,
   'COUNTY': 45,
-  'FREEWAY': 75
+  'HIGHWAY': 75
 };
 
-const CONDITIONS = {
-  'EMPTY': 0.8,
-  'BUSY': 0.2
+const PEDESTRIAN_TRAFFIC = {
+  'LIGHT': 0.8,
+  'HEAVY': 0.2
 };
 
 const STAYING_TIME = 120;
@@ -44,9 +44,9 @@ class SelfDrivingCarAgent {
 
     for (const name in world.roads) {
       for (const speed in SPEED_ADJUSTMENTS) {
-        for (const condition in CONDITIONS) {
-          const key = `${name}_${world.roads[name].type}_${speed}_${condition}`;
-          const record = Object.assign({}, world.roads[name], {name: name, speed: speed, condition: condition});
+        for (const pedestrianTraffic in PEDESTRIAN_TRAFFIC) {
+          const key = `${name}_${world.roads[name].type}_${speed}_${pedestrianTraffic}`;
+          const record = Object.assign({}, world.roads[name], {name: name, speed: speed, pedestrianTraffic: pedestrianTraffic});
           this._stateRegistry[key] = record;
           this._roadStates.push(key);
         }
@@ -82,7 +82,7 @@ class SelfDrivingCarAgent {
 
       if (action == 'TURN_ONTO_' + successorStateRecord.name) {
         if (stateRecord.name == successorStateRecord.fromLocation && successorStateRecord.speed == 'NONE') {
-          return CONDITIONS[successorStateRecord.condition];
+          return PEDESTRIAN_TRAFFIC[successorStateRecord.pedestrianTraffic];
         }
       }
 
@@ -104,7 +104,7 @@ class SelfDrivingCarAgent {
       }
 
       if (this._accelerateActions.includes(action)) {
-        if (stateRecord.speed == 'NONE' && stateRecord.name == successorStateRecord.name && stateRecord.condition == successorStateRecord.condition && successorStateRecord.speed == ACCELERATE_ACTIONS[action]) {
+        if (stateRecord.speed == 'NONE' && stateRecord.name == successorStateRecord.name && stateRecord.pedestrianTraffic == successorStateRecord.pedestrianTraffic && successorStateRecord.speed == ACCELERATE_ACTIONS[action]) {
           return 1;
         }
         if (stateRecord.speed != 'NONE' && state == successorState) {

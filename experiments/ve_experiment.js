@@ -75,8 +75,8 @@ const fewVeValueLoss = (fewVePriceOfMorality / amoralSolution.objective) * 100;
 const manyVeValueLoss = (manyVePriceOfMorality / amoralSolution.objective) * 100;
 
 experimentHandler.print([
-  ['Ethics', 'Settings', 'Value (s)', 'Price of Morality (s)', 'Value Loss (%)'],
+  ['Ethics', 'Settings', 'Value (s)', 'Price of Morality (s)', 'Loss (%)'],
   ['None', '---', amoralSolution.objective, 0, 0],
-  ['VE', 'Small', fewVeSolution.objective, fewVePriceOfMorality, fewVeValueLoss],
-  ['VE', 'Large', manyVeSolution.objective, manyVePriceOfMorality, manyVeValueLoss]
+  ['VE', 'C', fewVeSolution.objective, fewVePriceOfMorality, fewVeValueLoss],
+  ['VE', 'C or P', manyVeSolution.objective, manyVePriceOfMorality, manyVeValueLoss]
 ]);

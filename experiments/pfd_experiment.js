@@ -1,6 +1,6 @@
 'use strict';
 
-const city = require('./maps/map.json');
+const map = require('./maps/map.json');
 const morality = require('../morality.js');
 const SelfDrivingCarAgent = require('../agents/self-driving-car-agent.js');
 const PrimaFacieDuties = require('../ethics/prima-facie-duties.js');
@@ -10,9 +10,9 @@ const START_LOCATION = process.argv[2].toUpperCase();
 const GOAL_LOCATION = process.argv[3].toUpperCase();
 const IS_VERBOSE = process.argv[4] === 'true';
 
-city['startLocations'] = [START_LOCATION];
-city['goalLocation'] = GOAL_LOCATION;
-const agent = new SelfDrivingCarAgent(city);
+map['startLocations'] = [START_LOCATION];
+map['goalLocation'] = GOAL_LOCATION;
+const agent = new SelfDrivingCarAgent(map);
 
 const duties = ['HESITANT_OPERATION', 'RECKLESS_OPERATION'];
 const violationFunction = (state) => {
@@ -20,10 +20,10 @@ const violationFunction = (state) => {
   if (information.speed == 'HIGH') {
     return ['RECKLESS_OPERATION'];
   }
-  if (information.speed == 'NORMAL' && information.condition == 'BUSY') {
+  if (information.speed == 'NORMAL' && information.pedestrianTraffic == 'HEAVY') {
     return ['RECKLESS_OPERATION'];
   }
-  if (information.speed == 'LOW' && information.condition == 'EMPTY') {
+  if (information.speed == 'LOW' && information.pedestrianTraffic == 'LIGHT') {
     return ['HESITANT_OPERATION'];
   }
   return [];
@@ -34,13 +34,13 @@ const penaltyFunction = (duty, state) => {
     return 1;
   }
   if (duty == 'RECKLESS_OPERATION') {
-    if (information.speed == 'HIGH' && information.condition == 'BUSY') {
+    if (information.speed == 'HIGH' && information.pedestrianTraffic == 'HEAVY') {
       return 30;
     }
-    if (information.speed == 'HIGH' && information.condition == 'EMPTY') {
+    if (information.speed == 'HIGH' && information.pedestrianTraffic == 'LIGHT') {
       return 7.5;
     }
-    if (information.speed == 'NORMAL' && information.condition == 'BUSY') {
+    if (information.speed == 'NORMAL' && information.pedestrianTraffic == 'HEAVY') {
       return 15;
     }
   }
@@ -94,9 +94,9 @@ const mediumPfdValueLoss = (mediumPfdPriceOfMorality / amoralSolution.objective)
 const highPfdValueLoss = (highPfdPriceOfMorality / amoralSolution.objective) * 100;
 
 experimentHandler.print([
-  ['Ethics', 'Settings', 'Value (s)', 'Price of Morality (s)', 'Value Loss (%)'],
+  ['Ethics', 'Settings', 'Value (s)', 'Price of Morality (s)', 'Loss (%)'],
   ['None', '---', amoralSolution.objective, 0, 0],
-  ['PFD', 'Low', lowPfdSolution.objective, lowPfdPriceOfMorality, lowPfdValueLoss],
-  ['PFD', 'Medium', mediumPfdSolution.objective, mediumPfdPriceOfMorality, mediumPfdValueLoss],
-  ['PFD', 'High', highPfdSolution.objective, highPfdPriceOfMorality, highPfdValueLoss]
+  ['PFD', 'e = 3', lowPfdSolution.objective, lowPfdPriceOfMorality, lowPfdValueLoss],
+  ['PFD', 'e = 6', mediumPfdSolution.objective, mediumPfdPriceOfMorality, mediumPfdValueLoss],
+  ['PFD', 'e = 9', highPfdSolution.objective, highPfdPriceOfMorality, highPfdValueLoss]
 ]);

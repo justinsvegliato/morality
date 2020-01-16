@@ -116,13 +116,13 @@
     "SUNRISE_HIGHWAY": {
       "fromLocation": "GAS_STATION",
       "toLocation": "OFFICE",
-      "type": "FREEWAY",
+      "type": "HIGHWAY",
       "length": "10.18"
     },
     "SUNRISE_HIGHWAY_REVERSED": {
       "fromLocation": "OFFICE",
       "toLocation": "GAS_STATION",
-      "type": "FREEWAY",
+      "type": "HIGHWAY",
       "length": "10.18"
     },
     "ASYLUM_STREET": {

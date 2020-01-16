@@ -15,8 +15,8 @@ const agent = new SelfDrivingCarAgent({
     MAIN_STREET_WEST: {fromLocation: 'TRAIN_STATION', toLocation: 'LIBRARY', length: 20, type: 'CITY'},
     ROUTE9_EAST: {fromLocation: 'GROCERY_STORE', toLocation: 'LIBRARY', length: 40, type: 'COUNTY'},
     ROUTE9_WEST: {fromLocation: 'LIBRARY', toLocation: 'GROCERY_STORE', length: 40, type: 'COUNTY'},
-    ROUTE116_NORTH: {fromLocation: 'GROCERY_STORE', toLocation: 'UNIVERSITY', length: 60, type: 'FREEWAY'},
-    ROUTE116_SOUTH: {fromLocation: 'UNIVERSITY', toLocation: 'GROCERY_STORE', length: 60, type: 'FREEWAY'},
+    ROUTE116_NORTH: {fromLocation: 'GROCERY_STORE', toLocation: 'UNIVERSITY', length: 60, type: 'HIGHWAY'},
+    ROUTE116_SOUTH: {fromLocation: 'UNIVERSITY', toLocation: 'GROCERY_STORE', length: 60, type: 'HIGHWAY'},
     NORTH_PLEASANT_STREET_NORTH: {fromLocation: 'PIZZA_PLACE', toLocation: 'UNIVERSITY', length: 10, type: 'CITY'},
     NORTH_PLEASANT_STREET_SOUTH: {fromLocation: 'UNIVERSITY', toLocation: 'PIZZA_PLACE', length: 10, type: 'CITY'},
     EAST_PLEASANT_STREET_EAST: {fromLocation: 'COFFEE_SHOP', toLocation: 'PIZZA_PLACE', length: 5, type: 'CITY'},
@@ -36,10 +36,10 @@ const violationFunction = (state) => {
   if (information.speed == 'HIGH') {
     return ['RECKLESS_OPERATION'];
   }
-  if (information.speed == 'NORMAL' && information.condition == 'BUSY') {
+  if (information.speed == 'NORMAL' && information.pedestrianTraffic == 'HEAVY') {
     return ['RECKLESS_OPERATION'];
   }
-  if (information.speed == 'LOW' && information.condition == 'EMPTY') {
+  if (information.speed == 'LOW' && information.pedestrianTraffic == 'LIGHT') {
     return ['HESITANT_OPERATION'];
   }
   return [];
@@ -50,13 +50,13 @@ const penaltyFunction = (duty, state) => {
     return 1;
   }
   if (duty == 'RECKLESS_OPERATION') {
-    if (information.speed == 'HIGH' && information.condition == 'BUSY') {
+    if (information.speed == 'HIGH' && information.pedestrianTraffic == 'HEAVY') {
       return 30;
     }
-    if (information.speed == 'HIGH' && information.condition == 'EMPTY') {
+    if (information.speed == 'HIGH' && information.pedestrianTraffic == 'LIGHT') {
       return 7.5;
     }
-    if (information.speed == 'NORMAL' && information.condition == 'BUSY') {
+    if (information.speed == 'NORMAL' && information.pedestrianTraffic == 'HEAVY') {
       return 15;
     }
   }
