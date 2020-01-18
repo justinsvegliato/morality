@@ -18,8 +18,8 @@ const fewMoralTrajectories = [];
 for (const state of agent.states()) {
   const information = agent.interpret(state);
   if (information.length > 0) {
-    fewMoralTrajectories.push([[`${information.name}_${information.type}_NONE_EMPTY`], ['ACCELERATE_TO_NORMAL_SPEED']]);
-    fewMoralTrajectories.push([[`${information.name}_${information.type}_NONE_BUSY`], ['ACCELERATE_TO_LOW_SPEED']]);
+    fewMoralTrajectories.push([[`${information.name}_${information.type}_NONE_LIGHT`], ['ACCELERATE_TO_NORMAL_SPEED']]);
+    fewMoralTrajectories.push([[`${information.name}_${information.type}_NONE_HEAVY`], ['ACCELERATE_TO_LOW_SPEED']]);
   }
 }
 
