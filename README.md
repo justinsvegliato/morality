@@ -15,7 +15,7 @@ const agent = new agents.GridWorldAgent([
   ['O', 'O', 'O', 'O', 'G']
 ]);
 
-const ethics = new ethics.ForbiddenStateEthics([0, 4, 10]);
+const ethics = new ethics.DivineCommandTheory([0, 4, 10]);
 
 const solution = morality.solve(agent, ethics);
 ```
