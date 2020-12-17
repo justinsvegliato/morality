@@ -1,6 +1,6 @@
 # `morality`
 
-Morality is a library for building autonomous agents that comply with ethical theories.
+Morality.js is a library for building autonomous agents that comply with ethical theories.
 
 ## Example
 
