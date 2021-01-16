@@ -5,9 +5,9 @@ const LaneMergingAgent = require('../../agents/lane-merging-agent.js');
 const TheVeilOfIgnorance = require('../../ethics/the-veil-of-ignorance.js');
 const printer = require('../../utils/printer.js');
 
-const num_mergers = 5;
-const num_mergees = 5;
-const agent = new LaneMergingAgent(num_mergees, num_mergees);
+const num_mergers = 2;
+const num_mergees = 2;
+const agent = new LaneMergingAgent(num_mergers, num_mergees);
 
 printer.printTransitionFunction(agent)
 
