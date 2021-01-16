@@ -1,25 +1,48 @@
 'use strict';
 
+function isEquivalent(agentFactoredState, memberFactoredState, stateFactors, veiledStateFactors) {
+  for (const stateFactor of stateFactors) {
+    if (!veiledStateFactors.includes(stateFactor)) {
+      if (agentFactoredState[stateFactor] != memberFactoredState[stateFactor]) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
 class TheVeilOfIgnorance {
-  constructor(moralCommunity, computeVeilEquivalentStates, tolerance) {
-    this._moral_community = moral_community;
-    this._tolerance = tolerance;
+  constructor(moralCommunity, veiledStateFactors, inequityTolerance) {
+    this._moralCommunity = moralCommunity;
+    this._veiledStateFactors = veiledStateFactors;
+    this._inequityTolerance = inequityTolerance;
   }
 
   getMoralCommunity() {
-    return this._moral_community;
+    return this._moralCommunity;
   }
 
-  // TODO: define computeVeilEquivalentStates either here or in example / experiment. Preferably not here.
+  getVeiledStateFactors() {
+    return this._veiledStateFactors;
+  }
+
+  getInequityTolerance() {
+    return this._inequityTolerance;
+  }
+
   transform(agent, program) {
-    for (const state of agent.states()) {
-      for (const member of this._moralCommunity) {
-        veil_equivalent_states = computeVeilEquivalentStates(state, member);
-        for (veiled_member_state of veil_equivalent_states) {
-          member_value = member.value(veiled_member_state);
-          //TODO: add constraint about policies value and value at this state (already given)
-          //program.constraints[`actUtilitarianism${state}${action}`] = {'max': 0};
-          //program.variables[`state${state}${action}`][`actUtilitarianism${state}${action}`] = 1;
+    for (const member of this._moralCommunity) {
+      for (const agentState of agent.states()) {
+        for (const memberState of member.states()) {
+          const agentFactoredState = agent.getStateFactorsFromState(agentState);
+          const memberFactoredState = agent.getStateFactorsFromState(memberState);
+          const stateFactors = Object.keys(agentFactoredState);
+          if (isEquivalent(agentFactoredState, memberFactoredState, stateFactors, this._veiledStateFactors)) {
+            const memberValue = member.values[memberState];
+            program.constraints[`theVeilOfIgnorance${agentState}`] = {'max': memberValue + this._inequityTolerance};
+            program.constraints[`theVeilOfIgnorance${agentState}`] = {'min': memberValue - this._inequityTolerance};
+            program.variables[`state${agentState}`][`theVeilOfIgnorance${agentState}`] = 1;
+          }
         }
       }
     }
@@ -27,4 +50,3 @@ class TheVeilOfIgnorance {
 }
 
 module.exports = TheVeilOfIgnorance;
-
