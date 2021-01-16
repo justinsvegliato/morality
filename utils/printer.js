@@ -23,14 +23,14 @@ function printTransitionFunction(mdp) {
 
   for (const state of mdp.states()) {
     for (const action of mdp.actions()) {
-      console.log(`  Transition: (${state}, ${action})`);
+      console.log(`  Transition: (${Object.values(mdp.getStateFactorsFromState(state)).join('_')}, ${action})`);
 
       let totalProbability = 0;
 
       for (const successorState of mdp.states()) {
         const probability = mdp.transitionFunction(state, action, successorState);
         totalProbability += probability;
-        console.log(`    Successor State: ${successorState} -> ${probability}`);
+        console.log(`    Successor State: ${Object.values(mdp.getStateFactorsFromState(successorState)).join('_')} -> ${probability}`);
       }
 
       isValid = isValid && totalProbability == 1;
