@@ -34,12 +34,11 @@ function printTransitionFunction(mdp) {
       }
 
       isValid = isValid && totalProbability == 1;
+      console.log(`    Total Probability: ${totalProbability}`);
 
       if (!isValid) {
         return
       }
-
-      console.log(`    Total Probability: ${totalProbability}`);
     }
   }
 
