@@ -7,10 +7,9 @@ const ACTION_DETAILS = {
 };
 
 class LaneMergingAgent {
-  constructor(lane_merging_world) {
-    this._lane_merging_world = lane_merging_world;
-    this._num_merging_members = lane_merging_world.num_mergers;
-    this._num_mergee_members = lane_merging_world.num_mergees;
+  constructor(num_mergers, num_mergees) {
+    this._num_merging_members = num_mergers;
+    this._num_mergee_members = num_mergees;
     this._num_lanes = 2;
     // min so that we have no "open" spots on the road
     this._num_positions = Math.min(this._mergers, this._mergees);
@@ -35,8 +34,8 @@ class LaneMergingAgent {
       state_factors['lane_id'] = 'NONE';
       state_factors['is_moving'] = 'NONE';
       state_factors['position'] = 'NONE';
-      state_factors['num_mergers_remaining'] = 0;
-      state_factors['num_mergees_remaining'] = 0;
+      state_factors['num_mergers_remaining'] = 'NONE';
+      state_factors['num_mergees_remaining'] = 'NONE';
     else {
       state_factors['is_goal'] = false;
       state_factors['lane_id'] = 'MERGER';
@@ -113,7 +112,7 @@ class LaneMergingAgent {
       return 0.0;
     } 
     
-    // can't add new cars 
+    // can't add new cars
     if (state_factors['num_mergees_remaining'] < successor_state_factors['num_mergees_remaining']) {
       return 0.0;
     } 
@@ -121,38 +120,155 @@ class LaneMergingAgent {
       return 0.0;
     } 
 
+    if ((state_factors['position'] != 0) && !successor_state_factors['is_goal']) { 
+      
+      // if merger lane is empty, traffic flow is smooth
+      if (state_factors['num_mergers_remaining'] == 0) {
+        if ((successor_state_factors['num_mergees_remaining'] == state_factors['num_mergees_remaining'] - 1) &&
+            (successor_state_factors['position'] == state_factors['position'] - 1) && 
+            (state_factors['lane_id'] == 'MERGEE')) {
+          return 1.0
+        }
+        else {
+          return 0.0;
+        }
+      }
+  
+      // if mergee lane is empty, traffic flow is smooth
+      if (state_factors['num_mergees_remaining'] == 0) {
+        if ((successor_state_factors['num_mergers_remaining'] == state_factors['num_mergers_remaining'] - 1) &&
+            (successor_state_factors['position'] == state_factors['position'] - 1) && 
+            (state_factors['lane_id'] == 'MERGER')) {
+          return 1.0
+        }
+        else {
+          return 0.0;
+        }
+      }
 
-
-    //TODO: determine criteria for getting to the goal
-    if (successor_is_goal) {
-      return 1.0;
+      // Dynamics of waiting in line to merge
+      if (state_factors['lane_id'] == 'MERGER') {
+        if (state_factors['is_moving']) { 
+          if ((state_factors['position'] == successor_state_factors['position'] + 1) &&
+              (state_factors['num_mergers_remaining'] == successor_state_factors['num_mergers_remaining'] + 1) && 
+              (state_factors['num_mergees_remaining'] == successor_state_factors['num_mergees_remaining']) && 
+              (successor_state_factors['is_moving']) {
+            return 0.4;
+          }
+          if ((state_factors['position'] == successor_state_factors['position']) &&
+              (state_factors['num_mergers_remaining'] == successor_state_factors['num_mergers_remaining']) &&
+              (state_factors['num_mergees_remaining'] == successor_state_factors['num_mergees_remaining'] + 1) &&
+              (!successor_state_factors['is_moving']) {
+            return 0.6;
+          }
+        }
+        else { 
+          if ((state_factors['position'] == successor_state_factors['position'] + 1) &&
+              (state_factors['num_mergers_remaining'] == successor_state_factors['num_mergers_remaining'] + 1) && 
+              (state_factors['num_mergees_remaining'] == successor_state_factors['num_mergees_remaining']) && 
+              (successor_state_factors['is_moving']) {
+            return 0.3;
+          }
+          if ((state_factors['position'] == successor_state_factors['position']) &&
+              (state_factors['num_mergers_remaining'] == successor_state_factors['num_mergers_remaining']) &&
+              (state_factors['num_mergees_remaining'] == successor_state_factors['num_mergees_remaining'] + 1) &&
+              (!successor_state_factors['is_moving']) {
+            return 0.7;
+          }
+        }
+      }
+      else {
+        if (state_factors['is_moving']) {
+          if ((state_factors['position'] == successor_state_factors['position'] + 1) &&
+              (state_factors['num_mergers_remaining'] == successor_state_factors['num_mergers_remaining'] + 1) && 
+              (state_factors['num_mergees_remaining'] == successor_state_factors['num_mergees_remaining']) && 
+              (successor_state_factors['is_moving']) {
+            return 0.3;
+          }
+          if ((state_factors['position'] == successor_state_factors['position']) &&
+              (state_factors['num_mergers_remaining'] == successor_state_factors['num_mergers_remaining']) &&
+              (state_factors['num_mergees_remaining'] == successor_state_factors['num_mergees_remaining'] + 1) &&
+              (!successor_state_factors['is_moving']) {
+            return 0.7;
+          }
+        }
+        else {
+          if ((state_factors['position'] == successor_state_factors['position'] + 1) &&
+              (state_factors['num_mergers_remaining'] == successor_state_factors['num_mergers_remaining'] + 1) && 
+              (state_factors['num_mergees_remaining'] == successor_state_factors['num_mergees_remaining']) && 
+              (successor_state_factors['is_moving']) {
+            return 0.4;
+          }
+          if ((state_factors['position'] == successor_state_factors['position']) &&
+              (state_factors['num_mergers_remaining'] == successor_state_factors['num_mergers_remaining']) &&
+              (state_factors['num_mergees_remaining'] == successor_state_factors['num_mergees_remaining'] + 1) &&
+              (!successor_state_factors['is_moving']) {
+            return 0.6;
+          }
+        }
+      }
+      return 0.0;
     }
 
-
-    //TODO: if merger lane is empty
-    //TODO: if mergee lane is empty
-
-
-    // what are the dynamics for when each action is chosen? where is the stochasticity? other agents choices?
-    if (lane_id == 'MERGER') {
-      if (lane_status_partition == 1) { // currently moving
-        
+    // NOTE: the only cases to get here should have position = 0
+    // if road is empty, go directly to the goal
+    if (state_factors['num_mergers_remaining'] + state_factors['num_mergees_remaining'] == 1) {
+      if (successor_state_factors['is_moving']) {
+        return 1.0;
       }
-      else if (lane_status_partition == 0) { // currently not moving
-        
+      else {
+        return 0.0;
       }
     }
-
+   
+    //TODO: double check that position is used correctly / resolve what happens at position 0/1
+    // double check that we don't want to add any extra dynamics here like awkward merges holding up traffic
+    if (state_factors['lane_id'] == 'MERGEE') {
+      if (action == 'CONTINUE') {
+        if (successor_state_factor['is_goal'] == true) {
+          return 1.0;
+        }
+        else {
+          return 0.0;
+        }
+      }
+      if (action == 'ALLOW' || action == 'WAIT') {
+        if ((state_factors['num_mergers_remaining'] == successor_state_factors['num_mergers_remaining'] + 1) && 
+            (state_factors['num_mergees_remaining'] == successor_state_factors['num_mergees_remaining']) && 
+            (!successor_state_factors['is_moving']) &&
+            (successor_state_factors['position'] == 0)) {
+          return 1.0;
+        }
+        else {
+          return 0.0;
+        }
+      }
+    }
     else {
-      if (lane_status_partition == 1) { // currently moving
-        
+      if (state_factors['is_moving']) { 
+        if (successor_state_factors['is_goal']) {
+          return 0.4;
+        }
+        if ((state_factors['position'] == successor_state_factors['position']) &&
+            (state_factors['num_mergers_remaining'] == successor_state_factors['num_mergers_remaining']) &&
+            (state_factors['num_mergees_remaining'] == successor_state_factors['num_mergees_remaining'] + 1) &&
+            (!successor_state_factors['is_moving']) {
+          return 0.6;
+        }
       }
-      else if (lane_status_partition == 0) { // currently not moving
-        
+      else { 
+        if (successor_state_factors['is_goal']) {
+          return 0.3;
+        }
+        if ((state_factors['position'] == successor_state_factors['position']) &&
+            (state_factors['num_mergers_remaining'] == successor_state_factors['num_mergers_remaining']) &&
+            (state_factors['num_mergees_remaining'] == successor_state_factors['num_mergees_remaining'] + 1) &&
+            (!successor_state_factors['is_moving']) {
+          return 0.7;
+        }
       }
-
     }
-
+    return 0.0;
   }
 
   rewardFunction(state, action) {
@@ -165,11 +281,23 @@ class LaneMergingAgent {
   }
 
   startStates() {
-    // can't start at the goal
-
-    //TODO: can't start in a position / lane combo that is larger than that lane's num members
-    //TODO: double check that I prune all states where position / lane combo is greater than respective lane members
-    return [...Array(this._size-1).keys()];
+    // can't start at the goal, or in a state where the position is larger than the lane
+    valid_start_states = [];
+    potential_states = [...Array(this._size-1).keys()];
+    for (state of potential_states) {
+      state_factors = getStateFactorsFromState(state);
+      if (state_factors['lane_id'] == 'MERGER') {
+        if (state_factors['position'] <= state_factors['num_mergers_remaining']) {
+          valid_start_states.push(state);
+        }
+      }
+      else {
+        if (state_factors['position'] <= state_factors['num_mergees_remaining']) {
+          valid_start_states.push(state);
+        }
+      }
+    }
+    return valid_start_states;
   }
 }
 
