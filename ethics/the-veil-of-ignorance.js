@@ -31,7 +31,7 @@ class TheVeilOfIgnorance {
   }
 
   transform(agent, program) {
-    for (const member of this._moralCommunity) {
+    for (const [index, member] of this._moralCommunity.entries()) {
       for (const agentState of agent.states()) {
         for (const memberState of member.states()) {
           const agentFactoredState = agent.getStateFactorsFromState(agentState);
@@ -39,9 +39,9 @@ class TheVeilOfIgnorance {
           const stateFactors = Object.keys(agentFactoredState);
           if (isEquivalent(agentFactoredState, memberFactoredState, stateFactors, this._veiledStateFactors)) {
             const memberValue = member.values[memberState];
-            program.constraints[`theVeilOfIgnorance${agentState}`] = {'max': memberValue + this._inequityTolerance};
-            program.constraints[`theVeilOfIgnorance${agentState}`] = {'min': memberValue - this._inequityTolerance};
-            program.variables[`state${agentState}`][`theVeilOfIgnorance${agentState}`] = 1;
+            program.constraints[`theVeilOfIgnorance:member${index}:state${agentState}`] = {'max': memberValue + this._inequityTolerance};
+            program.constraints[`theVeilOfIgnorance:member${index}:staate${agentState}`] = {'min': memberValue - this._inequityTolerance};
+            program.variables[`state${agentState}`][`theVeilOfIgnorance:member${index}:state${agentState}`] = 1;
           }
         }
       }
