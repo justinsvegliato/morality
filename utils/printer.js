@@ -118,6 +118,34 @@ function printGridWorldPolicy(gridWorld, policy) {
   }
 }
 
+function printMemberStatePrior(mdp, memberStatePrior) {
+  console.log('Member State Prior');
+
+  let isValid = true;
+
+  for (const state of mdp.states()) {
+    console.log(`  Agent State: (${Object.values(mdp.getStateFactorsFromState(state)).join('_')})`);
+
+    let totalProbability = 0;
+
+    for (const memberState of mdp.states()) {
+      const probability = memberStatePrior(state, memberState);
+      console.log(`    Member State: ${Object.values(mdp.getStateFactorsFromState(memberState)).join('_')} -> ${probability}`);
+
+      totalProbability += probability;
+    }
+
+    isValid = isValid && totalProbability == 1;
+    console.log(`    Total Probability: ${totalProbability}`);
+
+    if (!isValid) {
+      return
+    }
+  }
+
+  console.log(`  Status: ${isValid ? 'Valid' : 'Invalid'}`);
+}
+
 module.exports = {
   printStates,
   printActions,
@@ -126,5 +154,6 @@ module.exports = {
   printStartStates,
   printMdp,
   printGridWorldDomain,
-  printGridWorldPolicy
+  printGridWorldPolicy,
+  printMemberStatePrior
 };
