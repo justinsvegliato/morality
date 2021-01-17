@@ -61,7 +61,7 @@ function getValues(mdp, result) {
   return values;
 }
 
-function getPolicy(mdp, values) {
+function getDeterministicPolicy(mdp, values) {
   const policy = {};
 
   for (const state of mdp.states()) {
@@ -91,7 +91,38 @@ function getPolicy(mdp, values) {
   return policy;
 }
 
-function solve(mdp, transformer) {
+function getStochasticPolicy(mdp, values) {
+  const policy = {};
+
+  for (const state of mdp.states()) {
+    let normalizer = 0;
+
+    policy[state] = {};
+
+    for (const action of mdp.actions()) {
+      const immediateReward = mdp.rewardFunction(state, action);
+
+      let expectedFutureReward = 0;
+      for (const successorState of mdp.states()) {
+        const transitionProbability = mdp.transitionFunction(state, action, successorState);
+        expectedFutureReward += transitionProbability * values[successorState];
+      }
+
+      const actionValue = immediateReward + DISCOUNT_FACTOR * expectedFutureReward;
+      policy[state][action] = actionValue;
+
+      normalizer += actionValue;
+    }
+
+    for (const action of mdp.actions()) {
+      policy[state][action] /= normalizer;
+    }
+  }
+
+  return policy;
+}
+
+function solve(mdp, transformer, isStochastic = false) {
   const program = getProgram(mdp, transformer);
   const result = solver.Solve(program);
 
@@ -101,7 +132,17 @@ function solve(mdp, transformer) {
 
   const objective = result.result;
   const values = getValues(mdp, result);
-  const policy = getPolicy(mdp, values);
+
+  if (isStochastic) {
+    const policy = getStochasticPolicy(mdp, values);
+
+    return {
+      objective,
+      policy
+    };
+  }
+
+  const policy = getDeterministicPolicy(mdp, values);
 
   return {
     objective,
