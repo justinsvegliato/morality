@@ -39,9 +39,10 @@ class TheVeilOfIgnorance {
           const stateFactors = Object.keys(agentFactoredState);
           if (isEquivalent(agentFactoredState, memberFactoredState, stateFactors, this._veiledStateFactors)) {
             const memberValue = member.values[memberState];
-            program.constraints[`theVeilOfIgnorance:member${index}:state${agentState}`] = {'max': memberValue + this._inequityTolerance};
-            program.constraints[`theVeilOfIgnorance:member${index}:staate${agentState}`] = {'min': memberValue - this._inequityTolerance};
-            program.variables[`state${agentState}`][`theVeilOfIgnorance:member${index}:state${agentState}`] = 1;
+            program.constraints[`theVeilOfIgnoranceMinimum:member${index}:state${agentState}`] = {'max': memberValue + this._inequityTolerance};
+            program.constraints[`theVeilOfIgnoranceMaximum:member${index}:state${agentState}`] = {'min': memberValue - this._inequityTolerance};
+            program.variables[`state${agentState}`][`theVeilOfIgnoranceMinimum:member${index}:state${agentState}`] = 1;
+            program.variables[`state${agentState}`][`theVeilOfIgnoranceMaximum:member${index}:state${agentState}`] = 1;
           }
         }
       }
