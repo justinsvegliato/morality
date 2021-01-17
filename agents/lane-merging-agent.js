@@ -65,8 +65,8 @@ class LaneMergingAgent {
     const successor_state_factors = this.getStateFactorsFromState(successorState);
   
     //console.log(state_factors['position']);
-    console.log(state_factors['num_mergers_remaining']);
-    console.log(state_factors['num_mergees_remaining']);
+    //console.log(state_factors['num_mergers_remaining']);
+    //console.log(state_factors['num_mergees_remaining']);
  
     // self loop illegal states forever. obvi not the best way to do it... but its much easier index math this way
     if (state_factors['lane_id'] == 'MERGER' && (state_factors['position'] > state_factors['num_mergers_remaining'])) {
