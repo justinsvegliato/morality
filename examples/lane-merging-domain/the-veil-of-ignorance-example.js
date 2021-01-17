@@ -17,6 +17,7 @@ if (amoralSolution) {
   console.log(amoralSolution.policy);
 }
 
+
 const moralCommunity = [];
 for (let i = 0; i < num_mergers + num_mergees; i++) {
   moralCommunity.push({states: agent.states, values: amoralSolution.values});
@@ -32,3 +33,4 @@ const moralSolution = morality.solve(agent, ethics);
 if (moralSolution) {
   console.log(moralSolution.policy);
 }
+

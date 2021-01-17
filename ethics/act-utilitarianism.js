@@ -18,18 +18,24 @@ class ActUtilitarianism {
       for (const action of agent.actions()) {
         program.constraints[`actUtilitarianism${state}${action}`] = {'max': 0};
       }
-      const action_values = {};
+      let action_values = {};
       for (const action of agent.actions()) {
-        total_value = 0;
+        let total_value = 0;
         for (const member of this._moral_community) {
 
-          member_expected_value = 0.0;
+          let member_expected_value = 0.0;
           for (const member_state of member.states()) {
-            prior = memberStatePrior(state);
+            const prior = memberStatePrior(state);
+            if (prior == 0) {
+              continue;
+            } 
             for (const succ_state of agent.states()) {
-              trans_prob = agent.transitionFunction(state, action, succ_state);
+              const trans_prob = agent.transitionFunction(state, action, succ_state);
+              if (trans_prob == 0) {
+                continue;
+              } 
               for (const succ_member_state of member_states) {
-                effect_probability = establishEffects(state, succ_state, member_state, succ_member_state);
+                const effect_probability = establishEffects(state, succ_state, member_state, succ_member_state);
                 member_expected_value += prior * trans_prob * effect_probability * member.value(succ_member_state);
               }
             }
@@ -41,7 +47,7 @@ class ActUtilitarianism {
 
       // Get the argmax of possible actions
       // TODO: allow use of optimific approximation factor
-      morally_permitted_actions = Object.keys(action_values).filter(x => {
+      const morally_permitted_actions = Object.keys(action_values).filter(x => {
           return action_values[x] == Math.max.apply(null, Object.values(action_values));
       });
 

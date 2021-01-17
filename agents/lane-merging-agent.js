@@ -293,7 +293,7 @@ class LaneMergingAgent {
 
   rewardFunction(state, _) {
     if (state == this._size-1) {
-      return 0.0;
+      return 1000.0;
     }
     else {
       return -1.0;
