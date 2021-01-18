@@ -25,7 +25,7 @@ class ActUtilitarianism {
 
           let member_expected_value = 0.0;
           for (const member_state of member.states()) {
-            const prior = memberStatePrior(state);
+            const prior = memberStatePrior(state, member_state);
             if (prior == 0) {
               continue;
             } 

@@ -4,6 +4,7 @@ const morality = require('../../morality.js');
 const LaneMergingAgent = require('../../agents/lane-merging-agent.js');
 const ActUtilitarianism = require('../../ethics/act-utilitarianism.js');
 const printer = require('../../utils/printer.js');
+const helper = require('../../utils/helper.js');
 
 const num_mergers = 2;
 const num_mergees = 2;
@@ -218,8 +219,11 @@ function memberStatePrior(state, member_state) {
   return 0.0;
 }
 
+const testStates = helper.samer(agent, moralCommunity, memberStatePrior);
+console.log(testStates)
+
 //printer.printMemberStatePrior(agent, memberStatePrior);
-printer.printEstablishEffects(agent, establishEffects);
+// printer.printEstablishEffects(agent, establishEffects);
 
 const optimific_approximation_factor = 5;
 //const ethics = new ActUtilitarianism(moralCommunity, , , optimific_approximation_factor);
