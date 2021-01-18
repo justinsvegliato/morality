@@ -1,7 +1,5 @@
 'use strict';
 
-
-// TODO: define establishEffects and memberStatePrior either here or in example / experiment. Preferably not here.
 class ActUtilitarianism {
   constructor(moral_community, establishEffects, memberStatePrior, tolerance) {
     this._moral_community = moral_community;

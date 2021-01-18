@@ -199,30 +199,30 @@ class LaneMergingAgent {
       }
       else {
         if (state_factors['is_moving']) {
-          if ((state_factors['position'] == successor_state_factors['position'] + 1) &&
+          if ((state_factors['position'] == successor_state_factors['position']) &&
               (state_factors['num_mergers_remaining'] == successor_state_factors['num_mergers_remaining'] + 1) && 
               (state_factors['num_mergees_remaining'] == successor_state_factors['num_mergees_remaining']) && 
-              (successor_state_factors['is_moving'])) {
+              (!successor_state_factors['is_moving'])) {
             return 0.3;
           }
-          if ((state_factors['position'] == successor_state_factors['position']) &&
+          if ((state_factors['position'] == successor_state_factors['position'] + 1) &&
               (state_factors['num_mergers_remaining'] == successor_state_factors['num_mergers_remaining']) &&
               (state_factors['num_mergees_remaining'] == successor_state_factors['num_mergees_remaining'] + 1) &&
-              (!successor_state_factors['is_moving'])) {
+              (successor_state_factors['is_moving'])) {
             return 0.7;
           }
         }
         else {
-          if ((state_factors['position'] == successor_state_factors['position'] + 1) &&
+          if ((state_factors['position'] == successor_state_factors['position']) &&
               (state_factors['num_mergers_remaining'] == successor_state_factors['num_mergers_remaining'] + 1) && 
               (state_factors['num_mergees_remaining'] == successor_state_factors['num_mergees_remaining']) && 
-              (successor_state_factors['is_moving'])) {
+              (!successor_state_factors['is_moving'])) {
             return 0.4;
           }
-          if ((state_factors['position'] == successor_state_factors['position']) &&
+          if ((state_factors['position'] == successor_state_factors['position'] + 1) &&
               (state_factors['num_mergers_remaining'] == successor_state_factors['num_mergers_remaining']) &&
               (state_factors['num_mergees_remaining'] == successor_state_factors['num_mergees_remaining'] + 1) &&
-              (!successor_state_factors['is_moving'])) {
+              (successor_state_factors['is_moving'])) {
             return 0.6;
           }
         }
