@@ -217,11 +217,11 @@ function memberStatePrior(state, member_state) {
   return 0.0;
 }
 
-const testStates = helper.samer(agent, moralCommunity, memberStatePrior);
-console.log(testStates)
+const triples = helper.samer(agent, moralCommunity, memberStatePrior);
+console.log(triples)
 
 //printer.printMemberStatePrior(agent, memberStatePrior);
-// printer.printEstablishEffects(agent, establishEffects);
+printer.printEstablishEffects(agent, triples, moralCommunity[0].states(), establishEffects);
 
 const optimific_approximation_factor = 5;
 //const ethics = new ActUtilitarianism(moralCommunity, , , optimific_approximation_factor);

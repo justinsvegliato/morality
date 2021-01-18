@@ -148,33 +148,33 @@ function printMemberStatePrior(mdp, memberStatePrior) {
   console.log(`  Status: ${isValid ? 'Valid' : 'Invalid'}`);
 }
 
-function printEstablishEffects(states, successorStates, memberStates, memberSuccessorStates, establishEffects) {
+function printEstablishEffects(mdp, triples, memberSuccessorStates, establishEffects) {
   console.log('Establish Effects');
 
   let isValid = true;
 
-  for (const state of states) {
-    for (const successorState of successorStates) {
-      for (const memberState of memberStates) {
-        console.log(`  Agent State: (${Object.values(mdp.getStateFactorsFromState(state)).join('_')})`);
-        console.log(`  Agent Successor State: (${Object.values(mdp.getStateFactorsFromState(successorState)).join('_')})`);
-        console.log(`  Member State: (${Object.values(mdp.getStateFactorsFromState(memberState)).join('_')})`);
+  for (const triple of triples) {
+    const state = triple[0];
+    const successorState = triple[1];
+    const memberState = triple[2];
 
-        let totalProbability = 0;
+    console.log(`  Agent State: (${Object.values(mdp.getStateFactorsFromState(state)).join('_')})`);
+    console.log(`  Agent Successor State: (${Object.values(mdp.getStateFactorsFromState(successorState)).join('_')})`);
+    console.log(`  Member State: (${Object.values(mdp.getStateFactorsFromState(memberState)).join('_')})`);
 
-        for (const memberSuccessorState of memberSuccessorStates) {
-          const probability = establishEffects(state, successorState, memberState, memberSuccessorState);
-          console.log(`    Member Successor State: ${Object.values(mdp.getStateFactorsFromState(memberSuccessorState)).join('_')} -> ${probability}`);
-          totalProbability += probability;
-        }
+    let totalProbability = 0;
 
-        isValid = isValid && Math.abs(totalProbability - 1.0) <= ERROR_THRESHOLD;
-        console.log(`    Total Probability: ${totalProbability}`);
+    for (const memberSuccessorState of memberSuccessorStates) {
+      const probability = establishEffects(state, successorState, memberState, memberSuccessorState);
+      console.log(`    Member Successor State: ${Object.values(mdp.getStateFactorsFromState(memberSuccessorState)).join('_')} -> ${probability}`);
+      totalProbability += probability;
+    }
 
-        if (!isValid) {
-          return
-        }
-      }
+    isValid = isValid && Math.abs(totalProbability - 1.0) <= ERROR_THRESHOLD;
+    console.log(`    Total Probability: ${totalProbability}`);
+
+    if (!isValid) {
+      return
     }
   }
 
