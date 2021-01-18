@@ -10,8 +10,6 @@ const num_mergers = 2;
 const num_mergees = 2;
 const agent = new LaneMergingAgent(num_mergers, num_mergees);
 
-//printer.printTransitionFunction(agent)
-
 console.log('Amoral Policy');
 const amoralSolution = morality.solve(agent);
 if (amoralSolution) {
@@ -19,9 +17,9 @@ if (amoralSolution) {
 }
 
 const moralCommunity = [];
-// -1 since we are also included here
+
 for (let i = 0; i < (num_mergers + num_mergees) - 1; i++) {
-  moralCommunity.push({states: agent.states, values: amoralSolution.values});
+  moralCommunity.push({states: () => agent.states(), values: amoralSolution.values});
 }
 
 function establishEffects(state, successor_state, member_state, member_successor_state) {
