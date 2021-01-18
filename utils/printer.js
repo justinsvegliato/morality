@@ -139,6 +139,10 @@ function printMemberStatePrior(mdp, memberStatePrior) {
 
     isValid = isValid && Math.abs(totalProbability - 1.0) >= ERROR_THRESHOLD;
     console.log(`    Total Probability: ${totalProbability}`);
+
+    if (!isValid) {
+      return;
+    }
   }
 
   console.log(`  Status: ${isValid ? 'Valid' : 'Invalid'}`);
