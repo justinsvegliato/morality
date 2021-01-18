@@ -148,39 +148,38 @@ function printMemberStatePrior(mdp, memberStatePrior) {
   console.log(`  Status: ${isValid ? 'Valid' : 'Invalid'}`);
 }
 
-// function printEstablishEffects(mdp, establishEffects) {
-//   console.log('Establish Effects');
+function printEstablishEffects(mdp, establishEffects) {
+  console.log('Establish Effects');
 
-//   let isValid = true;
+  let isValid = true;
 
-//   for (const state of mdp.states()) {
-//     for (const successorState of mdp.states()) {
-//       for (const memberState of mdp.states()) {
-//         console.log(`  Agent State: (${Object.values(mdp.getStateFactorsFromState(state)).join('_')})`);
-//         console.log(`  Agent Successor State: (${Object.values(mdp.getStateFactorsFromState(successorState)).join('_')})`);
-//         console.log(`  Member State: (${Object.values(mdp.getStateFactorsFromState(memberState)).join('_')})`);
+  for (const state of mdp.states()) {
+    for (const successorState of mdp.states()) {
+      for (const memberState of mdp.states()) {
+        console.log(`  Agent State: (${Object.values(mdp.getStateFactorsFromState(state)).join('_')})`);
+        console.log(`  Agent Successor State: (${Object.values(mdp.getStateFactorsFromState(successorState)).join('_')})`);
+        console.log(`  Member State: (${Object.values(mdp.getStateFactorsFromState(memberState)).join('_')})`);
 
-//         let totalProbability = 0;
+        let totalProbability = 0;
 
-//         for (const memberSuccessorState of mdp.states()) {
-//           const probability = establishEffects(state, successorState, memberState, memberSuccessorState);
-//           console.log(`    Member State: ${Object.values(mdp.getStateFactorsFromState(memberState)).join('_')} -> ${probability}`);
+        for (const memberSuccessorState of mdp.states()) {
+          const probability = establishEffects(state, successorState, memberState, memberSuccessorState);
+          console.log(`    Member State: ${Object.values(mdp.getStateFactorsFromState(memberState)).join('_')} -> ${probability}`);
+          totalProbability += probability;
+        }
 
-//           totalProbability += probability;
-//         }
+        isValid = isValid && Math.abs(totalProbability - 1.0) <= ERROR_THRESHOLD;
+        console.log(`    Total Probability: ${totalProbability}`);
 
-//         isValid = isValid && totalProbability == 1;
-//         console.log(`    Total Probability: ${totalProbability}`);
+        if (!isValid) {
+          return
+        }
+      }
+    }
+  }
 
-//         if (!isValid) {
-//           return
-//         }
-//       }
-//     }
-//   }
-
-//   console.log(`  Status: ${isValid ? 'Valid' : 'Invalid'}`);
-// }
+  console.log(`  Status: ${isValid ? 'Valid' : 'Invalid'}`);
+}
 
 module.exports = {
   printStates,
@@ -191,5 +190,6 @@ module.exports = {
   printMdp,
   printGridWorldDomain,
   printGridWorldPolicy,
-  printMemberStatePrior
+  printMemberStatePrior,
+  printEstablishEffects
 };
