@@ -2,19 +2,19 @@
 
 const morality = require('../../morality.js');
 const LaneMergingAgent = require('../../agents/lane-merging-agent.js');
-const ActUtilitarianism = require('../../ethics/act-utilitarianism.js');s
+const ActUtilitarianism = require('../../ethics/act-utilitarianism.js');
 const printer = require('../../utils/printer.js');
 
 const num_mergers = 2;
 const num_mergees = 2;
 const agent = new LaneMergingAgent(num_mergers, num_mergees);
 
-printer.printTransitionFunction(agent)
+//printer.printTransitionFunction(agent)
 
 console.log('Amoral Policy');
 const amoralSolution = morality.solve(agent);
 if (amoralSolution) {
-  print(amoralSolution.policy);
+  console.log(amoralSolution.policy);
 }
 
 const moralCommunity = [];
@@ -25,7 +25,7 @@ for (let i = 0; i < (num_mergers + num_mergees) - 1; i++) {
 
 function establishEffects(state, successor_state, member_state, member_successor_state) {
   const valid_states = agent.startStates();
-  const moral_community_size = moral_community.length;
+  //const moral_community_size = moral_community.length;
   const succ_state_factors = agent.getStateFactorsFromState(state);
   const state_factors = agent.getStateFactorsFromState(successor_state);
   const member_state_factors = agent.getStateFactorsFromState(member_state);
@@ -40,14 +40,24 @@ function establishEffects(state, successor_state, member_state, member_successor
       return 0.0;
     }
   }
-  
+ 
+  // Other agent will arrive at goal 
   if (member_succ_state_factors['is_goal']) {
-    
+    if (member_state_factors['position'] == 1) {
+      if ((member_state_factors['lane_id'] == 'MERGER') && 
+          (state_factors['num_mergers_remaining'] == succ_state_factors['num_mergers_remaining'] + 1)) {
+        return 1.0;
+      }
+      if ((member_state_factors['lane_id'] == 'MERGEE') && 
+          (state_factors['num_mergees_remaining'] == succ_state_factors['num_mergees_remaining'] + 1)) {
+        return 1.0;
+      }
+    }
   }
 
   // Successor member state is invalid
   if (!valid_states.includes(member_successor_state)) {
-    return 0.0;
+      return 0.0;
   }
 
   // Agent is waiting to merge
@@ -89,28 +99,35 @@ function establishEffects(state, successor_state, member_state, member_successor
     }
     return 0.0;
   }
+
+  // Neither state nor successor state is the goal
   else {
-    if ((succ_state_factors['lane_id'] == 'MERGER') && 
-        ()) {
-      
-    } 
-
-
-
-
-
-    // If we're both waiting
-    if ((succ_state_factors['num_remaining_mergers'] == member_succ_state_factors['num_remaining_mergers']) &&
-        (succ_state_factors['num_remaining_mergees'] == member_succ_state_factors['num_remaining_mergees'])) {
+    let successors_match = false;
+    if ((succ_state_factors['num_mergers_remaining'] == member_succ_state_factors['num_mergers_remaining']) &&
+        (succ_state_factors['num_mergees_remaining'] == member_succ_state_factors['num_mergees_remaining'])) {
       if (((succ_state_factors['lane_id'] == member_succ_state_factors['lane_id']) && 
            (succ_state_factors['is_moving'] == member_succ_state_factors['is_moving'])) || 
           ((succ_state_factors['lane_id'] != member_succ_state_factors['lane_id']) &&
            (succ_state_factors['is_moving'] != member_succ_state_factors['is_moving']))) {
-        return 1.0;
+        successors_match = true;
+      }
     }
-
-
-
+    
+    let initials_match = false;
+    if ((state_factors['num_mergers_remaining'] == member_state_factors['num_mergers_remaining']) &&
+        (state_factors['num_mergees_remaining'] == member_state_factors['num_mergees_remaining'])) {
+      if (((state_factors['lane_id'] == member_state_factors['lane_id']) && 
+           (state_factors['is_moving'] == member_state_factors['is_moving'])) || 
+          ((state_factors['lane_id'] != member_state_factors['lane_id']) &&
+           (state_factors['is_moving'] != member_state_factors['is_moving']))) {
+        initials_match = true;
+      }
+    }
+    
+    if (!successors_match || !initials_match) {
+      return 0.0;
+    }
+    
     if (succ_state_factors['lane_id'] == 'MERGER') {
       if ((member_state_factors['num_mergers_remaining'] == member_succ_state_factors['num_mergers_remaining'] + 1) && 
           (member_state_factors['num_mergees_remaining'] == member_succ_state_factors['num_mergees_remaining'])) {
@@ -147,54 +164,65 @@ function establishEffects(state, successor_state, member_state, member_successor
     }
     return 0.0;
   }
-
-
-
-
-
-
-  return 0.0;
 }
 
 function memberStatePrior(state, member_state) {
   const valid_states = agent.startStates();
-  const moral_community_size = moral_community.length;
+  const moral_community_size = moralCommunity.length;
   const state_factors = agent.getStateFactorsFromState(state);
   const member_state_factors = agent.getStateFactorsFromState(member_state);
   if (state_factors['is_goal'] && 
       (valid_states.includes(member_state) || member_state_factors['is_goal'])) {
     return 1.0 / (valid_states.length + 1);
   }
-  if (!valid_states.includes(state) &&
-      (valid_states.includes(member_state) || member_state_factors['is_goal'])) {
-    return 0.0;
+  else {
+    if (state_factors['is_goal'] ) {
+      return 0.0;
+    }
+  } 
+ 
+  if (!valid_states.includes(state)) {
+    if (state == member_state) {
+      return 1.0;
+    }
+    else {
+      return 0.0;
+    }
   }
+  
   if (state == member_state) {
     return 0.0;
   }
   
-  // -1 since we know we are no at the goal
-  num_possible_states_excluding_goal = state_factors['num_remaining_mergers'] + 
-                                       state_factors['num_remaining_mergees'] - 1;
+  if (!valid_states.includes(member_state) && !member_state_factors['is_goal']) {
+    return 0.0;
+  }
+  
+  // -1 since we know we are not at the goal
+  const num_possible_states_excluding_goal = state_factors['num_mergers_remaining'] + 
+                                             state_factors['num_mergees_remaining'] - 1;
   if (member_state_factors['is_goal']) {
     return (moral_community_size - (num_possible_states_excluding_goal)) / moral_community_size;
   }
 
   // If member state is compatible with state
-  if ((state_factors['num_remaining_mergers'] == member_state_factors['num_remaining_mergers']) &&
-      (state_factors['num_remaining_mergees'] == member_state_factors['num_remaining_mergees'])) {
+  if ((state_factors['num_mergers_remaining'] == member_state_factors['num_mergers_remaining']) &&
+      (state_factors['num_mergees_remaining'] == member_state_factors['num_mergees_remaining'])) {
     if (((state_factors['lane_id'] == member_state_factors['lane_id']) && 
          (state_factors['is_moving'] == member_state_factors['is_moving'])) || 
         ((state_factors['lane_id'] != member_state_factors['lane_id']) &&
          (state_factors['is_moving'] != member_state_factors['is_moving']))) {
-      return num_possible_states_excluding_goal / moral_community_size;
+      return 1.0 / moral_community_size;
     }
   }
   return 0.0;
 }
 
+//printer.printMemberStatePrior(agent, memberStatePrior);
+printer.printEstablishEffects(agent, establishEffects);
+
 const optimific_approximation_factor = 5;
-const ethics = new ActUtilitarianism(moralCommunity, , , optimific_approximation_factor);
+//const ethics = new ActUtilitarianism(moralCommunity, , , optimific_approximation_factor);
 
 console.log('Moral Policy');
 const moralSolution = morality.solve(agent, ethics);
