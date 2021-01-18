@@ -1,5 +1,8 @@
 'use strict';
 
+const ERROR_THRESHOLD = 0.001
+
+
 function printStates(mdp) {
   console.log('States');
 
@@ -131,20 +134,49 @@ function printMemberStatePrior(mdp, memberStatePrior) {
     for (const memberState of mdp.states()) {
       const probability = memberStatePrior(state, memberState);
       console.log(`    Member State: ${Object.values(mdp.getStateFactorsFromState(memberState)).join('_')} -> ${probability}`);
-
       totalProbability += probability;
     }
 
-    isValid = isValid && totalProbability == 1;
+    isValid = isValid && Math.abs(totalProbability - 1.0) >= ERROR_THRESHOLD;
     console.log(`    Total Probability: ${totalProbability}`);
-
-    if (!isValid) {
-      return
-    }
   }
 
   console.log(`  Status: ${isValid ? 'Valid' : 'Invalid'}`);
 }
+
+// function printEstablishEffects(mdp, establishEffects) {
+//   console.log('Establish Effects');
+
+//   let isValid = true;
+
+//   for (const state of mdp.states()) {
+//     for (const successorState of mdp.states()) {
+//       for (const memberState of mdp.states()) {
+//         console.log(`  Agent State: (${Object.values(mdp.getStateFactorsFromState(state)).join('_')})`);
+//         console.log(`  Agent Successor State: (${Object.values(mdp.getStateFactorsFromState(successorState)).join('_')})`);
+//         console.log(`  Member State: (${Object.values(mdp.getStateFactorsFromState(memberState)).join('_')})`);
+
+//         let totalProbability = 0;
+
+//         for (const memberSuccessorState of mdp.states()) {
+//           const probability = establishEffects(state, successorState, memberState, memberSuccessorState);
+//           console.log(`    Member State: ${Object.values(mdp.getStateFactorsFromState(memberState)).join('_')} -> ${probability}`);
+
+//           totalProbability += probability;
+//         }
+
+//         isValid = isValid && totalProbability == 1;
+//         console.log(`    Total Probability: ${totalProbability}`);
+
+//         if (!isValid) {
+//           return
+//         }
+//       }
+//     }
+//   }
+
+//   console.log(`  Status: ${isValid ? 'Valid' : 'Invalid'}`);
+// }
 
 module.exports = {
   printStates,
