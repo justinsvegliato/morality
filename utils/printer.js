@@ -164,7 +164,7 @@ function printEstablishEffects(mdp, establishEffects) {
 
         for (const memberSuccessorState of mdp.states()) {
           const probability = establishEffects(state, successorState, memberState, memberSuccessorState);
-          console.log(`    Member State: ${Object.values(mdp.getStateFactorsFromState(memberState)).join('_')} -> ${probability}`);
+          console.log(`    Member Successor State: ${Object.values(mdp.getStateFactorsFromState(memberSuccessorState)).join('_')} -> ${probability}`);
           totalProbability += probability;
         }
 
