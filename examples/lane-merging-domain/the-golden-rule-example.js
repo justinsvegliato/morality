@@ -17,8 +17,8 @@ if (amoralSolution) {
 }
 
 const moralCommunity = [];
-for (let i = 0; i < num_mergers + num_mergees; i++) {
-  moralCommunity.push({states: () => agent.states, values: amoralSolution.values});
+for (let i = 0; i < (num_mergers + num_mergees) - 1; i++) {
+  moralCommunity.push({states: () => agent.states(), values: amoralSolution.values});
 }
 
 //TODO: could make a seperate file with these functions instead of duplicating for both AU and TGR
@@ -267,11 +267,12 @@ function memberStatePrior(state, member_state) {
 
 //printer.printEstablishEffects(agent, triples, moralCommunity[0].states(), establishEffects);
 
-const golden_slack_factor = 5;
+const golden_slack_factor = 5000;
+//const golden_slack_factor = 5;
 const ethics = new TheGoldenRule(moralCommunity, establishEffects, memberStatePrior, golden_slack_factor);
 
 console.log('Moral Policy');
-const moralSolution = morality.solve(agent, ethics);
+const moralSolution = morality.solve(agent, ethics, true);
 if (moralSolution) {
-  print(moralSolution.policy);
+  console.log(moralSolution.policy);
 }

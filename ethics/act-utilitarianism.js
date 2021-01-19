@@ -4,6 +4,8 @@ class ActUtilitarianism {
   constructor(moral_community, establishEffects, memberStatePrior, tolerance) {
     this._moral_community = moral_community;
     this._tolerance = tolerance;
+    this._establishEffects = establishEffects;
+    this._memberStatePrior = memberStatePrior;
   }
 
   getMoralCommunity() {
@@ -23,7 +25,7 @@ class ActUtilitarianism {
 
           let member_expected_value = 0.0;
           for (const member_state of member.states()) {
-            const prior = memberStatePrior(state, member_state);
+            const prior = this._memberStatePrior(state, member_state);
             if (prior == 0) {
               continue;
             } 
@@ -32,9 +34,9 @@ class ActUtilitarianism {
               if (trans_prob == 0) {
                 continue;
               } 
-              for (const succ_member_state of member_states) {
-                const effect_probability = establishEffects(state, succ_state, member_state, succ_member_state);
-                member_expected_value += prior * trans_prob * effect_probability * member.value(succ_member_state);
+              for (const succ_member_state of member.states()) {
+                const effect_probability = this._establishEffects(state, succ_state, member_state, succ_member_state);
+                member_expected_value += prior * trans_prob * effect_probability * member.values[succ_member_state];
               }
             }
           }

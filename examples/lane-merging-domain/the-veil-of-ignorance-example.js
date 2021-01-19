@@ -18,11 +18,14 @@ if (amoralSolution) {
 
 const moralCommunity = [];
 for (let i = 0; i < num_mergers + num_mergees; i++) {
-  moralCommunity.push({states: agent.states, values: amoralSolution.values});
+  moralCommunity.push({states: () => agent.states(), values: amoralSolution.values});
 }
 
+//const veiledStateFactors = ['lane_id', 'is_moving'];
+//const veiledStateFactors = ['is_moving'];
 const veiledStateFactors = ['lane_id'];
-const inequityTolerance = 2;
+//const veiledStateFactors = [];
+const inequityTolerance = 2000;
 
 const ethics = new TheVeilOfIgnorance(moralCommunity, veiledStateFactors, inequityTolerance);
 

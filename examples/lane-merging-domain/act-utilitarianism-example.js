@@ -271,7 +271,7 @@ const optimific_approximation_factor = 5;
 const ethics = new ActUtilitarianism(moralCommunity, establishEffects, memberStatePrior, optimific_approximation_factor);
 
 console.log('Moral Policy');
-const moralSolution = morality.solve(agent, ethics);
+const moralSolution = morality.solve(agent, ethics, true);
 if (moralSolution) {
-  print(moralSolution.policy);
+  console.log(moralSolution.policy);
 }
